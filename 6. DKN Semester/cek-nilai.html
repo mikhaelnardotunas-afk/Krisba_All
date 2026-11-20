@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#102a4c">
+  <title>Cek Nilai Siswa · SIPAS</title>
+  <link rel="icon" href="assets/icon-192.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/app.css">
+  <script src="js/config.js"></script>
+  <style>
+    .cek-wrap { max-width: 760px; margin: 0 auto; padding: 20px 16px 40px; }
+    .cek-hero { background: linear-gradient(135deg, var(--navy-900), var(--navy-700)); color: #fff; border-radius: 16px; padding: 22px; margin-bottom: 16px; }
+    .cek-hero h1 { color: #fff; margin: 0; font-size: 20px; }
+    .cek-hero p { margin: 4px 0 0; color: #c7d3e6; }
+    .mapel-row { display: grid; grid-template-columns: 1fr 64px 42px; gap: 10px; align-items: center; padding: 11px 0; border-bottom: 1px solid var(--border); cursor: pointer; }
+    .mapel-row:last-child { border-bottom: 0; }
+    .mapel-row .v { font-size: 18px; font-weight: 750; text-align: right; }
+    .mapel-row .bar { height: 6px; background: var(--border); border-radius: 4px; margin-top: 6px; position: relative; }
+    .mapel-row .bar span { position: absolute; inset: 0 auto 0 0; background: var(--navy-600); border-radius: 4px; }
+    .mapel-row .bar i { position: absolute; top: -3px; width: 2px; height: 12px; background: var(--gold-500); }
+    .mapel-desc { font-size: 12.5px; color: var(--text-muted); padding: 0 0 10px; display: none; }
+    .mapel-desc.open { display: block; }
+    @media print { .no-print { display: none !important; } body { background: #fff; } }
+  </style>
+</head>
+<body>
+  <div class="cek-wrap">
+    <div class="cek-hero"><div class="flex between"><div><h1>Cek Nilai Siswa</h1><p id="sch">SIPAS</p></div><a href="index.html" class="btn btn-sm no-print" style="background:transparent;color:#fff;border-color:rgba(255,255,255,.3)">Masuk</a></div></div>
+    <div id="app"><div class="loading-block"><span class="spinner"></span></div></div>
+  </div>
+  <script type="module">
+    import { get, post } from './js/api.js';
+    import { applyTheme, esc, fmtNum, icon, toast, busy } from './js/ui.js';
+    applyTheme();
+    const app = document.getElementById('app');
+    let info = null;
+
+    function form() {
+      if (info.verifikasi === 'none') {
+        app.innerHTML = `<div class="card"><div class="card-body"><div class="field mb-2"><label>Kelas</label><select id="k">${info.kelas.map((k, i) => `<option value="${i}">${esc(k.name)}</option>`).join('')}</select></div>
+          <div class="field mb-2"><label>Cari nama</label><input id="q" placeholder="Ketik nama..."></div><ul class="list-plain" id="names"></ul></div></div>`;
+        const draw = () => {
+          const k = info.kelas[document.getElementById('k').value];
+          const q = document.getElementById('q').value.toLowerCase();
+          document.getElementById('names').innerHTML = (k ? k.siswa : []).filter(s => s.name.toLowerCase().includes(q)).map(s => `<li style="cursor:pointer" data-id="${s.id}">${icon('user')} <b>${esc(s.name)}</b></li>`).join('');
+        };
+        document.getElementById('k').onchange = draw;
+        document.getElementById('q').oninput = draw;
+        document.getElementById('names').onclick = e => { const li = e.target.closest('[data-id]'); if (li) show({ student_id: li.dataset.id }); };
+        draw();
+      } else {
+        app.innerHTML = `<div class="card"><div class="card-body"><form id="f"><div class="field mb-2"><label for="n">NISN</label><input id="n" inputmode="numeric" required placeholder="10 digit NISN"></div>
+          ${info.verifikasi === 'tgl_lahir' ? '<div class="field mb-2"><label for="b">Tanggal lahir</label><input id="b" type="date" required></div>' : ''}
+          <button class="btn btn-primary w-100" type="submit">${icon('search')} Lihat Nilai</button></form></div></div>`;
+        document.getElementById('f').onsubmit = e => { e.preventDefault(); busy(e.target.querySelector('button'), () => show({ nisn: document.getElementById('n').value, birth_date: (document.getElementById('b') || {}).value })); };
+      }
+    }
+
+    async function show(body) {
+      try {
+        const d = await post('/public/cek/nilai', body);
+        const r = d.ringkasan;
+        const medal = x => x === 1 ? '🥇' : x === 2 ? '🥈' : x === 3 ? '🥉' : '';
+        app.innerHTML = `
+          <div class="card mb-2"><div class="card-body"><div class="flex between flex-wrap gap-2"><div><h2 class="mb-0">${esc(d.siswa.nama)}</h2><div class="muted">Kelas ${esc(d.siswa.kelas)} · NISN ${esc(d.siswa.nisn || '-')} · ${esc(d.tahun)} ${esc(d.semester)}</div>${d.siswa.wali ? `<div class="muted" style="font-size:12.5px">Wali kelas: ${esc(d.siswa.wali)}</div>` : ''}</div>
+            <div class="ring" style="--p:${r.rata}"><div><b>${fmtNum(r.rata, 1)}</b><span>rata-rata</span></div></div></div>
+            <div class="stats mt-2 mb-0" style="grid-template-columns:repeat(auto-fill,minmax(140px,1fr))">
+              <div class="stat"><div><div class="stat-value">${fmtNum(r.jumlah)}</div><div class="stat-label">Jumlah nilai</div></div></div>
+              <div class="stat"><div><div class="stat-value">${r.terisi}/${r.jumlah_mapel}</div><div class="stat-label">Mapel bernilai</div></div></div>
+              ${r.rank_kelas ? `<div class="stat"><div><div class="stat-value">${medal(r.rank_kelas)}${r.rank_kelas}<small class="muted">/${r.jumlah_kelas}</small></div><div class="stat-label">Peringkat kelas</div></div></div>` : ''}
+              ${r.rank_tingkat ? `<div class="stat"><div><div class="stat-value">${r.rank_tingkat}<small class="muted">/${r.jumlah_tingkat}</small></div><div class="stat-label">Peringkat tingkat</div></div></div>` : ''}
+            </div></div></div>
+          <div class="card mb-2"><div class="card-head"><h3>${icon('book')} Nilai Mata Pelajaran</h3><span class="muted" style="font-size:12px">ketuk mapel untuk deskripsi</span></div><div class="card-body" id="mp">
+            ${d.mapel.map((m, i) => `<div class="mapel-row" data-i="${i}"><div><b>${esc(m.nama)}</b> ${m.predikat ? `<span class="badge navy">${esc(m.predikat)}</span>` : ''} ${m.tuntas === null ? '' : m.tuntas ? '<span class="badge green">Tuntas</span>' : '<span class="badge red">Belum tuntas</span>'}
+              <div class="bar"><span style="width:${m.nilai || 0}%"></span><i style="left:${m.kktp}%"></i></div></div><div class="v">${m.nilai === null ? '–' : fmtNum(m.nilai)}</div><div class="muted" style="font-size:11px">KKTP ${fmtNum(m.kktp)}</div></div>
+              <div class="mapel-desc" id="md-${i}">${esc(m.deskripsi || 'Belum ada deskripsi.')}</div>`).join('')}</div></div>
+          ${d.kokurikuler ? `<div class="card mb-2"><div class="card-head"><h3>${icon('star')} Kokurikuler</h3><span class="badge gold">${esc(d.kokurikuler.nilai || '')}</span></div><div class="card-body">${esc(d.kokurikuler.deskripsi || '-')}</div></div>` : ''}
+          <div class="grid grid-2 mb-2">
+            <div class="card"><div class="card-head"><h3>${icon('award')} Ekstrakurikuler</h3></div><div class="card-body"><ul class="list-plain">${d.ekskul.map(e => `<li><span class="grow"><b>${esc(e.nama)}</b><div class="muted" style="font-size:12px">${esc(e.deskripsi)}</div></span><span class="badge navy">${esc(e.nilai || '')}</span></li>`).join('') || '<li class="muted">-</li>'}</ul></div></div>
+            <div class="card"><div class="card-head"><h3>${icon('calendar')} Kehadiran</h3></div><div class="card-body"><dl class="kv"><dt>Hadir</dt><dd>${d.kehadiran && d.kehadiran.present !== null ? d.kehadiran.present + ' hari' : '-'}</dd><dt>Sakit</dt><dd>${d.kehadiran ? (d.kehadiran.sick ?? '-') : '-'}</dd><dt>Izin</dt><dd>${d.kehadiran ? (d.kehadiran.permit ?? '-') : '-'}</dd><dt>Tanpa keterangan</dt><dd>${d.kehadiran ? (d.kehadiran.absent ?? '-') : '-'}</dd></dl></div></div>
+          </div>
+          ${d.catatan ? `<div class="card mb-2"><div class="card-head"><h3>${icon('message')} Catatan Wali Kelas</h3></div><div class="card-body">${esc(d.catatan)}</div></div>` : ''}
+          <div class="card mb-2"><div class="card-body">${icon('file')} Status pengambilan rapor: ${d.pengambilan.status === 'Sudah' ? `<span class="badge green">Sudah diambil</span> oleh ${esc(d.pengambilan.picker_name || '')}` : '<span class="badge yellow">Belum diambil</span>'}</div></div>
+          <div class="btn-group no-print"><button class="btn" onclick="window.print()">${icon('printer')} Cetak / Simpan PDF</button><button class="btn btn-primary" id="back">${icon('chevronLeft')} Kembali</button></div>`;
+        document.getElementById('mp').onclick = e => { const r2 = e.target.closest('.mapel-row'); if (r2) document.getElementById('md-' + r2.dataset.i).classList.toggle('open'); };
+        document.getElementById('back').onclick = form;
+      } catch (e) { toast(e.message, 'error'); }
+    }
+
+    (async () => {
+      try {
+        info = await get('/public/cek/daftar');
+        document.getElementById('sch').textContent = `${info.sekolah} · ${info.tahun} ${info.semester}`;
+        form();
+      } catch (e) {
+        app.innerHTML = `<div class="card"><div class="card-body"><div class="alert warn mb-0">${icon('info')}<div>${esc(e.message)}</div></div></div></div>`;
+      }
+    })();
+  </script>
+</body>
+</html>

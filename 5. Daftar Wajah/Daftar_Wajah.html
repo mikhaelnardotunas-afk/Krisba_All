@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+<meta name="theme-color" content="#1F6F54">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Daftar Wajah Siswa</title>
+<style>
+  :root{
+    --ink:#10241E;
+    --ink-soft:#4B5D56;
+    --paper:#F5F8F5;
+    --surface:#FFFFFF;
+    --brand:#1F6F54;
+    --brand-deep:#14503B;
+    --brand-soft:#E4F0EA;
+    --accent:#E8A33D;
+    --accent-soft:#FBEDD4;
+    --danger:#C1443A;
+    --danger-soft:#FBE7E4;
+    --line:#DCE3DC;
+    --radius-lg:22px;
+    --radius-md:14px;
+    --shadow:0 1px 2px rgba(16,36,30,.06);
+    font-size:16px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    line-height:1.45;
+    -webkit-tap-highlight-color:transparent;
+    padding-bottom:env(safe-area-inset-bottom);
+  }
+  button{font-family:inherit;}
+  .app{
+    max-width:480px;
+    margin:0 auto;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    padding:calc(env(safe-area-inset-top) + 18px) 18px 28px;
+  }
+
+  /* ---------- Header & progress ---------- */
+  header.top{margin-bottom:22px;}
+  .brand{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:18px;
+  }
+  .brand-mark{
+    width:38px;height:38px;border-radius:11px;
+    background:var(--brand);
+    display:flex;align-items:center;justify-content:center;
+    flex:none;
+  }
+  .brand-mark svg{width:20px;height:20px;}
+  .brand-text h1{font-size:16.5px;font-weight:700;margin:0;letter-spacing:-.01em;}
+  .brand-text p{font-size:12.5px;color:var(--ink-soft);margin:1px 0 0;}
+
+  .progress{display:flex;gap:6px;margin-bottom:8px;}
+  .progress i{
+    flex:1;height:4px;border-radius:3px;background:var(--line);
+    overflow:hidden;position:relative;
+  }
+  .progress i::after{
+    content:"";position:absolute;inset:0;background:var(--brand);
+    transform:scaleX(0);transform-origin:left;transition:transform .35s ease;
+  }
+  .progress i.done::after,.progress i.active::after{transform:scaleX(1);}
+  .progress-labels{display:flex;justify-content:space-between;font-size:11px;color:var(--ink-soft);}
+  .progress-labels span{flex:1;}
+  .progress-labels span:nth-child(2){text-align:center;}
+  .progress-labels span:last-child{text-align:right;}
+  .progress-labels span.on{color:var(--brand-deep);font-weight:600;}
+
+  main{flex:1;display:flex;flex-direction:column;}
+  .panel{display:none;flex-direction:column;flex:1;animation:rise .25s ease both;}
+  .panel.show{display:flex;}
+  @keyframes rise{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+
+  h2.step-title{font-size:20px;margin:2px 0 4px;letter-spacing:-.01em;}
+  p.step-sub{font-size:14px;color:var(--ink-soft);margin:0 0 18px;}
+
+  /* ---------- Search / autocomplete ---------- */
+  .search-wrap{position:relative;margin-bottom:10px;}
+  .search-field{
+    width:100%;
+    border:1px solid var(--line);
+    background:var(--surface);
+    border-radius:var(--radius-md);
+    padding:14px 42px 14px 16px;
+    font-size:16px;
+    color:var(--ink);
+    outline:none;
+  }
+  .search-field:focus{border-color:var(--brand);}
+  .search-icon{position:absolute;right:14px;top:50%;transform:translateY(-50%);color:var(--ink-soft);pointer-events:none;}
+
+  .results{
+    border-radius:var(--radius-md);
+    overflow:hidden;
+    background:var(--surface);
+    border:1px solid var(--line);
+    margin-top:10px;
+  }
+  .result-item{
+    display:flex;align-items:center;gap:12px;
+    padding:12px 14px;
+    border-bottom:1px solid var(--line);
+    cursor:pointer;
+  }
+  .result-item:last-child{border-bottom:none;}
+  .result-item:active{background:var(--brand-soft);}
+  .avatar{
+    width:36px;height:36px;border-radius:50%;
+    background:var(--brand-soft);color:var(--brand-deep);
+    display:flex;align-items:center;justify-content:center;
+    font-weight:700;font-size:13px;flex:none;
+  }
+  .result-info{flex:1;min-width:0;}
+  .result-name{font-size:14.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .result-meta{font-size:12.5px;color:var(--ink-soft);}
+  .badge{
+    font-size:10.5px;font-weight:600;padding:3px 8px;border-radius:99px;
+    background:var(--brand-soft);color:var(--brand-deep);flex:none;
+  }
+  .badge.warn{background:var(--accent-soft);color:#8A5A0F;}
+  .empty-note{padding:16px 14px;font-size:13.5px;color:var(--ink-soft);text-align:center;}
+
+  /* ---------- Confirmation card ---------- */
+  .confirm-card{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:var(--radius-lg);
+    padding:20px;
+    display:flex;flex-direction:column;align-items:center;
+    text-align:center;
+    gap:6px;
+    margin-bottom:16px;
+  }
+  .confirm-avatar{
+    width:64px;height:64px;border-radius:50%;
+    background:var(--brand-soft);color:var(--brand-deep);
+    display:flex;align-items:center;justify-content:center;
+    font-weight:700;font-size:22px;margin-bottom:8px;
+  }
+  .confirm-card h3{margin:0;font-size:18px;}
+  .confirm-card .meta{font-size:13.5px;color:var(--ink-soft);}
+  .confirm-status{margin-top:10px;}
+
+  .link-btn{
+    background:none;border:none;color:var(--brand-deep);
+    font-size:13.5px;font-weight:600;text-decoration:underline;
+    padding:6px;cursor:pointer;
+  }
+
+  /* ---------- Buttons ---------- */
+  .btn{
+    display:flex;align-items:center;justify-content:center;gap:8px;
+    width:100%;padding:15px 18px;border-radius:var(--radius-md);
+    font-size:15.5px;font-weight:700;border:none;cursor:pointer;
+    transition:transform .12s ease, opacity .12s ease;
+  }
+  .btn:active{transform:scale(.985);}
+  .btn-primary{background:var(--brand);color:#fff;}
+  .btn-primary:disabled{opacity:.45;pointer-events:none;}
+  .btn-ghost{background:var(--surface);color:var(--ink);border:1px solid var(--line);}
+  .btn-danger-outline{background:var(--danger-soft);color:var(--danger);}
+  .btn-row{display:flex;gap:10px;margin-top:10px;}
+  .btn-row .btn{width:auto;flex:1;}
+  .spacer{flex:1;}
+
+  /* ---------- Camera step ---------- */
+  .cam-shell{
+    position:relative;
+    width:100%;
+    aspect-ratio:3/4;
+    border-radius:var(--radius-lg);
+    overflow:hidden;
+    background:#0B1512;
+    margin-bottom:14px;
+  }
+  .cam-mirror{position:absolute;inset:0;transform:scaleX(-1);z-index:1;}
+  video{width:100%;height:100%;object-fit:cover;display:block;background:#0B1512;}
+  canvas.overlay{position:absolute;inset:0;width:100%;height:100%;}
+  .guide{
+    position:absolute;inset:0;pointer-events:none;z-index:2;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .guide svg{width:62%;opacity:.55;}
+  .cam-idle{
+    position:absolute;inset:0;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;gap:14px;color:#fff;
+    background:linear-gradient(180deg,#0F241D,#0B1512);
+    padding:24px;text-align:center;z-index:3;
+  }
+  .cam-idle svg{width:44px;height:44px;opacity:.85;}
+  .cam-idle p{font-size:13.5px;color:#CBE3D8;margin:0;max-width:26ch;}
+
+  .status-pill{
+    position:absolute;left:12px;right:12px;bottom:12px;z-index:4;
+    background:rgba(11,21,18,.72);
+    backdrop-filter:blur(4px);
+    color:#fff;font-size:13px;font-weight:600;
+    padding:10px 14px;border-radius:99px;text-align:center;
+    transition:background .2s ease;
+  }
+  .status-pill.good{background:rgba(31,111,84,.85);}
+  .status-pill.warn{background:rgba(232,163,61,.88);color:#3A2604;}
+
+  .pose-track{display:flex;gap:8px;margin-bottom:14px;}
+  .pose-step{
+    flex:1;border:1px solid var(--line);background:var(--surface);
+    border-radius:var(--radius-md);padding:10px 8px;text-align:center;
+  }
+  .pose-step .dot{
+    width:22px;height:22px;border-radius:50%;margin:0 auto 6px;
+    background:var(--paper);border:2px solid var(--line);
+    display:flex;align-items:center;justify-content:center;
+  }
+  .pose-step.done .dot{background:var(--brand);border-color:var(--brand);}
+  .pose-step.done .dot::after{content:"✓";color:#fff;font-size:12px;font-weight:800;}
+  .pose-step.active .dot{border-color:var(--brand);}
+  .pose-step span{font-size:11.5px;color:var(--ink-soft);font-weight:600;}
+  .pose-step.active span{color:var(--brand-deep);}
+
+  .thumb-grid{display:flex;gap:10px;margin-bottom:16px;}
+  .thumb-grid .thumb{
+    flex:1;aspect-ratio:1/1;border-radius:var(--radius-md);
+    overflow:hidden;border:1px solid var(--line);background:var(--surface);
+    position:relative;
+  }
+  .thumb-grid .thumb img{width:100%;height:100%;object-fit:cover;display:block;}
+  .thumb-grid .thumb .cap{
+    position:absolute;bottom:4px;left:4px;right:4px;text-align:center;
+    font-size:10px;font-weight:700;color:#fff;
+    background:rgba(11,21,18,.55);border-radius:6px;padding:2px 0;
+  }
+
+  /* ---------- Konfirmasi per-pose ---------- */
+  .pose-confirm{
+    background:var(--surface);border:1px solid var(--line);
+    border-radius:var(--radius-lg);overflow:hidden;
+    margin-bottom:14px;animation:rise .2s ease both;
+  }
+  .pose-confirm img{width:100%;aspect-ratio:1/1;object-fit:cover;display:block;}
+  .pose-confirm-body{padding:16px;}
+  .pose-confirm-body h3{margin:0 0 4px;font-size:16px;}
+  .pose-confirm-body p{margin:0;font-size:13px;color:var(--ink-soft);}
+  .pose-confirm-body .btn-row{margin-top:14px;}
+
+  /* ---------- Done panel ---------- */
+  .done-wrap{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:14px;padding:20px 0;}
+  .check-circle{
+    width:84px;height:84px;border-radius:50%;
+    background:var(--brand-soft);
+    display:flex;align-items:center;justify-content:center;
+  }
+  .check-circle svg{width:40px;height:40px;}
+  .check-circle path{
+    stroke:var(--brand-deep);stroke-width:3;fill:none;
+    stroke-linecap:round;stroke-linejoin:round;
+    stroke-dasharray:48;stroke-dashoffset:48;
+    animation:draw .5s .1s ease forwards;
+  }
+  @keyframes draw{to{stroke-dashoffset:0;}}
+  .done-wrap h2{margin:0;font-size:21px;}
+  .done-wrap p{margin:0;color:var(--ink-soft);font-size:14px;max-width:28ch;}
+
+  /* ---------- Toast / inline error ---------- */
+  .inline-alert{
+    display:flex;gap:10px;align-items:flex-start;
+    background:var(--danger-soft);color:var(--danger);
+    border-radius:var(--radius-md);padding:12px 14px;
+    font-size:13.5px;margin-bottom:14px;
+  }
+  .inline-alert.info{background:var(--brand-soft);color:var(--brand-deep);}
+  .inline-alert svg{flex:none;margin-top:1px;}
+
+  footer.foot{
+    text-align:center;font-size:11.5px;color:var(--ink-soft);
+    margin-top:22px;
+  }
+
+  .loading-line{
+    display:flex;align-items:center;justify-content:center;gap:10px;
+    padding:20px 0;color:var(--ink-soft);font-size:13.5px;
+  }
+  .spin{
+    width:16px;height:16px;border-radius:50%;
+    border:2px solid var(--line);border-top-color:var(--brand);
+    animation:spin .7s linear infinite;
+  }
+  @keyframes spin{to{transform:rotate(360deg);}}
+
+  @media (prefers-reduced-motion: reduce){
+    .panel, .check-circle path, .spin{animation:none !important;}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <header class="top">
+    <div class="brand">
+      <div class="brand-mark">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 12.5c2.3 0 4-1.9 4-4.25S14.3 4 12 4 8 5.9 8 8.25 9.7 12.5 12 12.5Z" stroke="#fff" stroke-width="1.6"/>
+          <path d="M4.5 20c1-3.4 4-5.5 7.5-5.5s6.5 2.1 7.5 5.5" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="brand-text">
+        <h1>Daftar Wajah Siswa</h1>
+        <p id="schoolLabel">Sistem absen wajah</p>
+      </div>
+    </div>
+    <div class="progress">
+      <i id="prog1" class="active"></i>
+      <i id="prog2"></i>
+      <i id="prog3"></i>
+    </div>
+    <div class="progress-labels">
+      <span id="lbl1" class="on">Pilih nama</span>
+      <span id="lbl2">Ambil wajah</span>
+      <span id="lbl3">Selesai</span>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- ============ PANEL 1: PILIH SISWA ============ -->
+    <section id="panelPilih" class="panel show">
+      <h2 class="step-title">Cari namamu</h2>
+      <p class="step-sub">Ketik minimal 2 huruf. Kalau ada nama yang mirip, cek juga kelas dan NIS-nya sebelum memilih.</p>
+
+      <div id="loadListNote" class="inline-alert info" style="display:none;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/><path d="M12 8v5M12 16h.01" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        <span id="loadListText">Memuat daftar siswa…</span>
+      </div>
+
+      <div class="search-wrap">
+        <input id="searchInput" class="search-field" type="text" inputmode="search" autocomplete="off" placeholder="Nama, NIS, atau kelas" />
+        <span class="search-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.8"/><path d="M21 21l-3.6-3.6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </span>
+      </div>
+
+      <div id="results" class="results" style="display:none;"></div>
+
+      <div class="spacer"></div>
+    </section>
+
+    <!-- ============ Konfirmasi siswa terpilih (bagian dari panel 1) ============ -->
+    <section id="panelKonfirmasi" class="panel">
+      <h2 class="step-title">Konfirmasi identitas</h2>
+      <p class="step-sub">Pastikan ini benar-benar kamu sebelum melanjutkan ke pengambilan foto wajah.</p>
+
+      <div class="confirm-card">
+        <div id="confirmAvatar" class="confirm-avatar">--</div>
+        <h3 id="confirmNama">-</h3>
+        <div class="meta">Kelas <span id="confirmKelas">-</span> · NIS <span id="confirmNis">-</span></div>
+        <div id="confirmStatus" class="confirm-status"></div>
+      </div>
+
+      <button class="btn btn-primary" id="btnLanjutKamera">Lanjut, ini aku</button>
+      <div class="btn-row">
+        <button class="btn btn-ghost" id="btnGantiNama">Bukan aku, ganti nama</button>
+      </div>
+
+      <div class="spacer"></div>
+    </section>
+
+    <!-- ============ PANEL 2: KAMERA ============ -->
+    <section id="panelKamera" class="panel">
+      <h2 class="step-title">Ambil foto wajah</h2>
+      <p class="step-sub">Posisikan wajah di dalam bingkai, cari tempat yang terang, dan ikuti instruksi arah wajah.</p>
+
+      <div class="pose-track">
+        <div class="pose-step active" id="poseStep0"><div class="dot"></div><span>Depan</span></div>
+        <div class="pose-step" id="poseStep1"><div class="dot"></div><span>Kiri</span></div>
+        <div class="pose-step" id="poseStep2"><div class="dot"></div><span>Kanan</span></div>
+      </div>
+
+      <div class="cam-shell" id="camShell">
+        <div class="cam-idle" id="camIdle">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M4 8.5A2.5 2.5 0 0 1 6.5 6h1.4a1 1 0 0 0 .87-.5l.66-1A2 2 0 0 1 11.14 3.5h1.72a2 2 0 0 1 1.71 1l.66 1a1 1 0 0 0 .87.5h1.4A2.5 2.5 0 0 1 20 8.5v8a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 4 16.5v-8Z" stroke="#CBE3D8" stroke-width="1.5"/><circle cx="12" cy="12.5" r="3.4" stroke="#CBE3D8" stroke-width="1.5"/></svg>
+          <p>Kamera perlu izin dulu. Pastikan cahaya cukup dan tidak membelakangi jendela.</p>
+          <button class="btn btn-primary" id="btnAktifkanKamera" style="width:auto;padding:13px 22px;">Aktifkan kamera</button>
+        </div>
+        <div class="cam-mirror">
+          <video id="video" autoplay muted playsinline></video>
+          <canvas id="overlay" class="overlay"></canvas>
+        </div>
+        <div class="guide">
+          <svg viewBox="0 0 100 130" fill="none"><ellipse cx="50" cy="60" rx="34" ry="46" stroke="#fff" stroke-width="2" stroke-dasharray="6 6"/></svg>
+        </div>
+        <div id="statusPill" class="status-pill">Menyiapkan…</div>
+      </div>
+
+      <div id="camError" class="inline-alert" style="display:none;"></div>
+
+      <div id="poseConfirm" class="pose-confirm" style="display:none;">
+        <img id="poseConfirmImg" alt="Hasil foto">
+        <div class="pose-confirm-body">
+          <h3 id="poseConfirmLabel">Sudut depan</h3>
+          <p>Fotonya sudah pas? Lanjutkan ke sudut berikutnya, atau ambil ulang kalau kurang jelas.</p>
+          <div class="btn-row">
+            <button class="btn btn-ghost" id="btnPoseUlang">Ambil ulang</button>
+            <button class="btn btn-primary" id="btnPoseLanjut">Lanjut</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="spacer"></div>
+      <button class="btn btn-ghost" id="btnBatalKamera">Batal, kembali</button>
+    </section>
+
+    <!-- ============ PANEL 2b: REVIEW HASIL ============ -->
+    <section id="panelReview" class="panel">
+      <h2 class="step-title">Periksa hasil</h2>
+      <p class="step-sub">Tiga sudut wajah berhasil direkam. Kalau kurang yakin, kamu bisa mengulang.</p>
+
+      <div class="thumb-grid" id="thumbGrid"></div>
+
+      <button class="btn btn-primary" id="btnSimpan">Simpan pendaftaran</button>
+      <div class="btn-row">
+        <button class="btn btn-ghost" id="btnUlangi">Ambil ulang foto</button>
+      </div>
+
+      <div id="submitStatus"></div>
+      <div class="spacer"></div>
+    </section>
+
+    <!-- ============ PANEL 3: SELESAI ============ -->
+    <section id="panelSelesai" class="panel">
+      <div class="done-wrap">
+        <div class="check-circle">
+          <svg viewBox="0 0 24 24"><path d="M5 12.5l4.2 4.2L19 7"/></svg>
+        </div>
+        <h2 id="doneTitle">Wajah berhasil didaftarkan</h2>
+        <p id="doneSub">Data wajah tersimpan dan siap dipakai untuk absen.</p>
+        <button class="btn btn-primary" id="btnDaftarLagi" style="margin-top:8px;">Daftarkan siswa lain</button>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="foot">Data wajah disimpan sebagai kode angka, bukan foto — hanya dipakai untuk absensi sekolah.</footer>
+</div>
+
+<!-- face-api.js: deteksi & pengenalan wajah di browser (tanpa server) -->
+<script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
+<script>
+(function(){
+  "use strict";
+
+  // ====================== KONFIGURASI ======================
+  const CONFIG = {
+    // Tempel URL Web App Google Apps Script kamu di sini (lihat README.md).
+    SCRIPT_URL: "https://script.google.com/macros/s/AKfycbw5OyCdVKuZvcABAaWWwzDQKWeN-kHJ4f0nIugc8HxNvtVBzZh9BpjzLQHwcuIa_aFY/exec",
+    MODEL_URL: "https://cdn.jsdelivr.net/gh/justadudewhohacks/face-api.js/weights",
+    NAMA_SEKOLAH: "", // opsional, contoh: "SMPN 1 Ratatotok"
+    // [DATA INDUK] Daftar siswa diambil dari aplikasi 0. Data Induk (URL Web App + KUNCI_API di sheet PENGATURAN).
+    // Bila kosong / gagal / offline, daftar bawaan di bawah (STUDENTS_EMBEDDED) tetap dipakai.
+    DATA_INDUK_URL: "PASTE_URL_WEB_APP_DATA_INDUK",
+    DATA_INDUK_KEY: "krisba-induk-2026"
+  };
+
+  if (CONFIG.NAMA_SEKOLAH) {
+    document.getElementById('schoolLabel').textContent = CONFIG.NAMA_SEKOLAH + ' · Absen wajah';
+  }
+
+  // Data siswa bawaan (dari MasterAbsenSiswa.csv) supaya pencarian nama
+  // langsung terasa instan tanpa menunggu jaringan. Status "sudah terdaftar"
+  // tetap disinkronkan dari server saat halaman dibuka.
+  const STUDENTS_EMBEDDED = [{"no": "1", "nama": "AKILA PUTRI RAMADANI HUNTOYUNGO", "jenisKelamin": "P", "nis": "2026001", "nisn": "0132394036", "tempatLahir": "BASAAN", "tanggalLahir": "2013-07-13", "nik": "7107045307130001", "tahunMasuk": "2026", "kelas": "7A"}, {"no": "2", "nama": "Anggoro Sandewa Adam", "jenisKelamin": "L", "nis": "2026002", "nisn": "3137036867", "tempatLahir": "Basaan", "tanggalLahir": "2013-10-05", "nik": "7107040510130001", "tahunMasuk": "2026", "kelas": "7A"}, {"no": "3", "nama": "BRAIN KENZO KALOH", "jenisKelamin": "L", "nis": "2026003", "nisn": "3135817530", "tempatLahir": "BASAAN", "tanggalLahir": "2013-09-27", "nik": "7107042709130001", "tahunMasuk": "2026", "kelas": "7A"}, {"no": "4", "nama": "CIKA ESTER VALERIE SAMBOW", "jenisKelamin": "P", "nis": "2026004", "nisn": "0134350425", "tempatLahir": "RATATOTOK", "tanggalLahir": "2013-06-14", "nik": "7107045406140001", "tahunMasuk": "2026", "kelas": "7A"}, {"no": "5", "nama": "DRILEN PAJAMA", "jenisKelamin": "L", "nis": "2026005", "nisn": "0149825454", "tempatLahir": "BASAAN", "tanggalLahir": "2014-07-04", "nik": "7107040407140001", "tahunMasuk": "2026", "kelas": "7A"}, {"no": "6", "nama": "Farel Bril Kasenda", "jenisKelamin": "L", "nis": "2026006", "nisn": "3141758901", "tempatLahir": "TOMOHON", "tanggalLahir": "2014-10-06", "nik": "7107010610140001", "tahunMasuk": "2026", "kelas": "7A"}, {"no": "7", "nama": "GANSA ANGKATO", "jenisKelamin": "P", "nis": "2026007", "nisn": "0141870932", "tempatLahir": "BASAAN", "tanggalLahir": "2014-04-23", "nik": "7107046304140001", "tahunMasuk": "2026", "kelas": "7A"}, {"no": "8", "nama": "IREYNE OVELIANA PANGAYOAN", "jenisKelamin": "P", "nis": "2026008", "nisn": "0141113741", "tempatLahir": "BASAAN", "tanggalLahir": "2014-10-22", "nik": "7107046210140001", "tahunMasuk": "2026", "kelas": "7A"}, {"no": "9", "nama": "JIBRAEL JELLOME GANDARIA", "jenisKelamin": "L", "nis": "2026009", "nisn": "0147358475", "tempatLahir": "BASAAN", "tanggalLahir": "2014-08-18", "nik": "7107041808140001", "tahunMasuk": "2026", "kelas": "7A"}, {"no": "10", "nama": "JUARES NEMAN", "jenisKelamin": "L", "nis": "2026010", "nisn": "3143179575", "tempatLahir": "TOMOHON", "tanggalLahir": "2014-05-12", "nik": "7107041205140001", "tahunMasuk": "2026", "kelas": "7A"}, {"no": "11", "nama": "KEYZHA LAURENTH SAMBUAGA", "jenisKelamin": "P", "nis": "2026011", "nisn": "3141194887", "tempatLahir": "MINAHASA TENGGARA", "tanggalLahir": "2013-06-13", "nik": "7107045306130004", "tahunMasuk": "2026", "kelas": "7A"}, {"no": "12", "nama": "MICHAEL CHRISTIAL LEWI", "jenisKelamin": "L", "nis": "2026012", "nisn": "0149184641", "tempatLahir": "MANADO", "tanggalLahir": "2014-06-19", "nik": "7107041906140001", "tahunMasuk": "2026", "kelas": "7A"}, {"no": "13", "nama": "QUEENCY CATALEYA PIRI", "jenisKelamin": "P", "nis": "2026013", "nisn": "0147051594", "tempatLahir": "NONAPAN", "tanggalLahir": "2014-04-10", "nik": "7107045004140001", "tahunMasuk": "2026", "kelas": "7A"}, {"no": "14", "nama": "Raffilio Nehemia Palar", "jenisKelamin": "L", "nis": "2026014", "nisn": "0134440958", "tempatLahir": "Basaan", "tanggalLahir": "2013-11-15", "nik": "7107041511130001", "tahunMasuk": "2026", "kelas": "7A"}, {"no": "16", "nama": "WINRAIN EZRA ELLYA TUMANKEN", "jenisKelamin": "L", "nis": "2026016", "nisn": "0124028709", "tempatLahir": "MANADO", "tanggalLahir": "2012-12-30", "nik": "7171063012120001", "tahunMasuk": "2026", "kelas": "7A"}, {"no": "17", "nama": "ALGUERO FRANZISKO RAKIAN", "jenisKelamin": "L", "nis": "2026017", "nisn": "0146650006", "tempatLahir": "KAWANGKOAN", "tanggalLahir": "2014-08-29", "nik": "7107042908140001", "tahunMasuk": "2026", "kelas": "7B"}, {"no": "18", "nama": "Aliando Sevilio Lineleyan", "jenisKelamin": "L", "nis": "2026018", "nisn": "3146529453", "tempatLahir": "Basaan", "tanggalLahir": "2014-09-24", "nik": "7107042409140001", "tahunMasuk": "2026", "kelas": "7B"}, {"no": "19", "nama": "Andre Mikail Gumogar", "jenisKelamin": "L", "nis": "2026019", "nisn": "3134045173", "tempatLahir": "Basaan", "tanggalLahir": "2013-03-21", "nik": "7107042103130001", "tahunMasuk": "2026", "kelas": "7B"}, {"no": "20", "nama": "CLEIVO ALVARO PASUHUK", "jenisKelamin": "L", "nis": "2026020", "nisn": "3143583981", "tempatLahir": "TOMOHON", "tanggalLahir": "2014-04-19", "nik": "7107041904140001", "tahunMasuk": "2026", "kelas": "7B"}, {"no": "21", "nama": "ELLSHA DIVASHEF SUOTH", "jenisKelamin": "P", "nis": "2026021", "nisn": "0144809197", "tempatLahir": "TOMOHON", "tanggalLahir": "2014-03-20", "nik": "7107046005140001", "tahunMasuk": "2026", "kelas": "7B"}, {"no": "23", "nama": "GIOVANNI CHANDRA PIRI", "jenisKelamin": "L", "nis": "2026023", "nisn": "0139665204", "tempatLahir": "BASAAN", "tanggalLahir": "2013-09-05", "nik": "7107040509130001", "tahunMasuk": "2026", "kelas": "7B"}, {"no": "22", "nama": "Genji Imanuel Takaliuang", "jenisKelamin": "L", "nis": "2026022", "nisn": "3136503807", "tempatLahir": "Ratatotok", "tanggalLahir": "2013-10-07", "nik": "7107040710130002", "tahunMasuk": "2026", "kelas": "7B"}, {"no": "24", "nama": "HAZAEL ISRAEL PIRI", "jenisKelamin": "L", "nis": "2026024", "nisn": "0143786572", "tempatLahir": "RATATOTOK", "tanggalLahir": "2014-02-15", "nik": "7107041502140002", "tahunMasuk": "2026", "kelas": "7B"}, {"no": "25", "nama": "Hillary Injili onsu", "jenisKelamin": "P", "nis": "2026025", "nisn": "0158895176", "tempatLahir": "Basaan", "tanggalLahir": "2015-03-21", "nik": "7107046103150001", "tahunMasuk": "2026", "kelas": "7B"}, {"no": "26", "nama": "JUFANDI AHMAD WAHYU", "jenisKelamin": "L", "nis": "2026026", "nisn": "0143657218", "tempatLahir": "BALIKPAPAN", "tanggalLahir": "2014-01-29", "nik": "6471012901140002", "tahunMasuk": "2026", "kelas": "7B"}, {"no": "27", "nama": "LAKISYYA DUAULU", "jenisKelamin": "P", "nis": "2026027", "nisn": "0143248295", "tempatLahir": "GORONTALO", "tanggalLahir": "2014-10-22", "nik": "7107046210140002", "tahunMasuk": "2026", "kelas": "7B"}, {"no": "28", "nama": "MICHAEL KEVIN WOWOR", "jenisKelamin": "L", "nis": "2026028", "nisn": "0121467771", "tempatLahir": "RATATOTOK", "tanggalLahir": "2012-05-06", "nik": "7107040605120001", "tahunMasuk": "2026", "kelas": "7B"}, {"no": "29", "nama": "MORGAN NATANAEL PALASI", "jenisKelamin": "L", "nis": "2026029", "nisn": "0144627423", "tempatLahir": "BASAAN", "tanggalLahir": "2014-11-04", "nik": "7107040411140001", "tahunMasuk": "2026", "kelas": "7B"}, {"no": "30", "nama": "NIZAM SOMBA", "jenisKelamin": "L", "nis": "2026030", "nisn": "0131387500", "tempatLahir": "BASAAN", "tanggalLahir": "2013-01-03", "nik": "7107040301130001", "tahunMasuk": "2026", "kelas": "7B"}, {"no": "31", "nama": "YOTANIA ONSU", "jenisKelamin": "P", "nis": "2026031", "nisn": "0146591973", "tempatLahir": "BASAAN", "tanggalLahir": "2014-10-23", "nik": "7107046310140001", "tahunMasuk": "2026", "kelas": "7B"}, {"no": "33", "nama": "ANGEL YESHA IMMANUELA MONINGKA", "jenisKelamin": "P", "nis": "2025001", "nisn": "0135745091", "tempatLahir": "MANADO", "tanggalLahir": "2013-11-26", "nik": "7107046611130001", "tahunMasuk": "2025", "kelas": "8A"}, {"no": "", "nama": "ANGGUN KALIPE", "jenisKelamin": "P", "nis": "2025003", "nisn": "0132280508", "tempatLahir": "BASAAN", "tanggalLahir": "2013-08-18", "nik": "7107045808130001", "tahunMasuk": "2025", "kelas": "8A"}, {"no": "", "nama": "Anggraini Firginia Naomi Logor", "jenisKelamin": "P", "nis": "2025002", "nisn": "3137734600", "tempatLahir": "Manado", "tanggalLahir": "2013-02-24", "nik": "7107036402130002", "tahunMasuk": "2025", "kelas": "8A"}, {"no": "32", "nama": "CANTIKA MAHURI", "jenisKelamin": "P", "nis": "202508", "nisn": "3114531765", "tempatLahir": "Moreah", "tanggalLahir": "2011-09-02", "nik": "NULL", "tahunMasuk": "2025", "kelas": "8A"}, {"no": "", "nama": "CHRISTY NATALIA PUTRI DAMOPOLII", "jenisKelamin": "P", "nis": "2025004", "nisn": "0134949890", "tempatLahir": "BASAAN", "tanggalLahir": "2013-12-09", "nik": "7107044912130001", "tahunMasuk": "2025", "kelas": "8A"}, {"no": "", "nama": "ENJELI PALASI", "jenisKelamin": "P", "nis": "2025005", "nisn": "0128946334", "tempatLahir": "BASAAN", "tanggalLahir": "2013-01-21", "nik": "7107046101130001", "tahunMasuk": "2025", "kelas": "8A"}, {"no": "", "nama": "FARLI EZRA SAMBEKA", "jenisKelamin": "L", "nis": "2025006", "nisn": "3131793407", "tempatLahir": "Ratatotok", "tanggalLahir": "2013-02-04", "nik": "7107040402130001", "tahunMasuk": "2025", "kelas": "8A"}, {"no": "", "nama": "IIFTITHA SUOTH", "jenisKelamin": "P", "nis": "2025007", "nisn": "0136070800", "tempatLahir": "BASAAN", "tanggalLahir": "2013-06-06", "nik": "7107044606130001", "tahunMasuk": "2025", "kelas": "8A"}, {"no": "", "nama": "JENNIFER MIKHA SEKEON", "jenisKelamin": "P", "nis": "2025008", "nisn": "3136287587", "tempatLahir": "MANADO", "tanggalLahir": "2013-06-27", "nik": "7171076706130005", "tahunMasuk": "2025", "kelas": "8A"}, {"no": "", "nama": "MICHAEL LIONEL KAWATU", "jenisKelamin": "L", "nis": "2025009", "nisn": "0132066739", "tempatLahir": "TOMOHON", "tanggalLahir": "2013-03-05", "nik": "7107040503130001", "tahunMasuk": "2025", "kelas": "8A"}, {"no": "", "nama": "MOZES ADAM", "jenisKelamin": "L", "nis": "2025010", "nisn": "3135635673", "tempatLahir": "MANADO", "tanggalLahir": "2013-03-26", "nik": "7107042603010001", "tahunMasuk": "2025", "kelas": "8A"}, {"no": "", "nama": "Muhammad Fadil Sehe", "jenisKelamin": "L", "nis": "2025011", "nisn": "0124726067", "tempatLahir": "Basaan", "tanggalLahir": "2012-09-23", "nik": "7107022309120001", "tahunMasuk": "2025", "kelas": "8A"}, {"no": "", "nama": "NURAQILA ADAM", "jenisKelamin": "P", "nis": "2025012", "nisn": "0126399538", "tempatLahir": "BASAAN", "tanggalLahir": "2012-12-06", "nik": "7107044612120001", "tahunMasuk": "2025", "kelas": "8A"}, {"no": "", "nama": "RAYNELLE DANIEL VARIYEL WANTALANGI", "jenisKelamin": "L", "nis": "2025013", "nisn": "3133449852", "tempatLahir": "TONDANO", "tanggalLahir": "2013-12-06", "nik": "7102040612130001", "tahunMasuk": "2025", "kelas": "8A"}, {"no": "", "nama": "REQUELME CANIGIA PONAMON", "jenisKelamin": "L", "nis": "2025014", "nisn": "0135772343", "tempatLahir": "Minahasa Tenggara", "tanggalLahir": "2013-03-07", "nik": "7107040703130002", "tahunMasuk": "2025", "kelas": "8A"}, {"no": "", "nama": "VIRJINIA AURA KAREPOWAN", "jenisKelamin": "P", "nis": "2025015", "nisn": "0137473349", "tempatLahir": "MINAHASA TENGGARA", "tanggalLahir": "2013-08-05", "nik": "7107044508130002", "tahunMasuk": "2025", "kelas": "8A"}, {"no": "", "nama": "YEREMIA HOTMA", "jenisKelamin": "L", "nis": "2025016", "nisn": "0132671197", "tempatLahir": "SURABAYA", "tanggalLahir": "2013-05-29", "nik": "3578122905130002", "tahunMasuk": "2025", "kelas": "8A"}, {"no": "", "nama": "ZYLQWYN JISRAEL WOLAYAN", "jenisKelamin": "L", "nis": "2025017", "nisn": "0139329391", "tempatLahir": "RATATOTOK", "tanggalLahir": "2013-10-21", "nik": "7107042110130001", "tahunMasuk": "2025", "kelas": "8A"}, {"no": "", "nama": "ABIGAIL BLESSY INJILIA GERUNGAN", "jenisKelamin": "P", "nis": "2025018", "nisn": "3132484796", "tempatLahir": "BASAAN", "tanggalLahir": "2013-06-15", "nik": "7107045506130001", "tahunMasuk": "2025", "kelas": "8B"}, {"no": "", "nama": "AZARYA CHARITY PIRI", "jenisKelamin": "P", "nis": "2025019", "nisn": "0131122844", "tempatLahir": "TONDANO", "tanggalLahir": "2013-02-08", "nik": "7107044802130001", "tahunMasuk": "2025", "kelas": "8B"}, {"no": "", "nama": "CHELSIE PATRISIA WURANGIAN", "jenisKelamin": "P", "nis": "2025020", "nisn": "0121772225", "tempatLahir": "Basaan", "tanggalLahir": "2012-12-27", "nik": "7107046712120001", "tahunMasuk": "2025", "kelas": "8B"}, {"no": "", "nama": "CHRISNA GANZA SUOTH", "jenisKelamin": "L", "nis": "2025021", "nisn": "0139749298", "tempatLahir": "BASAAN", "tanggalLahir": "2013-07-21", "nik": "7107042107130003", "tahunMasuk": "2025", "kelas": "8B"}, {"no": "", "nama": "CHRISTLY MEIRALDO RAU", "jenisKelamin": "L", "nis": "2025022", "nisn": "0132812504", "tempatLahir": "RATATOTOK", "tanggalLahir": "2013-05-04", "nik": "7107040405130001", "tahunMasuk": "2025", "kelas": "8B"}, {"no": "", "nama": "EXELO SAMUEL AHULENDING", "jenisKelamin": "L", "nis": "2025023", "nisn": "0125272453", "tempatLahir": "MANADO", "tanggalLahir": "2012-09-17", "nik": "7107041709120001", "tahunMasuk": "2025", "kelas": "8B"}, {"no": "", "nama": "FIKEN GERUNGAN", "jenisKelamin": "L", "nis": "2025024", "nisn": "0122797895", "tempatLahir": "BASAAN", "tanggalLahir": "2012-09-25", "nik": "7107042509120001", "tahunMasuk": "2025", "kelas": "8B"}, {"no": "", "nama": "GALATIA PAYOW", "jenisKelamin": "P", "nis": "2025037", "nisn": "", "tempatLahir": "", "tanggalLahir": "", "nik": "", "tahunMasuk": "2025", "kelas": "8B"}, {"no": "", "nama": "JANET SOFLY PIRI", "jenisKelamin": "P", "nis": "2025025", "nisn": "3131787787", "tempatLahir": "RATATOTOK", "tanggalLahir": "2013-06-30", "nik": "7107047006130001", "tahunMasuk": "2025", "kelas": "8B"}, {"no": "", "nama": "JHERALDO VIRJHIEL SOPUTAN", "jenisKelamin": "L", "nis": "2025026", "nisn": "3131235933", "tempatLahir": "RATATOTOK", "tanggalLahir": "2013-08-18", "nik": "7107041808130001", "tahunMasuk": "2025", "kelas": "8B"}, {"no": "", "nama": "JHINSHIE JHACLINE ADAM", "jenisKelamin": "P", "nis": "2025027", "nisn": "0132420894", "tempatLahir": "BASAAN", "tanggalLahir": "2013-06-07", "nik": "7107044706130001", "tahunMasuk": "2025", "kelas": "8B"}, {"no": "", "nama": "LEONARDO JILIO MOSES SUMAKUL", "jenisKelamin": "L", "nis": "2025028", "nisn": "0125958460", "tempatLahir": "SOYOAN", "tanggalLahir": "2012-11-07", "nik": "7107040711120001", "tahunMasuk": "2025", "kelas": "8B"}, {"no": "", "nama": "LIONEL EVAN MAPALIEY", "jenisKelamin": "L", "nis": "2025036", "nisn": "", "tempatLahir": "", "tanggalLahir": "", "nik": "", "tahunMasuk": "2025", "kelas": "8B"}, {"no": "", "nama": "Quilla Hilary Lengkey", "jenisKelamin": "P", "nis": "2025029", "nisn": "3139046690", "tempatLahir": "Basaan", "tanggalLahir": "2013-04-19", "nik": "7107045904130001", "tahunMasuk": "2025", "kelas": "8B"}, {"no": "", "nama": "REFALINA TILAAR", "jenisKelamin": "P", "nis": "2025030", "nisn": "0139971232", "tempatLahir": "BASAAN", "tanggalLahir": "2013-08-21", "nik": "7107046108130001", "tahunMasuk": "2025", "kelas": "8B"}, {"no": "", "nama": "RIZKY LONDA", "jenisKelamin": "L", "nis": "2025031", "nisn": "0131556843", "tempatLahir": "RATATOTOK", "tanggalLahir": "2013-05-04", "nik": "7107040405130002", "tahunMasuk": "2025", "kelas": "8B"}, {"no": "", "nama": "RIZKY RICARDO KASETI", "jenisKelamin": "L", "nis": "2025032", "nisn": "0122895473", "tempatLahir": "BASAAN", "tanggalLahir": "2012-03-26", "nik": "", "tahunMasuk": "2025", "kelas": "8B"}, {"no": "", "nama": "SHALOMITA RONDONUWU", "jenisKelamin": "P", "nis": "2025033", "nisn": "0118032370", "tempatLahir": "BASAAN", "tanggalLahir": "2011-11-12", "nik": "7107041103120001", "tahunMasuk": "2025", "kelas": "8B"}, {"no": "", "nama": "ZEFANYA JULIO GERET", "jenisKelamin": "L", "nis": "2025034", "nisn": "0132561634", "tempatLahir": "RATATOTOK", "tanggalLahir": "2013-07-10", "nik": "7107041007130001", "tahunMasuk": "2025", "kelas": "8B"}, {"no": "", "nama": "ABIGEIL ROMBOT", "jenisKelamin": "P", "nis": "2024001", "nisn": "0114957137", "tempatLahir": "BASAAN", "tanggalLahir": "2011-07-20", "nik": "7107044911110001", "tahunMasuk": "2024", "kelas": "9A"}, {"no": "", "nama": "ALKALIFI PUTRA KAMBEY", "jenisKelamin": "L", "nis": "2024003", "nisn": "0125249711", "tempatLahir": "RATATOTOK", "tanggalLahir": "2012-04-05", "nik": "7107040504120001", "tahunMasuk": "2024", "kelas": "9A"}, {"no": "", "nama": "ANATASYA BOSEKE", "jenisKelamin": "P", "nis": "2024005", "nisn": "3114930004", "tempatLahir": "BASAAN", "tanggalLahir": "2011-12-10", "nik": "7107045012110002", "tahunMasuk": "2024", "kelas": "9A"}, {"no": "", "nama": "ANITA BALANSA", "jenisKelamin": "P", "nis": "2024006", "nisn": "0127131574", "tempatLahir": "BASAAN", "tanggalLahir": "2012-06-16", "nik": "7107041606120001", "tahunMasuk": "2024", "kelas": "9A"}, {"no": "", "nama": "ARBIANSYAH TAHUPAHANGENG", "jenisKelamin": "L", "nis": "2024007", "nisn": "0124402697", "tempatLahir": "RATATOTOK TIGA", "tanggalLahir": "2012-11-22", "nik": "7107042211120001", "tahunMasuk": "2024", "kelas": "9A"}, {"no": "", "nama": "AULIA MOLONGIO", "jenisKelamin": "P", "nis": "2024008", "nisn": "0122063704", "tempatLahir": "BASAAN SATU", "tanggalLahir": "2012-07-27", "nik": "7107046707120001", "tahunMasuk": "2024", "kelas": "9A"}, {"no": "", "nama": "FELICIA GRACIA", "jenisKelamin": "P", "nis": "2024010", "nisn": "0126845416", "tempatLahir": "BASAAN", "tanggalLahir": "2012-01-14", "nik": "7107045401120001", "tahunMasuk": "2024", "kelas": "9A"}, {"no": "", "nama": "FEREN FEBIOLA TOAR", "jenisKelamin": "P", "nis": "2025035", "nisn": "", "tempatLahir": "", "tanggalLahir": "", "nik": "", "tahunMasuk": "2025", "kelas": "9A"}, {"no": "", "nama": "JIO MIYUKI KOYONGIAN", "jenisKelamin": "L", "nis": "2024035", "nisn": "0121824343", "tempatLahir": "RATATOTOK", "tanggalLahir": "2012-05-07", "nik": "", "tahunMasuk": "2024", "kelas": "9A"}, {"no": "", "nama": "KINGSLY YEHESKIEL LONTOH", "jenisKelamin": "L", "nis": "2024015", "nisn": "0128421408", "tempatLahir": "RATATOTOK", "tanggalLahir": "2012-03-05", "nik": "7107040503120001", "tahunMasuk": "2024", "kelas": "9A"}, {"no": "", "nama": "KIREY TIRSA ADAM", "jenisKelamin": "P", "nis": "2024016", "nisn": "0126034165", "tempatLahir": "TOMOHON", "tanggalLahir": "2012-05-23", "nik": "7107046305120001", "tahunMasuk": "2024", "kelas": "9A"}, {"no": "", "nama": "MEYSIA FELI INDRI PUSUNG", "jenisKelamin": "P", "nis": "2024021", "nisn": "0118749897", "tempatLahir": "BASAAN", "tanggalLahir": "2011-01-04", "nik": "7107044403110003", "tahunMasuk": "2024", "kelas": "9A"}, {"no": "", "nama": "MIKHAILA LUMINTANG", "jenisKelamin": "P", "nis": "2024023", "nisn": "0125185694", "tempatLahir": "BASAAN SATU", "tanggalLahir": "2012-04-23", "nik": "7107046304120001", "tahunMasuk": "2024", "kelas": "9A"}, {"no": "", "nama": "Marcelano Sondakh", "jenisKelamin": "L", "nis": "2024018", "nisn": "0116190402", "tempatLahir": "Basaan", "tanggalLahir": "2011-03-21", "nik": "", "tahunMasuk": "2024", "kelas": "9A"}, {"no": "", "nama": "NINDY ALDA TULAR", "jenisKelamin": "P", "nis": "2024026", "nisn": "0128873427", "tempatLahir": "TOMOHON", "tanggalLahir": "2012-08-21", "nik": "7107046108120001", "tahunMasuk": "2024", "kelas": "9A"}, {"no": "", "nama": "PRINCE IMANUEL KEINTJEM", "jenisKelamin": "L", "nis": "2024027", "nisn": "0128752150", "tempatLahir": "BASAAN", "tanggalLahir": "2012-02-01", "nik": "7107040102120001", "tahunMasuk": "2024", "kelas": "9A"}, {"no": "", "nama": "RASIMA FITRI NUSI", "jenisKelamin": "P", "nis": "2024030", "nisn": "0123933521", "tempatLahir": "LIKUPANG", "tanggalLahir": "2012-08-09", "nik": "7107044908120001", "tahunMasuk": "2024", "kelas": "9A"}, {"no": "15", "nama": "SARAH AKILA ADISTYA SAMBEKA", "jenisKelamin": "P", "nis": "2026015", "nisn": "0113720394", "tempatLahir": "SORONG", "tanggalLahir": "2011-10-12", "nik": "", "tahunMasuk": "2026", "kelas": "9A"}, {"no": "", "nama": "TOAR TOLOLIU", "jenisKelamin": "L", "nis": "2024033", "nisn": "0114565901", "tempatLahir": "BASAAN", "tanggalLahir": "2013-11-17", "nik": "7107041711130001", "tahunMasuk": "2024", "kelas": "9A"}, {"no": "", "nama": "YEHESKIEL FRENLI KALIGIS", "jenisKelamin": "L", "nis": "2024034", "nisn": "3122010229", "tempatLahir": "Basaan", "tanggalLahir": "2012-07-29", "nik": "7107042907120001", "tahunMasuk": "2024", "kelas": "9A"}, {"no": "", "nama": "AISYA PUTRI PAENDONG", "jenisKelamin": "P", "nis": "2024002", "nisn": "0128484380", "tempatLahir": "MANADO", "tanggalLahir": "2012-08-31", "nik": "7107047108120002", "tahunMasuk": "2024", "kelas": "9B"}, {"no": "", "nama": "ALVESIO RUMENGAN", "jenisKelamin": "L", "nis": "2024004", "nisn": "3123893399", "tempatLahir": "Ratatotok", "tanggalLahir": "2012-05-13", "nik": "7107041305120001", "tahunMasuk": "2024", "kelas": "9B"}, {"no": "", "nama": "ANUGRAH BILATULA", "jenisKelamin": "P", "nis": "2024036", "nisn": "", "tempatLahir": "", "tanggalLahir": "", "nik": "", "tahunMasuk": "2024", "kelas": "9B"}, {"no": "", "nama": "AYU TOSIK", "jenisKelamin": "P", "nis": "2024009", "nisn": "3136911248", "tempatLahir": "BASAAN SATU", "tanggalLahir": "2013-01-17", "nik": "7107045701130002", "tahunMasuk": "2024", "kelas": "9B"}, {"no": "", "nama": "FLYRHEN BLESSING SUOTH", "jenisKelamin": "P", "nis": "2024011", "nisn": "0127471549", "tempatLahir": "RATATOTOK", "tanggalLahir": "2012-05-30", "nik": "7107047005120001", "tahunMasuk": "2024", "kelas": "9B"}, {"no": "", "nama": "GABRIEL GUMOGAR", "jenisKelamin": "L", "nis": "2024037", "nisn": "", "tempatLahir": "", "tanggalLahir": "", "nik": "", "tahunMasuk": "2024", "kelas": "9B"}, {"no": "", "nama": "GRACIA CALLISTA BINONGKO", "jenisKelamin": "P", "nis": "2024012", "nisn": "0128766567", "tempatLahir": "MANADO", "tanggalLahir": "2012-07-05", "nik": "7107044507120001", "tahunMasuk": "2024", "kelas": "9B"}, {"no": "", "nama": "JISRAEL PIRI", "jenisKelamin": "L", "nis": "2024039", "nisn": "", "tempatLahir": "", "tanggalLahir": "", "nik": "", "tahunMasuk": "2024", "kelas": "9B"}, {"no": "", "nama": "Jelovia Takaliuang", "jenisKelamin": "P", "nis": "2022018", "nisn": "0106976051", "tempatLahir": "Tomohon", "tanggalLahir": "2010-07-29", "nik": "7107046907100001", "tahunMasuk": "2022", "kelas": "9B"}, {"no": "", "nama": "KALLEN PUNU", "jenisKelamin": "L", "nis": "2024013", "nisn": "0123911262", "tempatLahir": "MANADO", "tanggalLahir": "2013-01-30", "nik": "7107043001130001", "tahunMasuk": "2024", "kelas": "9B"}, {"no": "", "nama": "KASIH KARUNYA EKLEYSIA NELWAN", "jenisKelamin": "P", "nis": "2024014", "nisn": "3121111312", "tempatLahir": "BASAAN", "tanggalLahir": "2012-12-29", "nik": "7107046912120001", "tahunMasuk": "2024", "kelas": "9B"}, {"no": "", "nama": "KIREYLIA SAMBALAO", "jenisKelamin": "P", "nis": "2024017", "nisn": "0121685729", "tempatLahir": "BITUNG", "tanggalLahir": "2012-11-06", "nik": "", "tahunMasuk": "2024", "kelas": "9B"}, {"no": "", "nama": "MESIAS ELSADAY SAMBEKA", "jenisKelamin": "L", "nis": "2024019", "nisn": "0127077820", "tempatLahir": "MANADO", "tanggalLahir": "2012-08-22", "nik": "7107042208120001", "tahunMasuk": "2024", "kelas": "9B"}, {"no": "", "nama": "MESSIAS YOEL YOSUA WOWOR", "jenisKelamin": "L", "nis": "2024020", "nisn": "0129219129", "tempatLahir": "RATATOTOK BUYAT", "tanggalLahir": "2012-03-26", "nik": "7107042603120001", "tahunMasuk": "2024", "kelas": "9B"}, {"no": "", "nama": "MIKHAEL LIONEL TUMEY", "jenisKelamin": "L", "nis": "2024022", "nisn": "0122456421", "tempatLahir": "BASAAN", "tanggalLahir": "2012-05-02", "nik": "7107040205120002", "tahunMasuk": "2024", "kelas": "9B"}, {"no": "", "nama": "MIKHAYLA RIANI RUINDUNGAN", "jenisKelamin": "P", "nis": "2024024", "nisn": "0127848759", "tempatLahir": "RATATOTOK", "tanggalLahir": "2012-03-19", "nik": "7107045903120001", "tahunMasuk": "2024", "kelas": "9B"}, {"no": "", "nama": "NAZRIL FAKHY RISKY ADAM", "jenisKelamin": "L", "nis": "2024025", "nisn": "3111094690", "tempatLahir": "MANADO", "tanggalLahir": "2011-12-13", "nik": "7171091312110002", "tahunMasuk": "2024", "kelas": "9B"}, {"no": "", "nama": "PUTRI CLAYRE BOKI", "jenisKelamin": "P", "nis": "2024028", "nisn": "0122886092", "tempatLahir": "Kabupaten Gorontalo", "tanggalLahir": "2012-06-06", "nik": "7501214606120002", "tahunMasuk": "2024", "kelas": "9B"}, {"no": "", "nama": "PUTRI NOVELIN LASUT", "jenisKelamin": "P", "nis": "2024029", "nisn": "0123352232", "tempatLahir": "RATATOTOK", "tanggalLahir": "2012-11-17", "nik": "7107045711120002", "tahunMasuk": "2024", "kelas": "9B"}, {"no": "", "nama": "ROGER ADAM", "jenisKelamin": "L", "nis": "2024031", "nisn": "0123078764", "tempatLahir": "BASAAN", "tanggalLahir": "2012-09-14", "nik": "7107042812130002", "tahunMasuk": "2024", "kelas": "9B"}, {"no": "", "nama": "Silvia Rembet", "jenisKelamin": "P", "nis": "2024032", "nisn": "3114713405", "tempatLahir": "Basaan", "tanggalLahir": "2011-06-10", "nik": "7107045006110001", "tahunMasuk": "2024", "kelas": "9B"}, {"no": "", "nama": "VICENSO SAJOW", "jenisKelamin": "L", "nis": "2024038", "nisn": "", "tempatLahir": "", "tanggalLahir": "", "nik": "", "tahunMasuk": "2024", "kelas": "9B"}];
+
+  const POSES = [
+    { key: 'depan', label: 'Depan', instruksi: 'Lihat lurus ke arah kamera' },
+    { key: 'kiri',  label: 'Kiri',  instruksi: 'Putar wajah sedikit ke kiri' },
+    { key: 'kanan', label: 'Kanan', instruksi: 'Putar wajah sedikit ke kanan' }
+  ];
+
+  const STABLE_TICKS_NEEDED = 5;   // ~ 5 x 160ms ≈ 0.8 detik posisi bagus berturut-turut
+  const TICK_INTERVAL_MS = 160;
+  const MAX_PAIR_DISTANCE = 0.55;  // ambang kewajaran antar 3 sampel wajah yang sama
+
+  // ====================== STATE ======================
+  let allStudents = [];               // hasil gabungan data bawaan + status server
+  let selected = null;                // { nis, nama, kelas }
+  let modelsReady = false;
+  let stream = null;
+  let loopHandle = null;
+  let lastTick = 0;
+  let stableCount = 0;
+  let currentPoseIndex = 0;
+  let captures = [];                  // { pose, descriptor(Array), thumb(dataURL) }
+  let displaySize = null;
+  let detectionPaused = false;
+
+  // ====================== ELEMENTS ======================
+  const el = (id) => document.getElementById(id);
+  const panels = {
+    pilih: el('panelPilih'),
+    konfirmasi: el('panelKonfirmasi'),
+    kamera: el('panelKamera'),
+    review: el('panelReview'),
+    selesai: el('panelSelesai')
+  };
+  const searchInput = el('searchInput');
+  const resultsBox = el('results');
+  const loadListNote = el('loadListNote');
+  const loadListText = el('loadListText');
+
+  function showPanel(name){
+    Object.values(panels).forEach(p => p.classList.remove('show'));
+    panels[name].classList.add('show');
+    window.scrollTo({top:0});
+  }
+
+  function setProgress(step){
+    // step: 1 pilih, 2 kamera/review, 3 selesai
+    const bars = [el('prog1'), el('prog2'), el('prog3')];
+    const labels = [el('lbl1'), el('lbl2'), el('lbl3')];
+    bars.forEach((b,i) => {
+      b.classList.remove('active','done');
+      if (i < step-1) b.classList.add('done');
+      else if (i === step-1) b.classList.add('active');
+    });
+    labels.forEach((l,i) => l.classList.toggle('on', i === step-1));
+  }
+
+  function initials(nama){
+    return (nama||'?').trim().split(/\s+/).slice(0,2).map(w=>w[0]).join('').toUpperCase();
+  }
+
+  // ====================== LANGKAH 1: CARI & PILIH SISWA ======================
+
+  function normalize(s){ return (s||'').toLowerCase(); }
+
+  function renderResults(query){
+    const q = normalize(query).trim();
+    if (q.length < 2){
+      resultsBox.style.display = 'none';
+      resultsBox.innerHTML = '';
+      return;
+    }
+    const matches = allStudents.filter(s =>
+      normalize(s.nama).includes(q) ||
+      normalize(s.nis).includes(q) ||
+      normalize(s.kelas).includes(q)
+    ).slice(0, 8);
+
+    resultsBox.innerHTML = '';
+    if (!matches.length){
+      resultsBox.innerHTML = '<div class="empty-note">Nama tidak ditemukan. Coba periksa ejaan, atau hubungi wali kelas.</div>';
+      resultsBox.style.display = 'block';
+      return;
+    }
+    matches.forEach(s => {
+      const row = document.createElement('div');
+      row.className = 'result-item';
+      row.innerHTML = `
+        <div class="avatar">${initials(s.nama)}</div>
+        <div class="result-info">
+          <div class="result-name">${escapeHtml(s.nama)}</div>
+          <div class="result-meta">Kelas ${escapeHtml(s.kelas)} · NIS ${escapeHtml(s.nis)}</div>
+        </div>
+        ${s.terdaftar ? '<span class="badge">Terdaftar</span>' : ''}
+      `;
+      row.addEventListener('click', () => selectStudent(s));
+      resultsBox.appendChild(row);
+    });
+    resultsBox.style.display = 'block';
+  }
+
+  function escapeHtml(str){
+    return String(str||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+
+  searchInput.addEventListener('input', (e) => renderResults(e.target.value));
+
+  function selectStudent(s){
+    selected = s;
+    el('confirmAvatar').textContent = initials(s.nama);
+    el('confirmNama').textContent = s.nama;
+    el('confirmKelas').textContent = s.kelas || '-';
+    el('confirmNis').textContent = s.nis;
+
+    const statusBox = el('confirmStatus');
+    if (s.terdaftar){
+      statusBox.innerHTML = '<span class="badge warn">Wajah sudah pernah terdaftar — lanjut akan menggantinya</span>';
+    } else {
+      statusBox.innerHTML = '<span class="badge">Belum terdaftar</span>';
+    }
+
+    showPanel('konfirmasi');
+  }
+
+  el('btnGantiNama').addEventListener('click', () => {
+    selected = null;
+    showPanel('pilih');
+  });
+
+  el('btnLanjutKamera').addEventListener('click', () => {
+    setProgress(2);
+    resetCaptureState();
+    showPanel('kamera');
+    prepareModelsThenIdle();
+  });
+
+  // ====================== MUAT DATA SISWA ======================
+
+  // [DATA INDUK] daftar dasar: dari Data Induk bila tersedia (disimpan juga di HP untuk offline), jika tidak dari STUDENTS_EMBEDDED
+  let baseStudents = STUDENTS_EMBEDDED;
+  let lastStatusList = null;
+  try {
+    const simpan = JSON.parse(localStorage.getItem('DATA_INDUK_SISWA') || 'null');
+    if (Array.isArray(simpan) && simpan.length) baseStudents = simpan;
+  } catch (e) { /* abaikan */ }
+
+  function loadDataInduk(){
+    if (!CONFIG.DATA_INDUK_URL || CONFIG.DATA_INDUK_URL.indexOf('PASTE_URL') === 0) return;
+    fetch(CONFIG.DATA_INDUK_URL + '?action=siswa&key=' + encodeURIComponent(CONFIG.DATA_INDUK_KEY))
+      .then(r => r.json())
+      .then(res => {
+        if (!res || !res.ok || !Array.isArray(res.data) || !res.data.length) return;
+        baseStudents = res.data.map(s => ({ no: s.no, nama: s.nama, jenisKelamin: s.jenisKelamin, nis: s.nis, nisn: s.nisn,
+          tempatLahir: s.tempatLahir, tanggalLahir: s.tanggalLahir, nik: s.nik, tahunMasuk: s.tahunMasuk, kelas: s.kelas }));
+        try { localStorage.setItem('DATA_INDUK_SISWA', JSON.stringify(baseStudents)); } catch (e) { /* abaikan */ }
+        if (lastStatusList) mergeStatus(lastStatusList);
+        else allStudents = baseStudents.map(s => ({ ...s, terdaftar: false }));
+        if (searchInput.value) renderResults(searchInput.value);
+      })
+      .catch(() => { /* tetap memakai daftar yang ada */ });
+  }
+
+  function mergeStatus(list){
+    // list: [{nis, nama, kelas, terdaftar}] dari server
+    lastStatusList = list;
+    const byNis = {};
+    list.forEach(s => { byNis[s.nis] = s; });
+    allStudents = baseStudents.map(s => {
+      const server = byNis[s.nis];
+      return Object.assign({}, s, { terdaftar: server ? !!server.terdaftar : false });
+    });
+  }
+
+  function loadStudentStatus(){
+    allStudents = baseStudents.map(s => ({ ...s, terdaftar: false }));
+    loadDataInduk();
+
+    if (!CONFIG.SCRIPT_URL || CONFIG.SCRIPT_URL.indexOf('PASTE_URL') === 0){
+      loadListText.textContent = 'Server belum dikonfigurasi (CONFIG.SCRIPT_URL kosong) — pencarian nama tetap bisa dipakai, tapi status "sudah terdaftar" belum akurat.';
+      loadListNote.style.display = 'flex';
+      return;
+    }
+
+    fetch(CONFIG.SCRIPT_URL + '?action=list')
+      .then(r => r.json())
+      .then(res => {
+        if (res && res.ok){
+          mergeStatus(res.data || []);
+          loadListNote.style.display = 'none';
+        } else {
+          throw new Error((res && res.message) || 'Gagal memuat data');
+        }
+      })
+      .catch(err => {
+        loadListText.textContent = 'Tidak bisa memuat status dari server (' + err.message + '). Pencarian nama tetap berjalan dari data bawaan.';
+        loadListNote.style.display = 'flex';
+      });
+  }
+
+  // ====================== LANGKAH 2: KAMERA & DETEKSI WAJAH ======================
+
+  const video = el('video');
+  const overlay = el('overlay');
+  const octx = overlay.getContext('2d');
+  const statusPill = el('statusPill');
+  const camError = el('camError');
+  const camIdle = el('camIdle');
+
+  function resetCaptureState(){
+    captures = [];
+    currentPoseIndex = 0;
+    stableCount = 0;
+    detectionPaused = false;
+    updatePoseTrack();
+    camIdle.style.display = 'flex';
+    camError.style.display = 'none';
+    hidePoseConfirm();
+    statusPill.textContent = 'Menyiapkan…';
+    statusPill.className = 'status-pill';
+  }
+
+  function updatePoseTrack(){
+    POSES.forEach((p, i) => {
+      const stepEl = el('poseStep' + i);
+      stepEl.classList.remove('active','done');
+      if (i < currentPoseIndex) stepEl.classList.add('done');
+      else if (i === currentPoseIndex) stepEl.classList.add('active');
+    });
+  }
+
+  async function prepareModelsThenIdle(){
+    if (modelsReady) return;
+    try {
+      statusPill.textContent = 'Menyiapkan mesin pengenalan wajah…';
+      await Promise.all([
+        faceapi.nets.tinyFaceDetector.loadFromUri(CONFIG.MODEL_URL),
+        faceapi.nets.faceLandmark68TinyNet.loadFromUri(CONFIG.MODEL_URL),
+        faceapi.nets.faceRecognitionNet.loadFromUri(CONFIG.MODEL_URL)
+      ]);
+      modelsReady = true;
+      statusPill.textContent = 'Siap. Tekan "Aktifkan kamera".';
+    } catch (err) {
+      showCamError('Gagal memuat mesin pengenalan wajah. Periksa koneksi internet lalu coba lagi. (' + err.message + ')');
+    }
+  }
+
+  function showCamError(msg){
+    camError.style.display = 'flex';
+    camError.innerHTML = `
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/><path d="M12 8v5M12 16h.01" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      <span>${escapeHtml(msg)}</span>
+    `;
+  }
+
+  el('btnAktifkanKamera').addEventListener('click', startCamera);
+
+  async function startCamera(){
+    camError.style.display = 'none';
+    try {
+      if (!modelsReady) await prepareModelsThenIdle();
+      stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: 'user', width: { ideal: 480 }, height: { ideal: 640 } },
+        audio: false
+      });
+      video.srcObject = stream;
+      await video.play();
+      camIdle.style.display = 'none';
+
+      // Samakan rasio bingkai kamera dengan rasio asli video (bisa beda-beda
+      // antar HP/laptop) supaya kotak deteksi wajah selalu presisi menempel,
+      // tidak melenceng akibat pemotongan gambar (object-fit: cover).
+      if (video.videoWidth && video.videoHeight){
+        el('camShell').style.aspectRatio = video.videoWidth + ' / ' + video.videoHeight;
+      }
+      await new Promise(r => requestAnimationFrame(r)); // biarkan layout menyesuaikan dulu
+
+      displaySize = { width: video.clientWidth, height: video.clientHeight };
+      faceapi.matchDimensions(overlay, displaySize);
+
+      currentPoseIndex = 0;
+      stableCount = 0;
+      updatePoseTrack();
+      setPoseInstruction();
+      startDetectionLoop();
+    } catch (err) {
+      camIdle.style.display = 'flex';
+      showCamError('Tidak bisa mengakses kamera. Pastikan izin kamera diaktifkan di browser. (' + err.message + ')');
+    }
+  }
+
+  function setPoseInstruction(){
+    const pose = POSES[currentPoseIndex];
+    statusPill.className = 'status-pill';
+    statusPill.textContent = pose.instruksi;
+  }
+
+  function stopCamera(){
+    if (loopHandle) cancelAnimationFrame(loopHandle);
+    loopHandle = null;
+    detectionPaused = false;
+    if (stream){
+      stream.getTracks().forEach(t => t.stop());
+      stream = null;
+    }
+    octx.clearRect(0,0,overlay.width,overlay.height);
+  }
+
+  el('btnBatalKamera').addEventListener('click', () => {
+    stopCamera();
+    setProgress(1);
+    showPanel('konfirmasi');
+  });
+
+  function startDetectionLoop(){
+    lastTick = 0;
+    detectionPaused = false;
+    const tick = async (ts) => {
+      if (detectionPaused) { loopHandle = null; return; }
+      loopHandle = requestAnimationFrame(tick);
+      if (ts - lastTick < TICK_INTERVAL_MS) return;
+      lastTick = ts;
+      await evaluateFrame();
+    };
+    loopHandle = requestAnimationFrame(tick);
+  }
+
+  async function evaluateFrame(){
+    if (!video.videoWidth) return;
+
+    const tinyOptions = new faceapi.TinyFaceDetectorOptions({ inputSize: 224, scoreThreshold: 0.5 });
+    let faces;
+    try {
+      faces = await faceapi.detectAllFaces(video, tinyOptions);
+    } catch (err) {
+      return; // frame sesekali gagal terbaca, abaikan dan coba lagi di tick berikutnya
+    }
+
+    octx.clearRect(0, 0, overlay.width, overlay.height);
+
+    if (!faces.length){
+      stableCount = 0;
+      setStatus('Wajah tidak terdeteksi — hadapkan wajah ke kamera', 'warn');
+      return;
+    }
+    if (faces.length > 1){
+      stableCount = 0;
+      setStatus('Terdeteksi lebih dari satu wajah — pastikan hanya kamu di depan kamera', 'warn');
+      return;
+    }
+
+    const resized = faceapi.resizeResults(faces, displaySize);
+    const box = resized[0].box;
+    const score = faces[0].score;
+    drawBox(box, false);
+
+    const videoW = displaySize.width, videoH = displaySize.height;
+    const cx = box.x + box.width/2, cy = box.y + box.height/2;
+    const relW = box.width / videoW;
+
+    let msg = null;
+    if (relW < 0.24) msg = 'Dekatkan wajah ke kamera';
+    else if (relW > 0.8) msg = 'Jauhkan sedikit wajah dari kamera';
+    else if (cx < videoW*0.28 || cx > videoW*0.72) msg = 'Posisikan wajah di tengah bingkai';
+    else if (cy < videoH*0.12 || cy > videoH*0.85) msg = 'Posisikan wajah di tengah bingkai';
+    else if (score < 0.6) msg = 'Cari pencahayaan yang lebih terang';
+
+    if (msg){
+      stableCount = 0;
+      setStatus(msg, 'warn');
+      return;
+    }
+
+    // Posisi bagus.
+    stableCount++;
+    drawBox(box, true);
+    const pose = POSES[currentPoseIndex];
+    if (stableCount < STABLE_TICKS_NEEDED){
+      setStatus('Bagus, tahan posisi… (' + pose.label + ')', 'good');
+    } else {
+      setStatus('Mengambil gambar…', 'good');
+      stableCount = 0;
+      await captureCurrentPose();
+    }
+  }
+
+  function drawBox(box, good){
+    octx.lineWidth = 3;
+    octx.strokeStyle = good ? '#2FB27E' : 'rgba(255,255,255,.85)';
+    roundRectPath(octx, box.x, box.y, box.width, box.height, 14);
+    octx.stroke();
+  }
+
+  function roundRectPath(ctx, x, y, w, h, r){
+    ctx.beginPath();
+    ctx.moveTo(x+r, y);
+    ctx.arcTo(x+w, y, x+w, y+h, r);
+    ctx.arcTo(x+w, y+h, x, y+h, r);
+    ctx.arcTo(x, y+h, x, y, r);
+    ctx.arcTo(x, y, x+w, y, r);
+    ctx.closePath();
+  }
+
+  function setStatus(text, kind){
+    statusPill.textContent = text;
+    statusPill.className = 'status-pill' + (kind ? ' ' + kind : '');
+  }
+
+  async function captureCurrentPose(){
+    try {
+      const result = await faceapi.detectSingleFace(video, new faceapi.TinyFaceDetectorOptions({ inputSize: 224, scoreThreshold: 0.5 }))
+        .withFaceLandmarks(true)
+        .withFaceDescriptor();
+
+      if (!result){
+        setPoseInstruction();
+        return; // gagal ambil deskriptor tepat waktu, lanjut coba lagi di tick berikutnya
+      }
+
+      const thumb = grabThumbnail();
+      const item = {
+        pose: POSES[currentPoseIndex].key,
+        descriptor: Array.from(result.descriptor),
+        thumb: thumb
+      };
+      captures.push(item);
+      currentPoseIndex++;
+      updatePoseTrack();
+      showPoseConfirm(item);
+    } catch (err) {
+      setStatus('Gagal memproses wajah, coba lagi', 'warn');
+    }
+  }
+
+  function showPoseConfirm(item){
+    detectionPaused = true;
+    if (loopHandle) cancelAnimationFrame(loopHandle);
+    loopHandle = null;
+    video.pause();
+    octx.clearRect(0, 0, overlay.width, overlay.height);
+
+    const poseLabel = POSES.find(p => p.key === item.pose).label;
+    el('poseConfirmImg').src = item.thumb;
+    el('poseConfirmLabel').textContent = 'Sudut ' + poseLabel + ' tersimpan';
+    el('poseConfirm').style.display = 'block';
+  }
+
+  function hidePoseConfirm(){
+    el('poseConfirm').style.display = 'none';
+  }
+
+  el('btnPoseLanjut').addEventListener('click', () => {
+    hidePoseConfirm();
+    if (currentPoseIndex >= POSES.length){
+      finishCapturing();
+      return;
+    }
+    stableCount = 0;
+    setPoseInstruction();
+    video.play();
+    startDetectionLoop();
+  });
+
+  el('btnPoseUlang').addEventListener('click', () => {
+    captures.pop();
+    currentPoseIndex = Math.max(0, currentPoseIndex - 1);
+    updatePoseTrack();
+    hidePoseConfirm();
+    stableCount = 0;
+    setPoseInstruction();
+    video.play();
+    startDetectionLoop();
+  });
+
+  function grabThumbnail(){
+    const c = document.createElement('canvas');
+    const size = 240;
+    c.width = size; c.height = size;
+    const ctx = c.getContext('2d');
+    const vw = video.videoWidth, vh = video.videoHeight;
+    const side = Math.min(vw, vh);
+    const sx = (vw - side)/2, sy = (vh - side)/2;
+    // mirror horizontally to match what the student sees on screen
+    ctx.translate(size, 0);
+    ctx.scale(-1, 1);
+    ctx.drawImage(video, sx, sy, side, side, 0, 0, size, size);
+    return c.toDataURL('image/jpeg', 0.82);
+  }
+
+  function finishCapturing(){
+    stopCamera();
+
+    const dists = [];
+    for (let i=0;i<captures.length;i++){
+      for (let j=i+1;j<captures.length;j++){
+        dists.push(faceapi.euclideanDistance(captures[i].descriptor, captures[j].descriptor));
+      }
+    }
+    const maxDist = Math.max(...dists);
+
+    renderThumbGrid();
+    setProgress(2);
+    showPanel('review');
+
+    const submitStatus = el('submitStatus');
+    submitStatus.innerHTML = '';
+    if (maxDist > MAX_PAIR_DISTANCE){
+      submitStatus.innerHTML = `
+        <div class="inline-alert">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/><path d="M12 8v5M12 16h.01" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          <span>Hasil dari tiga sudut kurang konsisten. Sebaiknya ambil ulang di tempat yang lebih terang dan wajah tetap sama sepanjang proses.</span>
+        </div>`;
+    }
+  }
+
+  function renderThumbGrid(){
+    const grid = el('thumbGrid');
+    grid.innerHTML = '';
+    captures.forEach(c => {
+      const label = POSES.find(p => p.key === c.pose).label;
+      const div = document.createElement('div');
+      div.className = 'thumb';
+      div.innerHTML = `<img src="${c.thumb}" alt="Foto ${label}"><div class="cap">${label}</div>`;
+      grid.appendChild(div);
+    });
+  }
+
+  el('btnUlangi').addEventListener('click', () => {
+    resetCaptureState();
+    setProgress(2);
+    showPanel('kamera');
+    startCamera();
+  });
+
+  // ====================== LANGKAH 3: SIMPAN KE SPREADSHEET ======================
+
+  el('btnSimpan').addEventListener('click', submitRegistration);
+
+  async function submitRegistration(){
+    const btn = el('btnSimpan');
+    const submitStatus = el('submitStatus');
+    btn.disabled = true;
+    submitStatus.innerHTML = '<div class="loading-line"><span class="spin"></span> Menyimpan pendaftaran…</div>';
+
+    if (!CONFIG.SCRIPT_URL || CONFIG.SCRIPT_URL.indexOf('PASTE_URL') === 0){
+      submitStatus.innerHTML = '<div class="inline-alert"><span>CONFIG.SCRIPT_URL belum diisi oleh admin. Data belum bisa dikirim ke spreadsheet.</span></div>';
+      btn.disabled = false;
+      return;
+    }
+
+    const payload = {
+      action: 'daftar',
+      nis: selected.nis,
+      siswa: {
+        no: selected.no,
+        nama: selected.nama,
+        jenisKelamin: selected.jenisKelamin,
+        nis: selected.nis,
+        nisn: selected.nisn,
+        tempatLahir: selected.tempatLahir,
+        tanggalLahir: selected.tanggalLahir,
+        nik: selected.nik,
+        tahunMasuk: selected.tahunMasuk,
+        kelas: selected.kelas
+      },
+      dataWajah: captures.map(c => c.descriptor)
+    };
+
+    try {
+      // Content-Type text/plain menghindari preflight CORS pada Apps Script Web App.
+      const res = await fetch(CONFIG.SCRIPT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json();
+
+      if (data && data.ok){
+        el('doneTitle').textContent = 'Wajah ' + (data.nama || selected.nama) + ' berhasil didaftarkan';
+        el('doneSub').textContent = 'Data wajah tersimpan dan siap dipakai untuk absen.';
+        setProgress(3);
+        showPanel('selesai');
+      } else {
+        submitStatus.innerHTML = `<div class="inline-alert"><span>${escapeHtml((data && data.message) || 'Gagal menyimpan, coba lagi.')}</span></div>`;
+        btn.disabled = false;
+      }
+    } catch (err) {
+      submitStatus.innerHTML = `<div class="inline-alert"><span>Tidak bisa menghubungi server. Periksa koneksi internet lalu coba lagi. (${escapeHtml(err.message)})</span></div>`;
+      btn.disabled = false;
+    }
+  }
+
+  el('btnDaftarLagi').addEventListener('click', () => {
+    selected = null;
+    captures = [];
+    searchInput.value = '';
+    resultsBox.innerHTML = '';
+    resultsBox.style.display = 'none';
+    el('btnSimpan').disabled = false;
+    setProgress(1);
+    showPanel('pilih');
+    loadStudentStatus();
+  });
+
+  // ====================== INIT ======================
+  loadStudentStatus();
+
+})();
+</script>
+</body>
+</html>

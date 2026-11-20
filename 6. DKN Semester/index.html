@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#102a4c">
+  <title>Masuk · SIPAS</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="assets/icon-192.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/app.css">
+  <script src="js/config.js"></script>
+</head>
+<body>
+  <div class="auth-page">
+    <section class="auth-hero">
+      <div>
+        <div class="flex gap-2"><img id="hero-logo" src="assets/logo_left.png" alt="" style="width:46px;height:46px;background:#fff;border-radius:10px;padding:4px"><b style="color:#fff;letter-spacing:1px">SIPAS</b></div>
+        <h1>Sistem Informasi<br><span>Penilaian Akademik</span> Sekolah</h1>
+        <p id="hero-school" style="color:#b9c7dd;max-width:440px">Kelola nilai, leger, dan rapor siswa secara terpadu, aman, dan akurat.</p>
+        <ul>
+          <li><svg class="icon" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>Jenis, kategori & bobot penilaian fleksibel</li>
+          <li><svg class="icon" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>Nilai MID otomatis dari Penilaian Tengah Semester</li>
+          <li><svg class="icon" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>Leger & rapor siap cetak, kunci nilai dengan snapshot</li>
+          <li><svg class="icon" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>Riwayat perubahan nilai tercatat lengkap</li>
+        </ul>
+      </div>
+      <small style="color:#7f93b3">© <span id="yr"></span> SIPAS · Cloudflare Workers + D1</small>
+    </section>
+    <section class="auth-form-wrap">
+      <div class="auth-form" id="form-box">
+        <div class="loading-block"><span class="spinner"></span></div>
+      </div>
+    </section>
+  </div>
+  <script type="module">
+    import { get, post } from './js/api.js';
+    import { applyTheme, esc, toast, busy, icon } from './js/ui.js';
+    applyTheme();
+    document.getElementById('yr').textContent = new Date().getFullYear();
+    const box = document.getElementById('form-box');
+    const params = new URLSearchParams(location.search);
+
+    function pwField(id, label, auto) {
+      return `<div class="field"><label for="${id}">${label}</label><div class="pw-wrap"><input id="${id}" type="password" required autocomplete="${auto}"><button type="button" data-eye="${id}" aria-label="Tampilkan password">${icon('eye')}</button></div></div>`;
+    }
+    document.addEventListener('click', e => {
+      const b = e.target.closest('[data-eye]');
+      if (!b) return;
+      const inp = document.getElementById(b.dataset.eye);
+      inp.type = inp.type === 'password' ? 'text' : 'password';
+      b.innerHTML = icon(inp.type === 'password' ? 'eye' : 'eyeOff');
+    });
+
+    function loginForm(info) {
+      box.innerHTML = `
+        <img class="logo" src="${esc(info.logo_kiri || 'assets/logo_left.png')}" alt="Logo sekolah">
+        <h2>Selamat datang</h2>
+        <p class="muted">Masuk ke ${esc(info.nama_sekolah || 'SIPAS')}</p>
+        ${params.get('expired') ? `<div class="alert warn">${icon('info')}<div>Sesi Anda berakhir. Silakan masuk kembali.</div></div>` : ''}
+        <form id="login" autocomplete="on">
+          <div class="field"><label for="u">Username</label><input id="u" autocomplete="username" required autocapitalize="none"></div>
+          ${pwField('p', 'Password', 'current-password')}
+          <button class="btn btn-primary mt-1" type="submit">${icon('logout')} Masuk</button>
+        </form>
+        ${info.cek_nilai_aktif === '1' ? `<a class="btn mt-2 w-100" href="cek-nilai.html">${icon('student')} Siswa: Cek Nilai Saya</a>` : ''}
+        <p class="muted mt-3" style="font-size:12.5px">Lupa password? Hubungi admin sekolah untuk mengatur ulang.</p>`;
+      document.getElementById('login').onsubmit = async e => {
+        e.preventDefault();
+        const btn = e.target.querySelector('button[type=submit]');
+        await busy(btn, async () => {
+          try {
+            const crossOrigin = !!(window.SIPAS_CONFIG && window.SIPAS_CONFIG.apiBase);
+            // token sesi disimpan otomatis oleh api.js bila backend berbeda domain / spreadsheet
+            const r = await post('/auth/login', { username: document.getElementById('u').value, password: document.getElementById('p').value, want_token: crossOrigin });
+            location.replace(r.redirect);
+          } catch (err) { toast(err.message, 'error'); }
+        });
+      };
+    }
+
+    function setupForm(info) {
+      const y = new Date().getFullYear();
+      const tp = new Date().getMonth() >= 6 ? `${y}/${y + 1}` : `${y - 1}/${y}`;
+      box.innerHTML = `
+        <h2>Penyiapan Awal</h2>
+        <p class="muted">Buat akun administrator pertama dan tahun pelajaran aktif.</p>
+        <form id="setup">
+          <div class="field"><label for="s-school">Nama sekolah</label><input id="s-school" required value="${esc(info.nama_sekolah || '')}"></div>
+          <div class="field"><label for="s-name">Nama lengkap admin</label><input id="s-name" required></div>
+          <div class="field"><label for="s-user">Username admin</label><input id="s-user" required autocapitalize="none" pattern="[a-zA-Z0-9._-]{3,40}"></div>
+          ${pwField('s-pw', 'Password (min. 8 karakter, huruf & angka)', 'new-password')}
+          <div class="field"><label for="s-year">Tahun pelajaran aktif</label><input id="s-year" required value="${tp}" pattern="\\d{4}/\\d{4}"></div>
+          <label class="check mb-2"><input type="checkbox" id="s-seed" checked> Isi data awal: 12 mata pelajaran & bank deskripsi</label>
+          <button class="btn btn-gold mt-1" type="submit">Simpan & Mulai</button>
+        </form>`;
+      document.getElementById('setup').onsubmit = async e => {
+        e.preventDefault();
+        await busy(e.target.querySelector('button'), async () => {
+          try {
+            await post('/auth/setup', {
+              nama_sekolah: document.getElementById('s-school').value, full_name: document.getElementById('s-name').value,
+              username: document.getElementById('s-user').value, password: document.getElementById('s-pw').value,
+              year_name: document.getElementById('s-year').value, seed_defaults: document.getElementById('s-seed').checked
+            });
+            toast('Penyiapan selesai. Silakan masuk.', 'success');
+            loginForm(await get('/public/info'));
+          } catch (err) { toast(err.message, 'error'); }
+        });
+      };
+    }
+
+    (async () => {
+      try {
+        const [st, info] = await Promise.all([get('/auth/setup-status'), get('/public/info')]);
+        if (info.logo_kiri) document.getElementById('hero-logo').src = info.logo_kiri;
+        if (info.nama_sekolah) document.getElementById('hero-school').textContent = info.nama_sekolah + ' — kelola nilai, leger, dan rapor siswa secara terpadu, aman, dan akurat.';
+        if (st.needs_setup) setupForm(info); else loginForm(info);
+      } catch (e) {
+        box.innerHTML = `<div class="alert error">${icon('alert')}<div>${esc(e.message)}</div></div><button class="btn" onclick="location.reload()">Coba lagi</button>`;
+      }
+    })();
+  </script>
+</body>
+</html>
