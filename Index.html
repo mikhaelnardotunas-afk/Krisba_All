@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0a2340">
+<meta name="description" content="Portal aplikasi sekolah SMP Kristen Basaan">
+<meta http-equiv="Cache-Control" content="no-cache">
+<title>Portal SMP Kristen Basaan</title>
+<link rel="icon" href="assets-landing/logo-yayasan.png">
+<link rel="apple-touch-icon" href="assets-landing/logo-yayasan.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Cormorant+Garamond:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f2f4f8; --panel:#ffffff; --line:#e3e8ef; --ink:#0f1e33; --ink2:#4b5b70; --ink3:#8a98ab;
+  --navy:#0a2340; --navy2:#123a66; --gold:#c9970f; --gold2:#e8c25a; --goldS:#fbf3dc;
+  --c1:#1d5fa8; --c2:#0f7a5c; --c3:#8a4fbf; --c4:#b45309;
+  --shadow:0 1px 2px rgba(10,35,64,.06),0 10px 30px rgba(10,35,64,.07);
+}
+@media (prefers-color-scheme:dark){
+  :root{--bg:#0a111e;--panel:#111b2c;--line:#1e2b41;--ink:#e8eef7;--ink2:#a9b6c9;--ink3:#6c7b92;--goldS:#2a2311;--shadow:0 1px 2px rgba(0,0,0,.4)}
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{font-family:'Plus Jakarta Sans',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;line-height:1.5}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:1180px;margin:0 auto;padding:0 20px}
+@media (max-width:640px){.wrap{padding:0 16px}}
+
+/* ---------- pita atas ---------- */
+.topbar{background:var(--navy);color:#c8d6e8;font-size:12.5px}
+.topbar .wrap{display:flex;align-items:center;gap:10px;min-height:38px;flex-wrap:wrap}
+.topbar .sep{opacity:.35}
+.online{display:inline-flex;align-items:center;gap:6px}
+.online i{width:8px;height:8px;border-radius:50%;background:#4ade80;box-shadow:0 0 0 3px rgba(74,222,128,.18)}
+.online.off i{background:#f87171;box-shadow:0 0 0 3px rgba(248,113,113,.18)}
+.topbar .right{margin-left:auto;display:flex;gap:14px;align-items:center}
+
+/* ---------- hero ---------- */
+.hero{position:relative;color:#fff;overflow:hidden;background:
+  radial-gradient(900px 420px at 85% -20%,rgba(232,194,90,.28),transparent 60%),
+  radial-gradient(700px 400px at -10% 120%,rgba(29,95,168,.55),transparent 60%),
+  linear-gradient(160deg,#0a2340 0%,#0e2f55 55%,#123a66 100%)}
+.hero::after{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.07) 1px,transparent 1px);background-size:22px 22px;-webkit-mask-image:linear-gradient(to bottom,#000,transparent 85%);mask-image:linear-gradient(to bottom,#000,transparent 85%);pointer-events:none}
+.hero .wrap{position:relative;z-index:1;padding-top:38px;padding-bottom:78px}
+.kop{display:flex;align-items:center;gap:22px}
+.logo{width:84px;height:84px;border-radius:50%;background:#fff;display:grid;place-items:center;flex:none;overflow:hidden;box-shadow:0 0 0 4px rgba(232,194,90,.55),0 12px 30px rgba(0,0,0,.35)}
+.logo img{width:68%;height:68%;object-fit:contain}
+.kop-teks{flex:1;min-width:0;text-align:center}
+.kop-teks .yys{letter-spacing:.22em;font-size:12px;font-weight:700;color:var(--gold2);text-transform:uppercase}
+.kop-teks h1{font-family:'Cormorant Garamond',Georgia,serif;font-size:clamp(28px,5.2vw,54px);line-height:1.05;margin:6px 0 6px;letter-spacing:.02em}
+.kop-teks p{margin:0;color:#c9d6e7;font-size:14px}
+.garis{height:2px;max-width:420px;margin:16px auto 0;background:linear-gradient(90deg,transparent,var(--gold2),transparent)}
+.sapa{margin-top:22px;display:flex;justify-content:center;gap:10px;flex-wrap:wrap;font-size:13.5px}
+.pil{display:inline-flex;align-items:center;gap:8px;padding:7px 14px;border-radius:999px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);backdrop-filter:blur(6px)}
+.pil svg{width:16px;height:16px;opacity:.85;flex:none}
+@media (max-width:640px){
+  .hero .wrap{padding-top:24px;padding-bottom:70px}
+  .kop{gap:10px}
+  .logo{width:52px;height:52px;box-shadow:0 0 0 3px rgba(232,194,90,.55)}
+  .kop-teks .yys{font-size:9.5px;letter-spacing:.12em}
+  .kop-teks p{font-size:11.5px}
+  .sapa{font-size:12.5px}
+}
+
+/* ---------- statistik ---------- */
+.stats{position:relative;z-index:2;margin-top:-46px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.st{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:16px 18px;box-shadow:var(--shadow);display:flex;align-items:center;gap:14px;min-width:0}
+.st .ic{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;flex:none}
+.st .ic svg{width:22px;height:22px}
+.st b{display:block;font-size:24px;line-height:1.1;font-variant-numeric:tabular-nums}
+.st span{font-size:12.5px;color:var(--ink2)}
+.st.muat b{color:var(--ink3)}
+@media (max-width:860px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:400px){.st{padding:12px;gap:10px}.st .ic{width:36px;height:36px}.st b{font-size:20px}.st span{font-size:11.5px}}
+
+/* ---------- toolbar ---------- */
+.bar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:28px 0 6px}
+.bar h2{margin:0;font-size:20px}
+.bar .sub{color:var(--ink2);font-size:13px}
+.cari{margin-left:auto;position:relative;flex:0 1 300px}
+.cari svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:17px;height:17px;color:var(--ink3)}
+.cari input{width:100%;font:inherit;color:inherit;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px 12px 10px 38px;outline:none}
+.cari input:focus{border-color:var(--c1);box-shadow:0 0 0 3px rgba(29,95,168,.15)}
+@media (max-width:640px){.cari{flex:1 1 100%;margin-left:0}}
+
+/* ---------- kategori & kartu ---------- */
+.kat{margin-top:22px}
+.kat-h{display:flex;align-items:center;gap:10px;margin-bottom:12px;font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--ink2)}
+.kat-h::after{content:"";flex:1;height:1px;background:var(--line)}
+.kat-h i{width:8px;height:8px;border-radius:2px;transform:rotate(45deg)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+.app{position:relative;background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:12px;transition:transform .18s,box-shadow .18s,border-color .18s;overflow:hidden}
+.app::before{content:"";position:absolute;left:0;top:0;right:0;height:3px;background:var(--warna);opacity:.9}
+.app:hover{transform:translateY(-3px);box-shadow:0 18px 40px rgba(10,35,64,.13)}
+.app-h{display:flex;gap:14px;align-items:flex-start}
+.app .ik{width:52px;height:52px;border-radius:14px;display:grid;place-items:center;flex:none;color:#fff;background:var(--warna);background-image:linear-gradient(135deg,rgba(255,255,255,.18),rgba(0,0,0,.22));box-shadow:0 8px 18px rgba(10,35,64,.18)}
+.app .ik svg{width:28px;height:28px}
+.app .no{position:absolute;right:14px;top:12px;font-size:11px;font-weight:800;color:var(--ink3);letter-spacing:.06em}
+.app h3{margin:2px 0 3px;font-size:16px;line-height:1.25;padding-right:22px}
+.app p{margin:0;font-size:13px;color:var(--ink2)}
+.aksi{display:flex;gap:8px;flex-wrap:wrap;margin-top:auto}
+.btn{display:inline-flex;align-items:center;gap:6px;font:inherit;font-size:13px;font-weight:700;padding:8px 13px;border-radius:10px;border:1px solid var(--line);background:var(--panel);color:var(--ink);cursor:pointer;transition:.15s}
+.btn:hover{border-color:var(--warna,var(--c1));color:var(--warna,var(--c1))}
+.btn.utama{background:var(--warna,var(--navy));border-color:var(--warna,var(--navy));color:#fff}
+.btn.utama:hover{filter:brightness(1.12);color:#fff}
+.btn svg{width:15px;height:15px}
+.app.unggulan{grid-column:1/-1;flex-direction:row;align-items:center;gap:18px;background:linear-gradient(120deg,var(--panel) 55%,var(--goldS))}
+.app.unggulan .ik{width:64px;height:64px;border-radius:18px}
+.app.unggulan .ik svg{width:34px;height:34px}
+.app.unggulan .isi{flex:1;min-width:0}
+.app.unggulan .aksi{margin-top:0}
+@media (max-width:640px){.app.unggulan{flex-direction:column;align-items:stretch}.grid{grid-template-columns:1fr}}
+.kosong{display:none;text-align:center;padding:40px;color:var(--ink2)}
+
+/* ---------- footer ---------- */
+footer{margin-top:40px;border-top:1px solid var(--line);background:var(--panel)}
+footer .wrap{display:flex;gap:14px;align-items:center;flex-wrap:wrap;padding-top:18px;padding-bottom:calc(18px + env(safe-area-inset-bottom));font-size:12.5px;color:var(--ink2)}
+footer .right{margin-left:auto;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+@media (max-width:640px){footer .right{margin-left:0;width:100%;justify-content:space-between}}
+.btn-up{display:inline-flex;align-items:center;gap:7px;font:inherit;font-weight:700;font-size:13px;border-radius:10px;padding:9px 14px;border:1px solid var(--navy);background:var(--navy);color:#fff;cursor:pointer}
+.btn-up:disabled{opacity:.6;cursor:wait}
+.btn-up svg{width:16px;height:16px}
+.btn-up.putar svg{animation:putar 1s linear infinite}
+@keyframes putar{to{transform:rotate(360deg)}}
+.banner{position:fixed;left:50%;bottom:18px;transform:translate(-50%,160%);z-index:50;background:var(--navy);color:#fff;border-radius:14px;padding:12px 16px;display:flex;gap:12px;align-items:center;box-shadow:0 18px 40px rgba(0,0,0,.3);font-size:13.5px;transition:transform .3s;max-width:calc(100vw - 32px)}
+.banner.tampil{transform:translate(-50%,0)}
+.banner b{color:var(--gold2)}
+.fade{animation:muncul .45s ease-out both}
+@keyframes muncul{from{opacity:0;transform:translateY(8px)}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="topbar"><div class="wrap">
+  <span id="tanggal">—</span><span class="sep">|</span><span><span id="jam" style="font-variant-numeric:tabular-nums">--.--</span> WITA</span>
+  <span class="right"><span class="online" id="online"><i></i><span>Online</span></span></span>
+</div></div>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="kop">
+      <div class="logo"><img src="assets-landing/logo-yayasan.png" alt="Logo GMIM"></div>
+      <div class="kop-teks">
+        <div class="yys">Yayasan Ds. A. Z. Wenas · GMIM</div>
+        <h1 id="namaSekolah">SMP Kristen Basaan</h1>
+        <p>Desa Basaan Satu, Kec. Ratatotok, Kab. Minahasa Tenggara</p>
+        <div class="garis"></div>
+      </div>
+      <div class="logo"><img src="assets-landing/logo-tutwuri.png" alt="Logo Tut Wuri Handayani"></div>
+    </div>
+    <div class="sapa">
+      <span class="pil"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg><span id="tp">Tahun Pelajaran 2026/2027</span></span>
+      <span class="pil"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l9 4-9 4-9-4z"/><path d="M7 9v5c3 2 7 2 10 0V9"/></svg><span>Portal Aplikasi Sekolah</span></span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="stats" aria-label="Ringkasan data sekolah">
+    <div class="st muat"><div class="ic" style="background:#e7f0fb;color:var(--c1)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg></div><div><b id="sSiswa">—</b><span>Siswa aktif</span></div></div>
+    <div class="st muat"><div class="ic" style="background:#fbf3dc;color:var(--gold)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 20c.8-3.3 3.2-5 6-5s5.2 1.7 6 5M14.5 15.3c2.8-.6 5.6.9 6.5 4.7"/></svg></div><div><b id="sLP">—</b><span>Laki-laki / Perempuan</span></div></div>
+    <div class="st muat"><div class="ic" style="background:#e3f5ee;color:var(--c2)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11v5c3 2.5 9 2.5 12 0v-5"/></svg></div><div><b id="sGuru">—</b><span>Guru aktif</span></div></div>
+    <div class="st muat"><div class="ic" style="background:#f2e9fa;color:var(--c3)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div><div><b id="sKelas">—</b><span>Rombongan belajar</span></div></div>
+  </section>
+
+  <div class="bar">
+    <div><h2>Aplikasi Sekolah</h2><div class="sub">Pilih aplikasi yang ingin dibuka</div></div>
+    <label class="cari"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg><input id="cari" type="search" placeholder="Cari aplikasi…" aria-label="Cari aplikasi"></label>
+  </div>
+
+  <div id="daftar"></div>
+  <div class="kosong" id="kosong">Aplikasi tidak ditemukan.</div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>© <span id="tahun">2026</span> SMP Kristen Basaan · Portal versi <b id="versi"></b></span>
+    <span class="right">
+      <span id="cekInfo">Memeriksa pembaruan…</span>
+      <button class="btn-up" id="btnUpdate" type="button" title="Periksa & muat versi terbaru portal dan semua aplikasi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg><span>Perbarui</span></button>
+    </span>
+  </div>
+</footer>
+
+<div class="banner" id="banner" role="status"><span id="bannerTxt"></span></div>
+
+<script>
+(function () {
+'use strict';
+
+/* =====================================================================
+   PENGATURAN PORTAL
+   - VERSI harus sama dengan isi versi.json. Setiap kali Index.html diubah,
+     naikkan VERSI di sini DAN di versi.json → semua HP otomatis memuat versi baru.
+   - DATA_INDUK_URL: URL Web App Data Induk (untuk angka statistik). Boleh dikosongkan.
+   - Alamat aplikasi bersifat relatif terhadap folder ini. Jika suatu aplikasi
+     di-hosting di alamat lain, ganti "url"-nya dengan alamat lengkap (https://...).
+   ===================================================================== */
+const VERSI = '2026.11.20-1';
+const DATA_INDUK_URL = 'https://script.google.com/macros/s/AKfycbw5OyCdVKuZvcABAaWWwzDQKWeN-kHJ4f0nIugc8HxNvtVBzZh9BpjzLQHwcuIa_aFY/exec';
+
+const IKON = {
+  induk: '<path d="M4 6c0-1.7 3.6-3 8-3s8 1.3 8 3-3.6 3-8 3-8-1.3-8-3z"/><path d="M4 6v6c0 1.7 3.6 3 8 3s8-1.3 8-3V6"/><path d="M4 12v6c0 1.7 3.6 3 8 3 1 0 2-.1 2.9-.2"/><circle cx="18.5" cy="18.5" r="2.5"/><path d="M18.5 14.8v1.2M18.5 21v1.2M22.2 18.5H21M16 18.5h-1.2"/>',
+  absenGuru: '<rect x="4" y="3" width="16" height="18" rx="2"/><circle cx="12" cy="9" r="2.6"/><path d="M7.5 16c.9-1.9 2.6-3 4.5-3s3.6 1.1 4.5 3"/><path d="M15 19.2l1.6 1.6 3.4-3.4" stroke-width="2.4"/>',
+  petugas: '<path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3"/><rect x="7.5" y="7.5" width="3.5" height="3.5"/><rect x="13" y="7.5" width="3.5" height="3.5"/><rect x="7.5" y="13" width="3.5" height="3.5"/><path d="M13 13h1.5v1.5H13zM15 15h1.5v1.5H15z"/>',
+  absenSiswa: '<rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V3h6v1"/><path d="M8.5 11l1.5 1.5 3-3M8.5 16.5l1.5 1.5 3-3"/><path d="M15 11.5h1.5M15 17h1.5"/>',
+  kartu: '<rect x="3" y="5" width="18" height="14" rx="2.5"/><circle cx="8.5" cy="11" r="2.2"/><path d="M5.5 16c.6-1.5 1.7-2.3 3-2.3s2.4.8 3 2.3"/><path d="M14 9.5h4M14 12.5h4M14 15.5h2.5"/>',
+  daftarWajah: '<circle cx="11" cy="11" r="7"/><path d="M8.3 9.5h.01M13.7 9.5h.01" stroke-width="2.6"/><path d="M8.5 13.2c1.4 1.3 3.6 1.3 5 0"/><path d="M19.5 15.5v5M17 18h5" stroke-width="2.2"/>',
+  dknMid: '<path d="M6 3h9l4 4v14H6z"/><path d="M15 3v4h4"/><path d="M9 17v-3M12 17v-6M15 17v-4"/>',
+  dknSem: '<path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5A2.5 2.5 0 0 0 6.5 23H20v-5"/><path d="M9 8h7M9 11h5"/><path d="M15.5 13.5l1 1 2-2"/>',
+  ujian: '<path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/><path d="M8 13h3M8 17h6"/><path d="M15.2 13.8l1.3 1.3 2.6-2.6"/>',
+  scanWajah: '<path d="M3 8V5a2 2 0 0 1 2-2h3M16 3h3a2 2 0 0 1 2 2v3M21 16v3a2 2 0 0 1-2 2h-3M8 21H5a2 2 0 0 1-2-2v-3"/><circle cx="12" cy="11" r="4"/><path d="M7.5 18c1-1.8 2.6-2.7 4.5-2.7s3.5.9 4.5 2.7"/><path d="M3 12h2M19 12h2"/>',
+  tatib: '<path d="M12 3l8 3v6c0 4.6-3.4 8.3-8 9-4.6-.7-8-4.4-8-9V6z"/><path d="M8.8 12.2l2.2 2.2 4.4-4.6"/>',
+  buka: '<path d="M7 17L17 7M8 7h9v9"/>'
+};
+const svg = (n, w) => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="' + (w || 1.9) + '" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + IKON[n] + '</svg>';
+
+const KATEGORI = [
+  { judul: 'Data Induk', warna: '#c9970f', apps: [
+    { no: '0', ikon: 'induk', nama: 'Data Induk Siswa & Guru', unggulan: true, warna: '#0a2340',
+      ket: 'Kelola data siswa dan guru lengkap dengan foto di satu tempat. Setiap perubahan otomatis dikirim ke seluruh aplikasi sekolah.',
+      url: '0. Data Induk/index.html', cari: 'master induk siswa guru foto kelas wali' } ] },
+  { judul: 'Kehadiran', warna: '#1d5fa8', apps: [
+    { no: '1', ikon: 'absenGuru', nama: 'Absensi Guru', warna: '#1d5fa8', ket: 'Catat jam datang & pulang guru setiap hari.', url: '1. Absen Guru/AbsenGuru.html' },
+    { no: '2', ikon: 'petugas', nama: 'Petugas Absen Siswa', warna: '#2563eb', ket: 'Petugas memindai kartu QR siswa di gerbang.', url: '2. Petugas Absen Siswa/absen-petugas.html' },
+    { no: '3', ikon: 'absenSiswa', nama: 'Absensi Siswa', warna: '#0e7490', ket: 'Absensi per mata pelajaran, rekap & laporan kehadiran.', url: '3. Absen Siswa/index.html' },
+    { no: '5', ikon: 'daftarWajah', nama: 'Daftar Wajah', warna: '#0f766e', ket: 'Daftarkan wajah siswa untuk absensi pengenalan wajah.', url: '5. Daftar Wajah/Daftar_Wajah.html' },
+    { no: '8', ikon: 'scanWajah', nama: 'Scan Wajah', warna: '#15803d', ket: 'Absensi otomatis dengan kamera pengenal wajah.', url: '8. Scan Wajah/ScanWajah.html' } ] },
+  { judul: 'Penilaian & Rapor', warna: '#8a4fbf', apps: [
+    { no: '5', ikon: 'dknMid', nama: 'DKN Mid Semester', warna: '#7c3aed', ket: 'Input nilai & cetak rapor tengah semester.', url: '5. DKN Mid Semester/index.html',
+      lain: [['Guru', '5. DKN Mid Semester/guru.html'], ['Admin', '5. DKN Mid Semester/admin.html']] },
+    { no: '6', ikon: 'dknSem', nama: 'DKN Semester (SIPAS)', warna: '#9333ea', ket: 'Penilaian akademik, leger & rapor semester.', url: '6. DKN Semester/index.html',
+      lain: [['Cek Nilai Siswa', '6. DKN Semester/cek-nilai.html']] },
+    { no: '7', ikon: 'ujian', nama: 'Ujian PG & Essay Online', warna: '#a21caf', ket: 'Ujian berbasis HP — pilihan ganda & essay dinilai AI.', url: '7. Ujian PG dan Essay Online/index.html',
+      lain: [['Guru', '7. Ujian PG dan Essay Online/guru.html'], ['Cetak Soal', '7. Ujian PG dan Essay Online/Cetak_Soal.html']] } ] },
+  { judul: 'Kesiswaan', warna: '#b45309', apps: [
+    { no: '4', ikon: 'kartu', nama: 'Cetak Kartu Pelajar', warna: '#b45309', ket: 'Buat kartu tanda pelajar dengan foto & kode QR NIS.', url: '4. Cetak Kartu/CetakKartu.html' },
+    { no: '9', ikon: 'tatib', nama: 'Tata Tertib', warna: '#c2410c', ket: 'Catatan pelanggaran, poin & tindak lanjut kedisiplinan.', url: '9. Tata Tertib/index.html',
+      lain: [['Info Siswa & Orang Tua', '9. Tata Tertib/DashboardSiswa.html']] } ] }
+];
+
+const $ = s => document.querySelector(s);
+const esc = v => String(v == null ? '' : v).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const tautan = u => /^https?:\/\//.test(u) ? u : encodeURI(u);
+
+/* ---------------------------------------------------------------- daftar aplikasi */
+function gambar() {
+  let i = 0;
+  $('#daftar').innerHTML = KATEGORI.map(k => '<section class="kat" data-kat><div class="kat-h"><i style="background:' + k.warna + '"></i>' + esc(k.judul) + '</div><div class="grid">' +
+    k.apps.map(a => '<article class="app fade' + (a.unggulan ? ' unggulan' : '') + '" style="--warna:' + a.warna + ';animation-delay:' + (i++ * 40) + 'ms" data-cari="' + esc((a.nama + ' ' + a.ket + ' ' + (a.cari || '') + ' ' + k.judul).toLowerCase()) + '">' +
+      '<span class="no">' + esc(a.no) + '</span>' +
+      (a.unggulan ? '<div class="ik">' + svg(a.ikon) + '</div><div class="isi"><h3>' + esc(a.nama) + '</h3><p>' + esc(a.ket) + '</p></div>'
+                  : '<div class="app-h"><div class="ik">' + svg(a.ikon) + '</div><div><h3>' + esc(a.nama) + '</h3><p>' + esc(a.ket) + '</p></div></div>') +
+      '<div class="aksi"><a class="btn utama" href="' + tautan(a.url) + '">Buka ' + svg('buka', 2.4) + '</a>' +
+      (a.lain || []).map(l => '<a class="btn" href="' + tautan(l[1]) + '">' + esc(l[0]) + '</a>').join('') + '</div></article>').join('') +
+    '</div></section>').join('');
+}
+function saring(q) {
+  q = q.trim().toLowerCase();
+  let ada = 0;
+  document.querySelectorAll('.app').forEach(el => { const ok = !q || el.dataset.cari.includes(q); el.style.display = ok ? '' : 'none'; if (ok) ada++; });
+  document.querySelectorAll('[data-kat]').forEach(s => { s.style.display = [...s.querySelectorAll('.app')].some(a => a.style.display !== 'none') ? '' : 'none'; });
+  $('#kosong').style.display = ada ? 'none' : 'block';
+}
+
+/* ---------------------------------------------------------------- jam & status */
+const HARI = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+const BULAN = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+function waktuWita() { const d = new Date(); return new Date(d.getTime() + d.getTimezoneOffset() * 60000 + 8 * 3600000); }
+function tikJam() {
+  const w = waktuWita();
+  $('#tanggal').textContent = HARI[w.getDay()] + ', ' + w.getDate() + ' ' + BULAN[w.getMonth()] + ' ' + w.getFullYear();
+  $('#jam').textContent = String(w.getHours()).padStart(2, '0') + '.' + String(w.getMinutes()).padStart(2, '0');
+  $('#tahun').textContent = w.getFullYear();
+}
+function statusOnline() {
+  const on = navigator.onLine;
+  $('#online').classList.toggle('off', !on);
+  $('#online span').textContent = on ? 'Online' : 'Offline';
+}
+
+/* ---------------------------------------------------------------- statistik dari Data Induk */
+function tampilStat(d) {
+  if (!d) return;
+  const set = (id, v) => { const el = $(id); el.textContent = v; el.closest('.st').classList.remove('muat'); };
+  set('#sSiswa', d.siswaAktif); set('#sLP', d.siswaL + ' / ' + d.siswaP); set('#sGuru', d.guruAktif); set('#sKelas', d.jumlahKelas);
+  if (d.tahunPelajaran) $('#tp').textContent = 'Tahun Pelajaran ' + d.tahunPelajaran + (d.semester ? ' · Semester ' + d.semester : '');
+}
+async function muatStat() {
+  try { tampilStat(JSON.parse(localStorage.getItem('portal_stat') || 'null')); } catch (e) { /* abaikan */ }
+  if (!DATA_INDUK_URL || DATA_INDUK_URL.indexOf('PASTE_') === 0 || !navigator.onLine) return;
+  try {
+    const r = await fetch(DATA_INDUK_URL + '?action=ringkasan&t=' + Date.now(), { cache: 'no-store' });
+    const d = await r.json();
+    if (d && d.ok) { tampilStat(d); try { localStorage.setItem('portal_stat', JSON.stringify(d)); } catch (e) { /* abaikan */ } }
+  } catch (e) { /* tetap tampilkan angka terakhir */ }
+}
+
+/* ---------------------------------------------------------------- pembaruan otomatis & manual */
+let sedangMuatUlang = false;
+function banner(teks, ms) {
+  $('#bannerTxt').innerHTML = teks;
+  $('#banner').classList.add('tampil');
+  clearTimeout(banner.t);
+  if (ms) banner.t = setTimeout(() => $('#banner').classList.remove('tampil'), ms);
+}
+async function versiServer() {
+  const r = await fetch('versi.json?t=' + Date.now(), { cache: 'no-store' });
+  if (!r.ok) throw new Error('HTTP ' + r.status);
+  return (await r.json()).versi;
+}
+async function cekVersi(otomatis) {
+  if (!navigator.onLine) { $('#cekInfo').textContent = 'Offline — memakai versi tersimpan'; return false; }
+  if (location.protocol === 'file:') { $('#cekInfo').textContent = 'Dibuka dari file lokal'; return false; }
+  try {
+    const v = await versiServer();
+    const jam = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+    if (v && v !== VERSI) {
+      $('#cekInfo').textContent = 'Versi baru ' + v + ' tersedia';
+      if (otomatis && !sedangMuatUlang && sessionStorage.getItem('portal_coba') !== v) {
+        sessionStorage.setItem('portal_coba', v);                 // cegah muat ulang berulang bila server belum sinkron
+        banner('Memperbarui portal ke versi <b>' + esc(v) + '</b>…');
+        setTimeout(() => muatUlangBersih(), 1200);
+      }
+      return true;
+    }
+    $('#cekInfo').textContent = 'Versi terbaru · dicek ' + jam;
+    return false;
+  } catch (e) { $('#cekInfo').textContent = 'Tidak bisa memeriksa pembaruan'; return false; }
+}
+async function muatUlangBersih() {
+  if (sedangMuatUlang) return;
+  sedangMuatUlang = true;
+  try {
+    // hanya cache milik portal yang dibersihkan — cache aplikasi lain (mis. gambar soal ujian offline) tidak disentuh
+    if (window.caches) { const ks = await caches.keys(); await Promise.all(ks.filter(k => k.indexOf('portal-') === 0).map(k => caches.delete(k))); }
+    // minta setiap aplikasi memeriksa versi barunya (aplikasi sendiri yang memutuskan kapan memakai versi baru)
+    if (navigator.serviceWorker) { const rs = await navigator.serviceWorker.getRegistrations(); await Promise.all(rs.map(r => r.update().catch(() => {}))); }
+  } catch (e) { /* abaikan */ }
+  location.replace(location.pathname + '?v=' + Date.now());
+}
+$('#btnUpdate').addEventListener('click', async () => {
+  const b = $('#btnUpdate');
+  if (!navigator.onLine) { banner('Tidak ada internet. Sambungkan internet lalu coba lagi.', 3500); return; }
+  b.disabled = true; b.classList.add('putar'); b.querySelector('span').textContent = 'Memperbarui…';
+  banner('Memeriksa pembaruan portal & semua aplikasi…');
+  sessionStorage.removeItem('portal_coba');
+  await muatStat();
+  await muatUlangBersih();
+});
+
+/* ---------------------------------------------------------------- mulai */
+$('#versi').textContent = VERSI;
+gambar();
+$('#cari').addEventListener('input', e => saring(e.target.value));
+tikJam(); setInterval(tikJam, 15000);
+statusOnline(); window.addEventListener('online', () => { statusOnline(); cekVersi(true); muatStat(); }); window.addEventListener('offline', statusOnline);
+muatStat();
+cekVersi(true);
+setInterval(() => { cekVersi(true); muatStat(); }, 10 * 60 * 1000);
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') { cekVersi(true); muatStat(); } });
+if (/[?&]v=/.test(location.search)) { history.replaceState(null, '', location.pathname); banner('Portal sudah versi terbaru.', 2200); }
+// scope hanya halaman ini — aplikasi di subfolder TIDAK ikut dikendalikan
+if ('serviceWorker' in navigator && location.protocol !== 'file:' && /\/Index\.html$/i.test(location.pathname)) {
+  navigator.serviceWorker.register('sw-portal.js', { scope: './' + location.pathname.split('/').pop() }).catch(() => {});
+}
+})();
+</script>
+</body>
+</html>
