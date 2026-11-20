@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b1f3a">
+<meta name="description" content="Portal aplikasi sekolah SMP Kristen Basaan">
+<meta http-equiv="Cache-Control" content="no-cache">
+<title>Portal SMP Kristen Basaan</title>
+<link rel="icon" href="assets-landing/logo-yayasan.png">
+<link rel="apple-touch-icon" href="assets-landing/logo-yayasan.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+/* =====================================================================
+   TAMPILAN — gaya layar Mulai Windows 8 (tile datar berwarna)
+   --u = ukuran 1 kotak kecil, --g = jarak antar-tile
+   ===================================================================== */
+:root{
+  --u:70px; --g:8px;
+  --bg:#0b1f3a; --ink:#ffffff; --ink2:rgba(255,255,255,.74); --ink3:rgba(255,255,255,.5);
+  --gold:#e8c25a; --garis:rgba(255,255,255,.14);
+  font-family:'Segoe UI','Open Sans',system-ui,-apple-system,Roboto,sans-serif;
+}
+@media (min-width:1500px){ :root{ --u:78px; } }
+*{box-sizing:border-box}
+html,body{margin:0}
+body{min-height:100vh;color:var(--ink);background:var(--bg);-webkit-font-smoothing:antialiased;line-height:1.4;
+  background-image:
+    radial-gradient(1100px 620px at 100% -10%,rgba(232,194,90,.13),transparent 60%),
+    radial-gradient(900px 640px at -10% 110%,rgba(45,137,239,.20),transparent 60%),
+    linear-gradient(155deg,#0b1f3a 0%,#0e2748 55%,#11305a 100%);
+  background-attachment:fixed}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;
+  background-image:repeating-linear-gradient(135deg,rgba(255,255,255,.022) 0 2px,transparent 2px 16px)}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit}
+.wrap{max-width:1640px;margin:0 auto;padding:0 48px;position:relative}
+@media (max-width:1100px){ .wrap{padding:0 28px} }
+@media (max-width:720px){ .wrap{padding:0 16px} }
+
+/* ---------- kepala (seperti layar Mulai) ---------- */
+.kepala{display:flex;align-items:flex-start;gap:20px;padding-top:34px;padding-bottom:6px}
+.judul{flex:1;min-width:0}
+.judul h1{margin:0;font-weight:300;font-size:clamp(30px,4.6vw,52px);line-height:1.05;letter-spacing:.005em}
+.judul .sub{margin-top:8px;color:var(--ink2);font-size:15px;display:flex;flex-wrap:wrap;gap:4px 10px;align-items:center}
+.judul .sub .garis{width:28px;height:2px;background:var(--gold)}
+.akun{display:flex;align-items:center;gap:10px;flex:none}
+.akun-teks{text-align:right;line-height:1.25}
+.akun-teks b{display:block;font-weight:400;font-size:17px}
+.akun-teks span{font-size:12.5px;color:var(--ink2)}
+.logo{width:46px;height:46px;background:#fff;display:grid;place-items:center;flex:none}
+.logo img{width:80%;height:80%;object-fit:contain}
+.online{display:inline-flex;align-items:center;gap:6px}
+.online i{width:8px;height:8px;border-radius:50%;background:#4ade80}
+.online.off i{background:#f87171}
+.alat{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding-top:14px;padding-bottom:26px;color:var(--ink2);font-size:13px}
+.cari{margin-left:auto;position:relative;flex:0 1 320px}
+.cari svg{position:absolute;right:11px;top:50%;transform:translateY(-50%);width:18px;height:18px;color:#1b2a3d;pointer-events:none}
+.cari input{width:100%;font:inherit;font-size:14.5px;color:#0b1f3a;background:#fff;border:2px solid #fff;border-radius:0;padding:8px 38px 8px 12px;outline:none}
+.cari input:focus{border-color:var(--gold)}
+.cari input::placeholder{color:#6b7787}
+@media (max-width:720px){
+  .kepala{padding-top:20px;gap:12px}
+  .akun-teks{display:none}
+  .logo{width:36px;height:36px}
+  .judul .sub{font-size:13px}
+  .alat{padding-bottom:18px}
+  .cari{flex:1 1 100%;margin-left:0}
+}
+
+/* ---------- grup & kisi tile ---------- */
+.layar{display:flex;flex-wrap:wrap;align-items:flex-start;gap:34px 48px;padding-bottom:30px}
+.grup h2{margin:0 0 12px;font-weight:300;font-size:22px;letter-spacing:.01em}
+.kisi{display:grid;grid-template-columns:repeat(var(--k,4),var(--u));grid-auto-rows:var(--u);gap:var(--g);grid-auto-flow:dense}
+@media (max-width:720px){
+  :root{ --g:6px; --u:calc((100vw - 32px - 3 * var(--g)) / 4); }
+  .layar{gap:26px}
+  .grup{width:100%}
+  .kisi{grid-template-columns:repeat(4,var(--u))}
+  .grup h2{font-size:20px;margin-bottom:10px}
+}
+
+/* ---------- tile ---------- */
+.tile{position:relative;display:block;overflow:hidden;background:var(--w);color:#fff;border:0;padding:0;margin:0;text-align:left;cursor:pointer;
+  grid-column:span var(--cs);grid-row:span var(--rs);
+  transition:transform .14s ease-out,box-shadow .15s;
+  animation:masuk .55s cubic-bezier(.1,.9,.2,1) backwards;animation-delay:calc(var(--i) * 28ms)}
+@keyframes masuk{from{opacity:0;transform:translateX(70px)}}
+.tile:hover{box-shadow:inset 0 0 0 3px rgba(255,255,255,.38)}
+.tile:focus-visible{outline:3px solid #fff;outline-offset:2px}
+.tile.live{cursor:default}
+.tile.live[href]{cursor:pointer}
+.muka{position:absolute;inset:0;transition:transform .7s cubic-bezier(.4,0,.2,1)}
+.wajah{position:absolute;left:0;right:0;height:100%}
+.depan{top:0}
+.belakang{top:100%;padding:12px 14px 34px;font-size:14px;line-height:1.4;background:rgba(0,0,0,.14)}
+.tile.intip .muka{transform:translateY(-100%)}
+.ik{position:absolute;left:50%;top:44%;transform:translate(-50%,-50%);line-height:0}
+.ik svg{width:40px;height:40px}
+.nm{position:absolute;left:11px;right:30px;bottom:8px;font-size:13.5px;line-height:1.2;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.no{position:absolute;right:9px;bottom:7px;font-size:12px;font-weight:600;opacity:.85;font-variant-numeric:tabular-nums}
+/* kecil 1×1 */
+.t-kecil .ik{top:40%}
+.t-kecil .ik svg{width:26px;height:26px}
+.t-kecil .nm{left:4px;right:4px;bottom:4px;font-size:10px;text-align:center;-webkit-line-clamp:1}
+.t-kecil .no{display:none}
+/* lebar 4×2 */
+.t-lebar .ik svg{width:46px;height:46px}
+/* besar 4×4 */
+.t-besar .ik{left:18px;top:18px;transform:none}
+.t-besar .ik svg{width:58px;height:58px}
+.t-besar .ket{position:absolute;left:18px;right:18px;top:96px;font-size:15px;line-height:1.45;color:rgba(255,255,255,.9)}
+.t-besar .nm{left:18px;bottom:14px;font-size:22px;font-weight:300}
+.t-besar .no{right:14px;bottom:14px;font-size:14px}
+/* live tile: angka & jam */
+.angka{position:absolute;left:12px;top:8px;font-weight:300;font-size:calc(var(--u) * .56);line-height:1.1;font-variant-numeric:tabular-nums;white-space:nowrap}
+.angka.panjang{font-size:calc(var(--u) * .38);top:14px}
+.tile .ik-sudut{position:absolute;right:10px;top:10px;line-height:0;opacity:.75}
+.tile .ik-sudut svg{width:20px;height:20px}
+.jam-isi{position:absolute;left:14px;top:10px;right:14px}
+.jam-isi b{display:block;font-weight:300;font-size:calc(var(--u) * .74);line-height:1;font-variant-numeric:tabular-nums}
+.jam-isi span{display:block;font-size:15px;margin-top:4px}
+.jam-isi small{display:block;font-size:13px;color:rgba(255,255,255,.8)}
+.status{position:absolute;left:11px;right:11px;top:10px;font-size:11.5px;color:rgba(255,255,255,.82)}
+.tile.putar .ik svg{animation:putar 1s linear infinite}
+@keyframes putar{to{transform:rotate(360deg)}}
+@media (max-width:720px){
+  .t-besar .ket{top:84px;font-size:14px}
+  .t-besar .ik svg{width:48px;height:48px}
+  .nm{font-size:13px}
+}
+.kosong{display:none;padding:30px 0;color:var(--ink2);font-size:16px;font-weight:300}
+
+/* ---------- kaki ---------- */
+.kaki{border-top:1px solid var(--garis);margin-top:6px}
+.kaki .wrap{display:flex;gap:14px;align-items:center;flex-wrap:wrap;padding-top:16px;padding-bottom:calc(18px + env(safe-area-inset-bottom));font-size:12.5px;color:var(--ink2)}
+.kaki .kanan{margin-left:auto;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+@media (max-width:720px){ .kaki .kanan{margin-left:0;width:100%;justify-content:space-between} }
+.btn-up{display:inline-flex;align-items:center;gap:8px;font-size:13.5px;padding:7px 16px;border:2px solid #fff;background:transparent;color:#fff;cursor:pointer}
+.btn-up:hover{background:#fff;color:#0b1f3a}
+.btn-up:disabled{opacity:.6;cursor:wait}
+.btn-up svg{width:16px;height:16px}
+.btn-up.putar svg{animation:putar 1s linear infinite}
+/* notifikasi (toast) */
+.banner{position:fixed;right:18px;top:18px;z-index:50;width:min(360px,calc(100vw - 36px));background:#13294a;border-left:5px solid var(--gold);color:#fff;padding:14px 16px;font-size:14px;box-shadow:0 12px 30px rgba(0,0,0,.4);transform:translateX(calc(100% + 30px));transition:transform .35s cubic-bezier(.1,.9,.2,1)}
+.banner.tampil{transform:translateX(0)}
+.banner b{color:var(--gold);font-weight:600}
+@media (prefers-reduced-motion:reduce){ *{animation:none!important;transition:none!important} }
+</style>
+</head>
+<body>
+
+<header class="wrap kepala">
+  <div class="judul">
+    <h1 id="namaSekolah">SMP Kristen Basaan</h1>
+    <div class="sub"><span class="garis"></span><span>Portal Aplikasi Sekolah</span><span id="tp">Tahun Pelajaran 2026/2027</span></div>
+  </div>
+  <div class="akun">
+    <div class="akun-teks"><b>Yayasan Ds. A. Z. Wenas</b><span>GMIM · <span class="online" id="online"><i></i><span>Online</span></span></span></div>
+    <div class="logo"><img src="assets-landing/logo-yayasan.png" alt="Logo GMIM"></div>
+    <div class="logo"><img src="assets-landing/logo-tutwuri.png" alt="Logo Tut Wuri Handayani"></div>
+  </div>
+</header>
+<div class="wrap alat">
+  <span>Desa Basaan Satu, Kec. Ratatotok, Kab. Minahasa Tenggara</span>
+  <label class="cari"><input id="cari" type="search" placeholder="Cari aplikasi…" aria-label="Cari aplikasi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></label>
+</div>
+
+<main class="wrap">
+  <div class="layar" id="daftar"></div>
+  <div class="kosong" id="kosong">Aplikasi tidak ditemukan.</div>
+</main>
+
+<footer class="kaki">
+  <div class="wrap">
+    <span>© <span id="tahun">2026</span> SMP Kristen Basaan · Portal versi <b id="versi"></b></span>
+    <span class="kanan">
+      <span id="cekInfo">Memeriksa pembaruan…</span>
+      <button class="btn-up" id="btnUpdate" type="button" title="Periksa & muat versi terbaru portal dan semua aplikasi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg><span>Perbarui</span></button>
+    </span>
+  </div>
+</footer>
+
+<div class="banner" id="banner" role="status"><span id="bannerTxt"></span></div>
+
+<script>
+(function () {
+'use strict';
+
+/* =====================================================================
+   PENGATURAN PORTAL
+   - VERSI harus sama dengan isi versi.json. Setiap kali Index.html diubah
+     (termasuk menambah/menghapus menu), naikkan VERSI di sini DAN di
+     versi.json → semua HP otomatis memuat versi baru.
+   - DATA_INDUK_URL: URL Web App Data Induk (untuk angka statistik). Boleh dikosongkan.
+   ===================================================================== */
+const VERSI = '2026.11.21-1';
+const DATA_INDUK_URL = 'https://script.google.com/macros/s/AKfycbw5OyCdVKuZvcABAaWWwzDQKWeN-kHJ4f0nIugc8HxNvtVBzZh9BpjzLQHwcuIa_aFY/exec';
+
+
+/* #####################################################################
+   ##                                                                 ##
+   ##   DAFTAR MENU (TILE) — UBAH / TAMBAH / HAPUS MENU DI SINI SAJA   ##
+   ##                                                                 ##
+   #####################################################################
+
+   MENGHAPUS MENU  : hapus satu blok mulai baris  "▼ TILE"  sampai  "▲ TILE".
+   MENAMBAH MENU   : salin satu blok "▼ TILE" … "▲ TILE" (atau CONTOH di grup
+                     terakhir), tempel di grup yang diinginkan, lalu ubah isinya.
+   MENGUBAH URUTAN : pindahkan blok "▼ TILE" … "▲ TILE" ke atas/bawah.
+   MENAMBAH GRUP   : salin satu blok "■ GRUP" … "■ AKHIR GRUP".
+
+   ISIAN SETIAP TILE
+     nama    : tulisan pada tile                                    (wajib)
+     url     : alamat yang dibuka, relatif terhadap folder ini,
+               mis. '1. Absen Guru/AbsenGuru.html', atau 'https://…'  (wajib untuk menu biasa)
+     ukuran  : 'kecil'  = 1×1  (ikon + nama sangat pendek)
+               'sedang' = 2×2  (ikon + nama)                         ← bawaan
+               'lebar'  = 4×2  (ikon + nama; keterangan muncul bergantian)
+               'besar'  = 4×4  (ikon + nama + keterangan)
+     warna   : nama dari daftar WARNA di bawah (mis. 'biru'), atau kode warna '#1f74d1'
+     ikon    : nama dari daftar IKON di bawah (mis. 'ujian'); bila tidak dikenal → ikon kotak-kotak
+     ket     : keterangan singkat (opsional; tampil di tile lebar/besar & dipakai pencarian)
+     no      : nomor kecil di pojok kanan bawah (opsional)
+     tabBaru : true = dibuka di tab baru (opsional)
+     cari    : kata kunci tambahan untuk kotak pencarian (opsional)
+
+   TILE KHUSUS (tanpa url)
+     live: 'jam'    → jam & tanggal WITA           live: 'siswa'  → jumlah siswa aktif
+     live: 'guru'   → jumlah guru aktif            live: 'lp'     → jumlah laki-laki / perempuan
+     live: 'rombel' → jumlah rombongan belajar     aksi: 'perbarui' → tombol perbarui portal
+     (angka diambil dari Data Induk)
+
+   ISIAN SETIAP GRUP
+     judul : nama grup
+     kolom : lebar grup di layar komputer: 4, 6, atau 8 (di HP selalu 4).
+             Tip: jumlah luas tile (kecil=1, sedang=4, lebar=8, besar=16) yang habis
+             dibagi kolom×2 akan tersusun rapat tanpa celah.
+
+   Catatan: setiap blok diakhiri koma "},". Jangan lupa koma saat menyalin.
+   ##################################################################### */
+const MENU = [
+
+  /* ■ GRUP ─────────────────────────────────────────────── UTAMA */
+  { judul: 'Utama', kolom: 8, tile: [
+
+    // ▼ TILE ─ Data Induk
+    { nama: 'Data Induk Siswa & Guru', ukuran: 'besar', warna: 'biruTua', ikon: 'induk', no: '0',
+      ket: 'Kelola data siswa dan guru lengkap dengan foto di satu tempat. Setiap perubahan otomatis dikirim ke seluruh aplikasi sekolah.',
+      url: '0. Data Induk/index.html', cari: 'master induk siswa guru foto kelas wali' },
+    // ▲ TILE
+
+    // ▼ TILE ─ Siswa aktif (live)
+    { nama: 'Siswa aktif', live: 'siswa', ukuran: 'sedang', warna: 'teal', ikon: 'siswa' },
+    // ▲ TILE
+
+    // ▼ TILE ─ Guru aktif (live)
+    { nama: 'Guru aktif', live: 'guru', ukuran: 'sedang', warna: 'hijauTua', ikon: 'guru' },
+    // ▲ TILE
+
+    // ▼ TILE ─ Jam & tanggal (live)
+    { nama: 'WITA', live: 'jam', ukuran: 'lebar', warna: 'unguTua', ikon: 'jam' },
+    // ▲ TILE
+
+    // ▼ TILE ─ Laki-laki / Perempuan (live)
+    { nama: 'Laki-laki / Perempuan', live: 'lp', ukuran: 'sedang', warna: 'magenta', ikon: 'lp' },
+    // ▲ TILE
+
+    // ▼ TILE ─ Rombongan belajar (live)
+    { nama: 'Rombongan belajar', live: 'rombel', ukuran: 'sedang', warna: 'oranye', ikon: 'kelas' },
+    // ▲ TILE
+
+    // ▼ TILE ─ Buku panduan (PDF)
+    { nama: 'Buku Panduan', ukuran: 'sedang', warna: 'merahTua', ikon: 'buku',
+      ket: 'Panduan lengkap semua aplikasi (PDF).', url: 'Panduan.pdf', tabBaru: true, cari: 'pdf bantuan petunjuk' },
+    // ▲ TILE
+
+    // ▼ TILE ─ Perbarui portal
+    { nama: 'Perbarui', aksi: 'perbarui', ukuran: 'sedang', warna: 'abu', ikon: 'perbarui' },
+    // ▲ TILE
+
+  ] },
+  /* ■ AKHIR GRUP */
+
+
+  /* ■ GRUP ─────────────────────────────────────────────── KEHADIRAN */
+  { judul: 'Kehadiran', kolom: 6, tile: [
+
+    // ▼ TILE ─ 1. Absensi Guru
+    { nama: 'Absensi Guru', ukuran: 'lebar', warna: 'biru', ikon: 'absenGuru', no: '1',
+      ket: 'Catat jam datang & pulang guru setiap hari.', url: '1. Absen Guru/AbsenGuru.html' },
+    // ▲ TILE
+
+    // ▼ TILE ─ 2. Petugas Absen Siswa
+    { nama: 'Petugas Absen Siswa', ukuran: 'sedang', warna: 'unguTua', ikon: 'petugas', no: '2',
+      ket: 'Petugas memindai kartu QR siswa di gerbang.', url: '2. Petugas Absen Siswa/absen-petugas.html' },
+    // ▲ TILE
+
+    // ▼ TILE ─ 3. Absensi Siswa
+    { nama: 'Absensi Siswa', ukuran: 'sedang', warna: 'teal', ikon: 'absenSiswa', no: '3',
+      ket: 'Absensi per mata pelajaran, rekap & laporan kehadiran.', url: '3. Absen Siswa/index.html' },
+    // ▲ TILE
+
+    // ▼ TILE ─ 5. Daftar Wajah
+    { nama: 'Daftar Wajah', ukuran: 'sedang', warna: 'hijau', ikon: 'daftarWajah', no: '5',
+      ket: 'Daftarkan wajah siswa untuk absensi pengenalan wajah.', url: '5. Daftar Wajah/Daftar_Wajah.html' },
+    // ▲ TILE
+
+    // ▼ TILE ─ 8. Scan Wajah
+    { nama: 'Scan Wajah', ukuran: 'sedang', warna: 'hijauTua', ikon: 'scanWajah', no: '8',
+      ket: 'Absensi otomatis dengan kamera pengenal wajah.', url: '8. Scan Wajah/ScanWajah.html' },
+    // ▲ TILE
+
+  ] },
+  /* ■ AKHIR GRUP */
+
+
+  /* ■ GRUP ─────────────────────────────────────────────── PENILAIAN & RAPOR */
+  { judul: 'Penilaian & Rapor', kolom: 6, tile: [
+
+    // ▼ TILE ─ 5. DKN Mid Semester
+    { nama: 'DKN Mid Semester', ukuran: 'lebar', warna: 'ungu', ikon: 'dknMid', no: '5',
+      ket: 'Input nilai & cetak rapor tengah semester.', url: '5. DKN Mid Semester/index.html' },
+    // ▲ TILE
+
+    // ▼ TILE ─ DKN Mid · halaman Guru
+    { nama: 'DKN Mid · Guru', ukuran: 'sedang', warna: 'ungu', ikon: 'guru',
+      ket: 'Input nilai mid semester oleh guru.', url: '5. DKN Mid Semester/guru.html' },
+    // ▲ TILE
+
+    // ▼ TILE ─ DKN Mid · halaman Admin
+    { nama: 'DKN Mid · Admin', ukuran: 'sedang', warna: 'ungu', ikon: 'pengaturan',
+      ket: 'Pengolahan & cetak rapor mid oleh admin.', url: '5. DKN Mid Semester/admin.html' },
+    // ▲ TILE
+
+    // ▼ TILE ─ 6. DKN Semester (SIPAS)
+    { nama: 'DKN Semester (SIPAS)', ukuran: 'lebar', warna: 'biruTua', ikon: 'dknSem', no: '6',
+      ket: 'Penilaian akademik, leger & rapor semester.', url: '6. DKN Semester/index.html' },
+    // ▲ TILE
+
+    // ▼ TILE ─ SIPAS · Cek Nilai Siswa
+    { nama: 'Cek Nilai Siswa', ukuran: 'sedang', warna: 'biruTua', ikon: 'nilai',
+      ket: 'Siswa & orang tua melihat nilai rapor.', url: '6. DKN Semester/cek-nilai.html' },
+    // ▲ TILE
+
+    // ▼ TILE ─ 7. Ujian PG & Essay
+    { nama: 'Ujian PG & Essay Online', ukuran: 'lebar', warna: 'merah', ikon: 'ujian', no: '7',
+      ket: 'Ujian berbasis HP — pilihan ganda & essay dinilai AI.', url: '7. Ujian PG dan Essay Online/index.html' },
+    // ▲ TILE
+
+    // ▼ TILE ─ Ujian · Dashboard Guru
+    { nama: 'Ujian · Guru', ukuran: 'sedang', warna: 'merah', ikon: 'guru',
+      ket: 'Dashboard guru: soal, token, pantau & nilai.', url: '7. Ujian PG dan Essay Online/guru.html' },
+    // ▲ TILE
+
+    // ▼ TILE ─ Ujian · Cetak Soal
+    { nama: 'Cetak Soal', ukuran: 'sedang', warna: 'merah', ikon: 'cetak',
+      ket: 'Cetak naskah soal ke PDF & Word.', url: '7. Ujian PG dan Essay Online/Cetak_Soal.html', cari: 'ujian naskah kunci' },
+    // ▲ TILE
+
+    // ▼ TILE ─ Ujian · Kartu Peserta
+    { nama: 'Kartu Ujian', ukuran: 'sedang', warna: 'merah', ikon: 'kartuUjian',
+      ket: 'Cetak kartu peserta ujian.', url: '7. Ujian PG dan Essay Online/Cetak_Kartu.html' },
+    // ▲ TILE
+
+  ] },
+  /* ■ AKHIR GRUP */
+
+
+  /* ■ GRUP ─────────────────────────────────────────────── KESISWAAN */
+  { judul: 'Kesiswaan', kolom: 4, tile: [
+
+    // ▼ TILE ─ 9. Tata Tertib
+    { nama: 'Tata Tertib', ukuran: 'lebar', warna: 'oranyeTua', ikon: 'tatib', no: '9',
+      ket: 'Catatan pelanggaran, poin & tindak lanjut kedisiplinan.', url: '9. Tata Tertib/index.html' },
+    // ▲ TILE
+
+    // ▼ TILE ─ Tata Tertib · Info Siswa & Orang Tua
+    { nama: 'Info Siswa & Orang Tua', ukuran: 'sedang', warna: 'oranyeTua', ikon: 'info',
+      ket: 'Halaman tata tertib untuk siswa & orang tua.', url: '9. Tata Tertib/DashboardSiswa.html' },
+    // ▲ TILE
+
+    // ▼ TILE ─ 4. Cetak Kartu Pelajar
+    { nama: 'Cetak Kartu Pelajar', ukuran: 'sedang', warna: 'emas', ikon: 'kartu', no: '4',
+      ket: 'Buat kartu tanda pelajar dengan foto & kode QR NIS.', url: '4. Cetak Kartu/CetakKartu.html' },
+    // ▲ TILE
+
+    // ▼ CONTOH TILE BARU — untuk memakainya, hapus tanda  //  di depan 2 baris berikut, lalu ubah isinya
+    // { nama: 'Nama Aplikasi Baru', ukuran: 'sedang', warna: 'hijau', ikon: 'aplikasi',
+    //   ket: 'Keterangan singkat aplikasi.', url: '10. Folder Aplikasi/index.html' },
+    // ▲ CONTOH
+
+  ] },
+  /* ■ AKHIR GRUP */
+
+];
+/* ############################ AKHIR DAFTAR MENU ############################ */
+
+
+/* ---------------------------------------------------------------------
+   DAFTAR WARNA — boleh ditambah: namaWarna: '#kode'
+   --------------------------------------------------------------------- */
+const WARNA = {
+  biru: '#1f74d1',     biruTua: '#2b5797',  teal: '#00827f',     hijau: '#178a17',
+  hijauTua: '#1e7145', ungu: '#7e3878',     unguTua: '#603cba',  magenta: '#b0006e',
+  merah: '#c8102e',    merahTua: '#9f1d3f', oranye: '#c25e0b',   oranyeTua: '#c0461f',
+  emas: '#a87700',     abu: '#4f5b66',      navy: '#0f2f57'
+};
+
+/* ---------------------------------------------------------------------
+   DAFTAR IKON — nama ikon yang bisa dipakai pada isian "ikon"
+   (gambar SVG garis 24×24; boleh ditambah: namaIkon: '<path d="…"/>')
+   --------------------------------------------------------------------- */
+const IKON = {
+  aplikasi: '<rect x="4" y="4" width="7" height="7" rx="1"/><rect x="13" y="4" width="7" height="7" rx="1"/><rect x="4" y="13" width="7" height="7" rx="1"/><rect x="13" y="13" width="7" height="7" rx="1"/>',
+  induk: '<path d="M4 6c0-1.7 3.6-3 8-3s8 1.3 8 3-3.6 3-8 3-8-1.3-8-3z"/><path d="M4 6v6c0 1.7 3.6 3 8 3s8-1.3 8-3V6"/><path d="M4 12v6c0 1.7 3.6 3 8 3 1 0 2-.1 2.9-.2"/><circle cx="18.5" cy="18.5" r="2.5"/><path d="M18.5 14.8v1.2M18.5 21v1.2M22.2 18.5H21M16 18.5h-1.2"/>',
+  absenGuru: '<rect x="4" y="3" width="16" height="18" rx="2"/><circle cx="12" cy="9" r="2.6"/><path d="M7.5 16c.9-1.9 2.6-3 4.5-3s3.6 1.1 4.5 3"/><path d="M15 19.2l1.6 1.6 3.4-3.4" stroke-width="2.4"/>',
+  petugas: '<path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3"/><rect x="7.5" y="7.5" width="3.5" height="3.5"/><rect x="13" y="7.5" width="3.5" height="3.5"/><rect x="7.5" y="13" width="3.5" height="3.5"/><path d="M13 13h1.5v1.5H13zM15 15h1.5v1.5H15z"/>',
+  absenSiswa: '<rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V3h6v1"/><path d="M8.5 11l1.5 1.5 3-3M8.5 16.5l1.5 1.5 3-3"/><path d="M15 11.5h1.5M15 17h1.5"/>',
+  kartu: '<rect x="3" y="5" width="18" height="14" rx="2.5"/><circle cx="8.5" cy="11" r="2.2"/><path d="M5.5 16c.6-1.5 1.7-2.3 3-2.3s2.4.8 3 2.3"/><path d="M14 9.5h4M14 12.5h4M14 15.5h2.5"/>',
+  kartuUjian: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 10h6M7 14h4"/><path d="M14.5 13.5l1.7 1.7 3.3-3.3"/>',
+  daftarWajah: '<circle cx="11" cy="11" r="7"/><path d="M8.3 9.5h.01M13.7 9.5h.01" stroke-width="2.6"/><path d="M8.5 13.2c1.4 1.3 3.6 1.3 5 0"/><path d="M19.5 15.5v5M17 18h5" stroke-width="2.2"/>',
+  scanWajah: '<path d="M3 8V5a2 2 0 0 1 2-2h3M16 3h3a2 2 0 0 1 2 2v3M21 16v3a2 2 0 0 1-2 2h-3M8 21H5a2 2 0 0 1-2-2v-3"/><circle cx="12" cy="11" r="4"/><path d="M7.5 18c1-1.8 2.6-2.7 4.5-2.7s3.5.9 4.5 2.7"/><path d="M3 12h2M19 12h2"/>',
+  dknMid: '<path d="M6 3h9l4 4v14H6z"/><path d="M15 3v4h4"/><path d="M9 17v-3M12 17v-6M15 17v-4"/>',
+  dknSem: '<path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5A2.5 2.5 0 0 0 6.5 23H20v-5"/><path d="M9 8h7M9 11h5"/><path d="M15.5 13.5l1 1 2-2"/>',
+  ujian: '<path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/><path d="M8 13h3M8 17h6"/><path d="M15.2 13.8l1.3 1.3 2.6-2.6"/>',
+  tatib: '<path d="M12 3l8 3v6c0 4.6-3.4 8.3-8 9-4.6-.7-8-4.4-8-9V6z"/><path d="M8.8 12.2l2.2 2.2 4.4-4.6"/>',
+  siswa: '<circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/>',
+  guru: '<path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11v5c3 2.5 9 2.5 12 0v-5"/>',
+  lp: '<circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 20c.8-3.3 3.2-5 6-5s5.2 1.7 6 5M14.5 15.3c2.8-.6 5.6.9 6.5 4.7"/>',
+  kelas: '<rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4"/>',
+  jam: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+  buku: '<path d="M12 6c-2-1.5-4.5-2-8-2v14c3.5 0 6 .5 8 2 2-1.5 4.5-2 8-2V4c-3.5 0-6 .5-8 2z"/><path d="M12 6v14"/>',
+  perbarui: '<path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/>',
+  nilai: '<path d="M4 20V11M10 20V5M16 20v-6M2 20h20"/>',
+  cetak: '<path d="M6 9V3h12v6"/><rect x="3" y="9" width="18" height="8" rx="2"/><path d="M7 14h10v7H7z"/>',
+  info: '<circle cx="12" cy="12" r="9"/><path d="M12 11v6"/><path d="M12 7.5v.01" stroke-width="2.6"/>',
+  pengaturan: '<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/>',
+  link: '<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>',
+  web: '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.7 3.8 5.7 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-5.7-3.8-9S9.5 5.7 12 3z"/>',
+  kalender: '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>'
+};
+
+
+/* =====================================================================
+   MESIN PORTAL — tidak perlu diubah untuk menambah/menghapus menu
+   ===================================================================== */
+const $ = s => document.querySelector(s);
+const $$ = s => Array.from(document.querySelectorAll(s));
+const esc = v => String(v == null ? '' : v).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const tautan = u => /^https?:\/\//.test(u) ? u : encodeURI(u);
+const svg = (n, w) => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="' + (w || 1.8) + '" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + (IKON[n] || IKON.aplikasi) + '</svg>';
+const UKURAN = { kecil: [1, 1], sedang: [2, 2], lebar: [4, 2], besar: [4, 4] };
+
+/* ---------------------------------------------------------------- tile */
+function isiTile(t) {
+  const nm = '<span class="nm">' + esc(t.nama) + '</span>';
+  const no = t.no ? '<span class="no">' + esc(t.no) + '</span>' : '';
+  if (t.live === 'jam') {
+    return '<div class="jam-isi"><b data-jam>--.--</b><span data-hari>—</span><small data-tgl></small></div>' +
+      '<span class="ik-sudut">' + svg(t.ikon || 'jam') + '</span>' + nm;
+  }
+  if (t.live) {
+    return '<span class="angka" data-angka>—</span><span class="ik-sudut">' + svg(t.ikon) + '</span>' + nm;
+  }
+  if (t.aksi === 'perbarui') {
+    return '<span class="status" data-status></span><span class="ik">' + svg(t.ikon || 'perbarui', 2) + '</span>' + nm;
+  }
+  if (t.ukuran === 'besar') {
+    return '<span class="ik">' + svg(t.ikon, 1.6) + '</span>' + (t.ket ? '<span class="ket">' + esc(t.ket) + '</span>' : '') + nm + no;
+  }
+  const depan = '<span class="ik">' + svg(t.ikon) + '</span>' + nm;
+  if (t.ukuran === 'lebar' && t.ket) {
+    return '<div class="muka"><div class="wajah depan">' + depan + '</div><div class="wajah belakang">' + esc(t.ket) + nm + '</div></div>' + no;
+  }
+  return depan + no;
+}
+
+function gambar() {
+  let i = 0;
+  const html = MENU.map(g => {
+    const tiles = (g.tile || []).filter(Boolean).map(t => {
+      const uk = UKURAN[t.ukuran] ? t.ukuran : 'sedang';
+      t.ukuran = uk;
+      const [cs, rs] = UKURAN[uk];
+      const warna = WARNA[t.warna] || t.warna || WARNA.biruTua;
+      const kunci = (t.live || t.aksi) ? '' : (t.nama + ' ' + (t.ket || '') + ' ' + (t.cari || '') + ' ' + g.judul).toLowerCase();
+      const kelas = 'tile t-' + uk + (t.live ? ' live' : '') + (uk === 'lebar' && t.ket && !t.live && !t.aksi ? ' bisa-intip' : '');
+      const gaya = '--w:' + warna + ';--cs:' + cs + ';--rs:' + rs + ';--i:' + (i++);
+      const judul = t.nama + (t.ket ? ' — ' + t.ket : '');
+      const atr = ' class="' + kelas + '" style="' + esc(gaya) + '" data-cari="' + esc(kunci) + '" title="' + esc(judul) + '"' +
+        (t.live ? ' data-live="' + esc(t.live) + '"' : '');
+      if (t.aksi) return '<button type="button"' + atr + ' data-aksi="' + esc(t.aksi) + '" aria-label="' + esc(t.nama) + '">' + isiTile(t) + '</button>';
+      if (t.url) return '<a href="' + esc(tautan(t.url)) + '"' + atr + ' aria-label="' + esc(judul) + '"' + (t.tabBaru ? ' target="_blank" rel="noopener"' : '') + '>' + isiTile(t) + '</a>';
+      return '<div' + atr + '>' + isiTile(t) + '</div>';
+    }).join('');
+    return '<section class="grup" data-grup><h2>' + esc(g.judul) + '</h2><div class="kisi" style="--k:' + (Number(g.kolom) || 4) + '">' + tiles + '</div></section>';
+  }).join('');
+  $('#daftar').innerHTML = html;
+}
+
+function saring(q) {
+  q = q.trim().toLowerCase();
+  let ada = 0;
+  $$('.tile').forEach(el => { const ok = !q || (el.dataset.cari && el.dataset.cari.includes(q)); el.style.display = ok ? '' : 'none'; if (ok) ada++; });
+  $$('[data-grup]').forEach(s => { s.style.display = Array.from(s.querySelectorAll('.tile')).some(a => a.style.display !== 'none') ? '' : 'none'; });
+  $('#kosong').style.display = ada ? 'none' : 'block';
+}
+
+/* tile "mengintip" bergantian (keterangan muncul), seperti live tile Windows 8 */
+function mulaiIntip() {
+  if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  setInterval(() => {
+    if (document.hidden || $('#cari').value) return;
+    const calon = $$('.tile.bisa-intip:not(.intip)').filter(el => el.offsetParent && !el.matches(':hover'));
+    if (!calon.length) return;
+    const el = calon[Math.floor(Math.random() * calon.length)];
+    el.classList.add('intip');
+    setTimeout(() => el.classList.remove('intip'), 4200);
+  }, 3200);
+}
+
+/* efek miring saat tile ditekan */
+function pasangMiring() {
+  document.addEventListener('pointerdown', e => {
+    const el = e.target.closest('.tile:not(.live)');
+    if (!el || e.button > 0) return;
+    const r = el.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width - 0.5, y = (e.clientY - r.top) / r.height - 0.5;
+    el.style.transform = 'perspective(800px) rotateX(' + (-y * 10).toFixed(1) + 'deg) rotateY(' + (x * 10).toFixed(1) + 'deg) scale(.97)';
+  });
+  const lepas = () => $$('.tile').forEach(el => { if (el.style.transform) el.style.transform = ''; });
+  ['pointerup', 'pointercancel', 'dragstart', 'blur'].forEach(ev => window.addEventListener(ev, lepas));
+  document.addEventListener('pointerout', e => { if (e.target.closest && e.target.closest('.tile') && !e.relatedTarget) lepas(); });
+}
+
+/* ---------------------------------------------------------------- jam & status */
+const HARI = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+const BULAN = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+function waktuWita() { const d = new Date(); return new Date(d.getTime() + d.getTimezoneOffset() * 60000 + 8 * 3600000); }
+function tikJam() {
+  const w = waktuWita();
+  const jam = String(w.getHours()).padStart(2, '0') + '.' + String(w.getMinutes()).padStart(2, '0');
+  $$('[data-jam]').forEach(el => { el.textContent = jam; });
+  $$('[data-hari]').forEach(el => { el.textContent = HARI[w.getDay()]; });
+  $$('[data-tgl]').forEach(el => { el.textContent = w.getDate() + ' ' + BULAN[w.getMonth()] + ' ' + w.getFullYear(); });
+  $('#tahun').textContent = w.getFullYear();
+}
+function statusOnline() {
+  const on = navigator.onLine;
+  $('#online').classList.toggle('off', !on);
+  $('#online span').textContent = on ? 'Online' : 'Offline';
+}
+
+/* ---------------------------------------------------------------- statistik dari Data Induk */
+function tampilStat(d) {
+  if (!d) return;
+  const nilai = { siswa: d.siswaAktif, guru: d.guruAktif, lp: (d.siswaL != null ? d.siswaL + ' / ' + d.siswaP : null), rombel: d.jumlahKelas };
+  Object.keys(nilai).forEach(k => {
+    if (nilai[k] == null) return;
+    $$('[data-live="' + k + '"] [data-angka]').forEach(el => { el.textContent = nilai[k]; el.classList.toggle('panjang', String(nilai[k]).length > 4); });
+  });
+  if (d.tahunPelajaran) $('#tp').textContent = 'Tahun Pelajaran ' + d.tahunPelajaran + (d.semester ? ' · Semester ' + d.semester : '');
+}
+async function muatStat() {
+  try { tampilStat(JSON.parse(localStorage.getItem('portal_stat') || 'null')); } catch (e) { /* abaikan */ }
+  if (!DATA_INDUK_URL || DATA_INDUK_URL.indexOf('PASTE_') === 0 || !navigator.onLine) return;
+  try {
+    const r = await fetch(DATA_INDUK_URL + '?action=ringkasan&t=' + Date.now(), { cache: 'no-store' });
+    const d = await r.json();
+    if (d && d.ok) { tampilStat(d); try { localStorage.setItem('portal_stat', JSON.stringify(d)); } catch (e) { /* abaikan */ } }
+  } catch (e) { /* tetap tampilkan angka terakhir */ }
+}
+
+/* ---------------------------------------------------------------- pembaruan otomatis & manual */
+let sedangMuatUlang = false;
+function info(teks) {
+  $('#cekInfo').textContent = teks;
+  $$('[data-status]').forEach(el => { el.textContent = teks; });
+}
+function banner(teks, ms) {
+  $('#bannerTxt').innerHTML = teks;
+  $('#banner').classList.add('tampil');
+  clearTimeout(banner.t);
+  if (ms) banner.t = setTimeout(() => $('#banner').classList.remove('tampil'), ms);
+}
+async function versiServer() {
+  const r = await fetch('versi.json?t=' + Date.now(), { cache: 'no-store' });
+  if (!r.ok) throw new Error('HTTP ' + r.status);
+  return (await r.json()).versi;
+}
+async function cekVersi(otomatis) {
+  if (!navigator.onLine) { info('Offline — memakai versi tersimpan'); return false; }
+  if (location.protocol === 'file:') { info('Dibuka dari file lokal'); return false; }
+  try {
+    const v = await versiServer();
+    const jam = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+    if (v && v !== VERSI) {
+      info('Versi baru ' + v + ' tersedia');
+      if (otomatis && !sedangMuatUlang && sessionStorage.getItem('portal_coba') !== v) {
+        sessionStorage.setItem('portal_coba', v);                 // cegah muat ulang berulang bila server belum sinkron
+        banner('Memperbarui portal ke versi <b>' + esc(v) + '</b>…');
+        setTimeout(() => muatUlangBersih(), 1200);
+      }
+      return true;
+    }
+    info('Versi terbaru · dicek ' + jam);
+    return false;
+  } catch (e) { info('Tidak bisa memeriksa pembaruan'); return false; }
+}
+async function muatUlangBersih() {
+  if (sedangMuatUlang) return;
+  sedangMuatUlang = true;
+  try {
+    // hanya cache milik portal yang dibersihkan — cache aplikasi lain (mis. gambar soal ujian offline) tidak disentuh
+    if (window.caches) { const ks = await caches.keys(); await Promise.all(ks.filter(k => k.indexOf('portal-') === 0).map(k => caches.delete(k))); }
+    // minta setiap aplikasi memeriksa versi barunya (aplikasi sendiri yang memutuskan kapan memakai versi baru)
+    if (navigator.serviceWorker) { const rs = await navigator.serviceWorker.getRegistrations(); await Promise.all(rs.map(r => r.update().catch(() => {}))); }
+  } catch (e) { /* abaikan */ }
+  location.replace(location.pathname + '?v=' + Date.now());
+}
+async function perbarui() {
+  const b = $('#btnUpdate');
+  if (!navigator.onLine) { banner('Tidak ada internet. Sambungkan internet lalu coba lagi.', 3500); return; }
+  b.disabled = true; b.classList.add('putar'); b.querySelector('span').textContent = 'Memperbarui…';
+  $$('[data-aksi="perbarui"]').forEach(el => el.classList.add('putar'));
+  banner('Memeriksa pembaruan portal & semua aplikasi…');
+  sessionStorage.removeItem('portal_coba');
+  await muatStat();
+  await muatUlangBersih();
+}
+
+/* ---------------------------------------------------------------- mulai */
+$('#versi').textContent = VERSI;
+try { gambar(); }
+catch (e) { $('#kosong').style.display = 'block'; $('#kosong').textContent = 'Daftar MENU tidak bisa dibaca — periksa penulisan di Index.html. (' + e.message + ')'; }
+$('#btnUpdate').addEventListener('click', perbarui);
+document.addEventListener('click', e => { if (e.target.closest('[data-aksi="perbarui"]')) perbarui(); });
+$('#cari').addEventListener('input', e => saring(e.target.value));
+document.addEventListener('keydown', e => { if (e.key === '/' && document.activeElement !== $('#cari')) { e.preventDefault(); $('#cari').focus(); } });
+tikJam(); setInterval(tikJam, 15000);
+statusOnline(); window.addEventListener('online', () => { statusOnline(); cekVersi(true); muatStat(); }); window.addEventListener('offline', statusOnline);
+muatStat();
+cekVersi(true);
+mulaiIntip();
+pasangMiring();
+setInterval(() => { cekVersi(true); muatStat(); }, 10 * 60 * 1000);
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') { cekVersi(true); muatStat(); } });
+if (/[?&]v=/.test(location.search)) { history.replaceState(null, '', location.pathname); banner('Portal sudah versi terbaru.', 2200); }
+// scope hanya halaman ini — aplikasi di subfolder TIDAK ikut dikendalikan
+if ('serviceWorker' in navigator && location.protocol !== 'file:' && /\/Index\.html$/i.test(location.pathname)) {
+  navigator.serviceWorker.register('sw-portal.js', { scope: './' + location.pathname.split('/').pop() }).catch(() => {});
+}
+})();
+</script>
+</body>
+</html>
