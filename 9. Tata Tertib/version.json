@@ -1,0 +1,9 @@
+{
+  "version": "1.6.0",
+  "date": "2026-11-16",
+  "notes": [
+    "Dokumen bisa diunduh sebagai Word (.docx) yang dapat diedit: tombol Unduh Word di lembar pratinjau dan tombol Word di halaman Laporan.",
+    "Lama skorsing SP 3 bisa diubah (mis. 5 hari); tanggal selesai dan teks surat menyesuaikan otomatis.",
+    "Pengaturan ukuran kertas: A4, F4/Folio, Letter, atau Legal. Bawaan sekolah diatur di Kelola → Pengaturan → Dokumen & cetak; bisa diganti per dokumen di lembar pratinjau, lengkap dengan perkiraan jumlah halaman."
+  ]
+}
