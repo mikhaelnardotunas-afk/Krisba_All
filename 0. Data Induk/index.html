@@ -112,8 +112,8 @@ label.f{display:block;font-size:12.5px;font-weight:600;color:var(--ink2);margin:
   .side{display:none}
   .top{padding:10px 16px}
   .page{padding:14px 16px 96px}
-  .bottom-nav{display:grid;grid-template-columns:repeat(6,1fr);position:fixed;bottom:0;left:0;right:0;z-index:30;background:var(--panel);border-top:1px solid var(--line);padding:6px 4px calc(6px + env(safe-area-inset-bottom))}
-  .bottom-nav button{background:none;border:0;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:10.5px;font-weight:600;color:var(--ink3);padding:4px 0;cursor:pointer}
+  .bottom-nav{display:grid;grid-template-columns:repeat(7,1fr);position:fixed;bottom:0;left:0;right:0;z-index:30;background:var(--panel);border-top:1px solid var(--line);padding:6px 4px calc(6px + env(safe-area-inset-bottom))}
+  .bottom-nav button{background:none;border:0;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:9.5px;min-width:0;overflow:hidden;font-weight:600;color:var(--ink3);padding:4px 0;cursor:pointer}
   .bottom-nav button svg{width:21px;height:21px}
   .bottom-nav button.on{color:var(--pri)}
 }
@@ -161,9 +161,9 @@ table.tbl{width:100%;border-collapse:collapse;font-size:13.5px}
   table.tbl.resp tr{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;padding:10px 12px;border-bottom:1px solid var(--line)}
   table.tbl.resp td{border:0;padding:0}
   table.tbl.resp td.c-cek{order:0}
-  table.tbl.resp td.c-who{order:1;flex:1 1 0;min-width:0}
+  table.tbl.resp td.c-who{order:1;flex:1 1 60%;min-width:0}
   table.tbl.resp td.c-who .who{min-width:0}
-  table.tbl.resp td.c-act{order:2}
+  table.tbl.resp td.c-act{order:2;flex:none}
   table.tbl.resp td.c-x{order:3;font-size:12.5px;color:var(--ink2)}
   table.tbl.resp td.c-x1{margin-left:72px}
   table.tbl.resp td.c-hide{display:none}
@@ -205,6 +205,56 @@ table.tbl{width:100%;border-collapse:collapse;font-size:13.5px}
 .res{border:1px solid var(--line);border-radius:12px;padding:12px}
 .res ul{margin:6px 0 0;padding-left:18px;font-size:13px}
 .res .contoh{font-size:12px;color:var(--ink2)}
+
+/* ---------- NIS di tabel siswa (HP: tampil di bawah nama) ---------- */
+.nis-sm{display:none}
+@media (max-width:720px){.nis-sm{display:inline}}
+
+/* ---------- panel progres sinkron ---------- */
+.sync-ind{cursor:pointer}
+.pg{position:fixed;right:16px;top:64px;z-index:85;width:min(370px,calc(100vw - 32px));background:var(--panel);border:1px solid var(--line);border-radius:14px;box-shadow:0 18px 50px rgba(6,14,26,.28);overflow:hidden;animation:naik .2s ease-out}
+@media (max-width:860px){.pg{top:58px;left:12px;right:12px;width:auto}}
+.pg-h{display:flex;align-items:center;gap:8px;padding:12px 12px 4px 14px}
+.pg-h b{font-size:14px}
+.pg-h .pct{margin-left:auto;font-weight:800;font-size:15px;color:var(--pri);font-variant-numeric:tabular-nums}
+.pg.ok .pg-h .pct{color:var(--ok)} .pg.bad .pg-h .pct{color:var(--bad)}
+.pg-bar{height:9px;margin:6px 14px 6px;background:var(--panel2);border:1px solid var(--line);border-radius:99px;overflow:hidden}
+.pg-bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--pri),var(--pri2));transition:width .3s linear}
+.pg.ok .pg-bar i{background:var(--ok)} .pg.bad .pg-bar i{background:var(--bad)}
+.pg-sub{padding:0 14px 10px;font-size:12px;color:var(--ink2)}
+.pg-list{list-style:none;margin:0;padding:6px 8px 10px;max-height:min(260px,45vh);overflow:auto;border-top:1px solid var(--line)}
+.pg-list li{display:flex;gap:8px;align-items:flex-start;padding:5px 6px;font-size:12.5px;border-radius:8px}
+.pg-list li.jalan{background:var(--priS);font-weight:600}
+.pg-list li.antre{color:var(--ink3)}
+.pg-list .st{width:16px;flex:none;text-align:center;line-height:1.3}
+.pg-list small{display:block;color:var(--ink2);font-size:11.5px;font-weight:500}
+.pg.kecil .pg-list{display:none}
+
+/* ---------- laporan & cetak ---------- */
+.lap{display:grid;grid-template-columns:minmax(300px,390px) minmax(0,1fr);gap:14px;align-items:start}
+.lap-opsi{display:flex;flex-direction:column;gap:12px;min-width:0}
+.lap-opsi .card-b{display:flex;flex-direction:column;gap:10px}
+.lap-hasil{position:sticky;top:66px;overflow:hidden}
+#lapFrame{display:block;width:100%;height:calc(100vh - 150px);min-height:460px;border:0;background:#d9dde3}
+.jenis{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.jenis label{position:relative;border:1px solid var(--line);border-radius:12px;padding:10px;cursor:pointer;display:flex;flex-direction:column;gap:3px;font-size:12px;color:var(--ink2);transition:.15s}
+.jenis label b{font-size:13.5px;color:var(--ink);display:flex;align-items:center;gap:7px}
+.jenis label b svg{width:17px;height:17px;color:var(--pri)}
+.jenis input{position:absolute;opacity:0;pointer-events:none}
+.jenis label.on{border-color:var(--pri);background:var(--priS);box-shadow:inset 0 0 0 1px var(--pri)}
+.pilih{display:flex;flex-wrap:wrap;gap:6px}
+.pilih label{display:inline-flex;align-items:center;padding:4px 10px;border-radius:999px;border:1px solid var(--line);background:var(--panel);font-size:12.5px;font-weight:600;cursor:pointer;user-select:none}
+.pilih input{display:none}
+.pilih label.on{background:var(--pri);border-color:var(--pri);color:#fff}
+.cekgrid{display:grid;grid-template-columns:1fr 1fr;gap:4px 10px}
+.cekgrid label{display:flex;align-items:center;gap:7px;font-size:13px;cursor:pointer}
+.only-sm{display:none}
+@media (max-width:980px){
+  .lap{grid-template-columns:1fr}
+  .lap-hasil{position:static}
+  #lapFrame{height:72vh;min-height:380px}
+  .only-sm{display:flex}
+}
 
 /* ---------- toast & loading ---------- */
 #toasts{position:fixed;right:16px;bottom:16px;z-index:90;display:flex;flex-direction:column;gap:8px;max-width:min(380px,calc(100vw - 32px))}
@@ -417,12 +467,11 @@ $('#formLogin').addEventListener('submit', async e => {
 /* ---------------------------------------------------------------- NAVIGASI */
 const PAGES = [
   ['beranda', 'Beranda', 'home'], ['siswa', 'Siswa', 'siswa'], ['guru', 'Guru', 'guru'],
-  ['kelas', 'Kelas', 'kelas'], ['sinkron', 'Sinkronisasi', 'sinkron'], ['pengaturan', 'Pengaturan', 'atur']
+  ['kelas', 'Kelas', 'kelas'], ['laporan', 'Laporan & Cetak', 'cetak', 'Laporan'], ['sinkron', 'Sinkronisasi', 'sinkron', 'Sinkron'], ['pengaturan', 'Pengaturan', 'atur', 'Atur']
 ];
 function bangunNav() {
-  const h = PAGES.map(p => '<button data-p="' + p[0] + '">' + ic(p[2]) + '<span>' + p[1] + '</span></button>').join('');
-  $('#nav').innerHTML = h;
-  $('#bnav').innerHTML = h;
+  $('#nav').innerHTML = PAGES.map(p => '<button data-p="' + p[0] + '">' + ic(p[2]) + '<span>' + p[1] + '</span></button>').join('');
+  $('#bnav').innerHTML = PAGES.map(p => '<button data-p="' + p[0] + '">' + ic(p[2]) + '<span>' + (p[3] || p[1]) + '</span></button>').join('');
   $$('#nav button,#bnav button').forEach(b => b.addEventListener('click', () => buka(b.dataset.p)));
 }
 function buka(p) {
@@ -434,7 +483,7 @@ function buka(p) {
   window.scrollTo(0, 0);
 }
 function render() {
-  const fn = { beranda: pBeranda, siswa: pSiswa, guru: pGuru, kelas: pKelas, sinkron: pSinkron, pengaturan: pPengaturan }[S.page];
+  const fn = { beranda: pBeranda, siswa: pSiswa, guru: pGuru, kelas: pKelas, laporan: pLaporan, sinkron: pSinkron, pengaturan: pPengaturan }[S.page];
   fn();
 }
 
@@ -470,20 +519,106 @@ function jadwalSinkron() {
   setInd('run', 'Menunggu…');
   timerSinkron = setTimeout(sinkronLatar, 1500);
 }
+/* ---------------------------------------------------------------- PANEL PROGRES
+   Menampilkan persentase, aplikasi yang sedang diproses, dan hasil tiap aplikasi.
+   Satu langkah = satu aplikasi (satu panggilan ke server). Selama langkah berjalan,
+   bilah maju perlahan berdasarkan lama sinkron aplikasi itu sebelumnya. */
+const PG = { el: null, d: null, t: null, tutupT: null };
+function pgBuka(judul, langkah, estimasi) {
+  clearInterval(PG.t); clearTimeout(PG.tutupT);
+  PG.d = { judul: judul, list: langkah.map(x => ({ kode: x.kode, nama: x.nama, st: 'antre', ket: '' })), i: -1, mulai: Date.now(), mulaiLangkah: 0, selesai: false, teks: '', est: estimasi || 0 };
+  if (!PG.el) {
+    PG.el = document.createElement('div');
+    PG.el.className = 'pg'; PG.el.setAttribute('role', 'status'); PG.el.setAttribute('aria-live', 'polite');
+    document.body.appendChild(PG.el);
+    PG.el.addEventListener('click', e => {
+      const b = e.target.closest('[data-pg]'); if (!b) return;
+      if (b.dataset.pg === 'tutup') { PG.el.classList.add('hidden'); clearTimeout(PG.tutupT); }
+      if (b.dataset.pg === 'kecil') { PG.el.classList.toggle('kecil'); pgGambar(); }
+    });
+    PG.el.addEventListener('mouseenter', () => clearTimeout(PG.tutupT));
+  }
+  PG.el.classList.remove('hidden', 'ok', 'bad');
+  PG.t = setInterval(pgGambar, 300);
+  pgGambar();
+}
+function pgLangkah(i) { const d = PG.d; if (!d) return; d.i = i; d.list[i].st = 'jalan'; d.mulaiLangkah = Date.now(); pgGambar(); }
+function pgHasil(i, h) {
+  const d = PG.d; if (!d) return;
+  const it = d.list[i];
+  it.st = h.ok ? 'ok' : 'gagal';
+  if (h.ok) {
+    const t = { tambah: 0, ubah: 0, hapus: 0 };
+    (h.rincian || []).forEach(r => { t.tambah += r.tambah || 0; t.ubah += r.ubah || 0; t.hapus += r.hapus || 0; });
+    it.ket = (h.simulasi ? 'akan: ' : '') + 'tambah ' + t.tambah + ' · ubah ' + t.ubah + ' · hapus ' + t.hapus + ' · ' + ((h.durasi || 0) / 1000).toFixed(1) + ' dtk';
+  } else it.ket = h.pesan || 'Gagal';
+  pgGambar();
+}
+function pgSelesai(teks) {
+  const d = PG.d; if (!d) return;
+  d.selesai = true; d.teks = teks;
+  clearInterval(PG.t);
+  pgGambar();
+  const gagal = d.list.some(x => x.st === 'gagal');
+  PG.el.classList.add(gagal ? 'bad' : 'ok');
+  if (!gagal) PG.tutupT = setTimeout(() => PG.el.classList.add('hidden'), 6000);
+}
+function pgPersen() {
+  const d = PG.d; if (!d) return 0;
+  if (d.selesai) return 100;
+  const n = d.list.length;
+  const beres = d.list.filter(x => x.st === 'ok' || x.st === 'gagal').length;
+  let fr = 0;
+  const cur = d.list[d.i];
+  if (cur && cur.st === 'jalan') {
+    const lalu = S.sync.hasil[cur.kode];
+    const est = d.est || (lalu && lalu.durasi) || 9000;
+    fr = Math.min(0.94, 1 - Math.exp(-(Date.now() - d.mulaiLangkah) / est * 1.6));
+  }
+  return Math.min(99, Math.floor((beres + fr) / n * 100));
+}
+function pgGambar() {
+  const d = PG.d; if (!d || !PG.el) return;
+  const pct = pgPersen();
+  const dtk = Math.round((Date.now() - d.mulai) / 1000);
+  const cur = d.list[d.i];
+  const ikon = { antre: '○', jalan: '<span class="spin sm" style="display:inline-block"></span>', ok: '✅', gagal: '❌' };
+  if (PG.el.dataset.judul !== d.judul + d.mulai) {          // kerangka dibuat sekali per proses (tombol tidak ikut digambar ulang)
+    PG.el.dataset.judul = d.judul + d.mulai;
+    PG.el.innerHTML =
+      '<div class="pg-h"><b>' + esc(d.judul) + '</b><span class="pct"></span>' +
+        '<button class="btn sm ghost" data-pg="kecil" title="Tampilkan / sembunyikan rincian" style="padding:4px 8px">☰</button>' +
+        '<button class="btn sm ghost" data-pg="tutup" title="Tutup (proses tetap berjalan; buka lagi lewat indikator di kanan atas)" style="padding:4px 6px">' + ic('x') + '</button></div>' +
+      '<div class="pg-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100"><i></i></div><div class="pg-sub"></div><ul class="pg-list"></ul>';
+  }
+  $('.pct', PG.el).textContent = pct + '%';
+  $('.pg-bar', PG.el).setAttribute('aria-valuenow', pct);
+  $('.pg-bar i', PG.el).style.width = pct + '%';
+  $('.pg-sub', PG.el).textContent = (d.selesai ? d.teks : (cur ? (d.i + 1) + ' dari ' + d.list.length + ' · ' + cur.nama : 'Menyiapkan…')) + ' · ' + dtk + ' dtk';
+  const daftar = d.list.map(x => '<li class="' + x.st + '"><span class="st">' + ikon[x.st] + '</span><span>' + esc(x.nama) + (x.ket ? '<small>' + esc(x.ket) + '</small>' : '') + '</span></li>').join('');
+  const ul = $('.pg-list', PG.el);
+  if (ul.dataset.isi !== daftar) { ul.dataset.isi = daftar; ul.innerHTML = daftar; }
+  if (!d.selesai) setInd('run', (/^Pratinjau/.test(d.judul) ? 'Pratinjau ' : 'Sinkron ') + pct + '%' + (cur ? ' · ' + cur.nama.split(' (')[0] : ''));
+}
+$('#syncInd').addEventListener('click', () => { if (PG.el && PG.d) { PG.el.classList.remove('hidden'); clearTimeout(PG.tutupT); } });
+
 async function sinkronLatar() {
   if (S.sync.jalan) { S.sync.antre = true; return; }
   const aktif = S.target.filter(t => t.aktif);
   if (!aktif.length) { setInd('', 'Tidak ada aplikasi aktif'); return; }
   S.sync.jalan = true;
   let gagal = 0;
+  pgBuka('Sinkronisasi otomatis', aktif.map(t => ({ kode: t.kode, nama: t.aplikasi })));
   for (let i = 0; i < aktif.length; i++) {
-    setInd('run', 'Sinkron ' + (i + 1) + '/' + aktif.length + ' · ' + aktif[i].aplikasi.split(' (')[0]);
+    pgLangkah(i);
     try {
       const j = await api('sinkron', { kode: aktif[i].kode, akhir: i === aktif.length - 1 });
       const h = j.hasil[0]; S.sync.hasil[h.kode] = h; if (!h.ok) gagal++;
     } catch (x) { gagal++; S.sync.hasil[aktif[i].kode] = { kode: aktif[i].kode, aplikasi: aktif[i].aplikasi, ok: false, pesan: x.message, rincian: [], peringatan: [] }; }
+    pgHasil(i, S.sync.hasil[aktif[i].kode]);
   }
   S.sync.jalan = false;
+  pgSelesai(gagal ? gagal + ' dari ' + aktif.length + ' aplikasi gagal' : 'Selesai — ' + aktif.length + ' aplikasi tersinkron');
   setInd(gagal ? 'bad' : 'ok', gagal ? gagal + ' aplikasi gagal sinkron' : 'Tersinkron ' + new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }));
   if (gagal) toast(gagal + ' aplikasi gagal disinkronkan. Lihat menu Sinkronisasi.', 'bad', 5000);
   try { const j = await api('data'); S.target = j.target || S.target; if (S.page === 'sinkron' || S.page === 'beranda') render(); } catch (x) { /* abaikan */ }
@@ -640,6 +775,7 @@ function pSiswa() {
         '<div class="row right">' +
           '<button class="btn" id="bImpor" title="Impor dari Excel">' + ic('unggah') + '<span>Impor</span></button>' +
           '<button class="btn" id="bEkspor" title="Ekspor ke Excel">' + ic('unduh') + '<span>Ekspor</span></button>' +
+          '<button class="btn" id="bCetakDaftar" title="Cetak daftar / laporan siswa sesuai saringan">' + ic('cetak') + '<span>Cetak</span></button>' +
           '<button class="btn pri" id="bTambah">' + ic('plus') + 'Tambah siswa</button>' +
         '</div>' +
       '</div>' +
@@ -655,6 +791,7 @@ function pSiswa() {
   $('#bTambah').onclick = () => formOrang('siswa', null);
   $('#bEkspor').onclick = () => ekspor('siswa');
   $('#bImpor').onclick = () => imporExcel('siswa');
+  $('#bCetakDaftar').onclick = () => { S.lapPreset = { kelas: S.f.kelas ? [S.f.kelas] : [], status: S.f.status, jk: S.f.jk }; buka('laporan'); };
   isiTabelSiswa();
 }
 
@@ -664,17 +801,18 @@ function isiTabelSiswa() {
   if (S.hal > maxHal) S.hal = maxHal;
   const hal = list.slice((S.hal - 1) * PER_HAL, S.hal * PER_HAL);
   const semuaDipilih = hal.length && hal.every(s => S.sel.has(s.id));
-  $('#tbl').innerHTML = '<thead><tr><th style="width:36px"><input type="checkbox" id="cekSemua" ' + (semuaDipilih ? 'checked' : '') + ' aria-label="Pilih semua"></th><th>Siswa</th><th>Kelas</th><th class="c-hide">NISN</th><th>JK</th><th class="c-hide">TTL</th><th>Status</th><th></th></tr></thead><tbody>' +
+  $('#tbl').innerHTML = '<thead><tr><th style="width:36px"><input type="checkbox" id="cekSemua" ' + (semuaDipilih ? 'checked' : '') + ' aria-label="Pilih semua"></th><th>Siswa</th><th class="c-hide">NIS</th><th>Kelas</th><th class="c-hide">NISN</th><th>JK</th><th class="c-hide">TTL</th><th>Status</th><th></th></tr></thead><tbody>' +
     (hal.length ? hal.map(s => '<tr class="' + (S.sel.has(s.id) ? 'sel' : '') + '" data-id="' + esc(s.id) + '">' +
       '<td class="c-cek"><input type="checkbox" class="cek" ' + (S.sel.has(s.id) ? 'checked' : '') + ' aria-label="Pilih"></td>' +
-      '<td class="c-who"><div class="who">' + fotoHtml(s) + '<div><b>' + esc(s.nama) + '</b><span class="small muted">NIS ' + esc(s.nis || '—') + (s.noAbsen ? ' · No ' + esc(s.noAbsen) : '') + '</span></div></div></td>' +
+      '<td class="c-who"><div class="who">' + fotoHtml(s) + '<div><b>' + esc(s.nama) + '</b><span class="small muted"><span class="nis-sm">NIS ' + esc(s.nis || '—') + ' · </span>' + (s.noAbsen ? 'No. absen ' + esc(s.noAbsen) : 'No. absen —') + '</span></div></div></td>' +
+      '<td class="c-hide" style="white-space:nowrap"><b>' + esc(s.nis || '—') + '</b></td>' +
       '<td class="c-x c-x1"><b>' + esc(s.kelas || '—') + '</b></td>' +
       '<td class="c-hide">' + esc(s.nisn || '—') + '</td>' +
       '<td class="c-x">' + esc(s.jk || '—') + '</td>' +
       '<td class="c-hide small">' + esc([s.tempatLahir, tglIndo(s.tanggalLahir)].filter(Boolean).join(', ') || '—') + '</td>' +
       '<td class="c-x">' + chipStatus(s.status) + '</td>' +
       '<td class="c-act" style="white-space:nowrap;text-align:right"><button class="btn sm ghost" data-a="lihat" title="Detail">' + ic('mata') + '</button><button class="btn sm ghost" data-a="ubah" title="Ubah">' + ic('edit') + '</button></td>' +
-      '</tr>').join('') : '<tr><td colspan="8"><div class="empty">' + (S.siswa.length ? 'Tidak ada siswa yang cocok dengan filter.' : 'Belum ada data siswa. Tambahkan, impor dari Excel, atau gunakan "Impor data awal" di Beranda.') + '</div></td></tr>') + '</tbody>';
+      '</tr>').join('') : '<tr><td colspan="9"><div class="empty">' + (S.siswa.length ? 'Tidak ada siswa yang cocok dengan filter.' : 'Belum ada data siswa. Tambahkan, impor dari Excel, atau gunakan "Impor data awal" di Beranda.') + '</div></td></tr>') + '</tbody>';
   $('#pager').innerHTML = '<span>' + list.length + ' siswa' + (S.sel.size ? ' · ' + S.sel.size + ' dipilih' : '') + '</span>' +
     (maxHal > 1 ? '<span class="row"><button class="btn sm" id="pPrev" ' + (S.hal <= 1 ? 'disabled' : '') + '>‹</button><span>' + S.hal + ' / ' + maxHal + '</span><button class="btn sm" id="pNext" ' + (S.hal >= maxHal ? 'disabled' : '') + '>›</button></span>' : '');
   if ($('#pPrev')) { $('#pPrev').onclick = () => { S.hal--; isiTabelSiswa(); }; $('#pNext').onclick = () => { S.hal++; isiTabelSiswa(); }; }
@@ -962,6 +1100,7 @@ function pSinkron() {
   $('#sTrig').onchange = async e => { try { await api('aturOtomatis', { aktif: e.target.checked }); S.otomatis = e.target.checked; toast(e.target.checked ? 'Sinkron terjadwal aktif.' : 'Sinkron terjadwal dimatikan.'); } catch (x) { e.target.checked = !e.target.checked; toast(x.message, 'bad'); } };
   $('#sDiag').onclick = diagnosa;
   $('#sImpor').onclick = imporAwal;
+  if (S.sync.hasilHtml) { $('#resList').innerHTML = S.sync.hasilHtml; if (S.sync.info) $('#resInfo').innerHTML = S.sync.info; }
 }
 
 async function jalankan(kodes, simulasi) {
@@ -970,21 +1109,33 @@ async function jalankan(kodes, simulasi) {
   if (S.sync.jalan) { toast('Sinkronisasi lain sedang berjalan, tunggu sebentar.'); return; }
   S.sync.jalan = true;
   const out = [];
-  $('#resList').innerHTML = '';
+  // hasil disimpan di S.sync agar tetap tampil walau pengguna pindah menu selama proses
+  const tulis = (info, html) => { S.sync.info = info; if (html !== undefined) S.sync.hasilHtml = html; const a = $('#resInfo'), b = $('#resList'); if (a) a.innerHTML = info; if (b && html !== undefined) b.innerHTML = html; };
+  let hasilHtml = '';
+  tulis('', '');
+  const nama = k => { const t = S.target.find(x => x.kode === k); return t ? t.aplikasi : k; };
+  pgBuka(simulasi ? 'Pratinjau sinkronisasi' : 'Sinkronisasi', kodes.map(k => ({ kode: k, nama: nama(k) })));
   for (let i = 0; i < kodes.length; i++) {
-    const t = S.target.find(x => x.kode === kodes[i]);
-    $('#resInfo').innerHTML = '<span class="spin sm" style="display:inline-block;vertical-align:-3px"></span> ' + (simulasi ? 'Pratinjau ' : 'Sinkron ') + (i + 1) + '/' + kodes.length + ': ' + esc(t ? t.aplikasi : kodes[i]);
-    setInd('run', (simulasi ? 'Pratinjau ' : 'Sinkron ') + (i + 1) + '/' + kodes.length);
+    pgLangkah(i);
+    tulis('<span class="spin sm" style="display:inline-block;vertical-align:-3px"></span> ' + (simulasi ? 'Pratinjau ' : 'Sinkron ') + (i + 1) + '/' + kodes.length + ': ' + esc(nama(kodes[i])));
     try { const j = await api(simulasi ? 'pratinjau' : 'sinkron', { kode: kodes[i], akhir: !simulasi && i === kodes.length - 1 }); out.push(j.hasil[0]); }
-    catch (x) { out.push({ kode: kodes[i], aplikasi: t ? t.aplikasi : kodes[i], ok: false, pesan: x.message, rincian: [], peringatan: [] }); }
-    const h = out[out.length - 1]; S.sync.hasil[h.kode] = h;
-    $('#resList').insertAdjacentHTML('beforeend', htmlHasil(h));
+    catch (x) { out.push({ kode: kodes[i], aplikasi: nama(kodes[i]), ok: false, pesan: x.message, rincian: [], peringatan: [] }); }
+    const h = out[out.length - 1];
+    S.sync.hasil[h.kode] = h;
+    pgHasil(i, h);
+    hasilHtml += htmlHasil(h);
+    tulis(S.sync.info, hasilHtml);
   }
   S.sync.jalan = false;
   const gagal = out.filter(h => !h.ok).length;
-  $('#resInfo').textContent = (simulasi ? 'Pratinjau selesai — belum ada yang diubah.' : 'Sinkronisasi selesai.') + (gagal ? ' ' + gagal + ' gagal.' : '');
+  const selesai = (simulasi ? 'Pratinjau selesai — belum ada yang diubah.' : 'Sinkronisasi selesai.') + (gagal ? ' ' + gagal + ' gagal.' : '');
+  pgSelesai(selesai.replace(/\.$/, ''));
+  tulis(esc(selesai));
   setInd(gagal ? 'bad' : 'ok', simulasi ? 'Pratinjau selesai' : (gagal ? gagal + ' gagal' : 'Tersinkron ' + new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })));
-  if (!simulasi) { try { const j = await api('data'); S.target = j.target; } catch (x) { /* abaikan */ } const res = $('#resList').innerHTML; pSinkron(); $('#resList').innerHTML = res; $('#resInfo').textContent = 'Sinkronisasi selesai.' + (gagal ? ' ' + gagal + ' gagal.' : ''); }
+  if (!simulasi) {
+    try { const j = await api('data'); S.target = j.target; } catch (x) { /* abaikan */ }
+    if (S.page === 'sinkron') pSinkron();          // pSinkron menampilkan ulang S.sync.info & S.sync.hasilHtml
+  }
 }
 
 function htmlHasil(h) {
@@ -1039,16 +1190,21 @@ async function imporAwal() {
     ? '<p>Data Induk sudah berisi ' + S.siswa.length + ' siswa & ' + S.guru.length + ' guru. Impor hanya akan <b>melengkapi kolom yang masih kosong</b> (NISN, tanggal lahir, NIK, dll.) dari aplikasi lain. Data yang sudah ada tidak ditimpa.</p>'
     : '<p>Siswa diambil dari <b>Absen Siswa</b> (sheet SISWA), dilengkapi dari CSV master (NISN, TTL, NIK), Tata Tertib, DKN Mid, dan DKN Semester. Guru diambil dari <b>Absen Guru</b>, gelar &amp; NIP dari DKN, wali kelas dari DKN Mid.</p><p class="small muted">Tidak ada aplikasi yang diubah pada langkah ini.</p>', 'Mulai impor');
   if (!ok) return;
-  loading(true, 'Mengambil data dari aplikasi-aplikasi… (±30 detik)');
+  if (S.sync.jalan) { toast('Sinkronisasi sedang berjalan, tunggu sebentar.'); return; }
+  pgBuka('Impor data awal', [{ kode: '_impor', nama: 'Mengambil & mencocokkan data dari semua aplikasi' }, { kode: '_muat', nama: 'Memuat hasil ke layar' }], 30000);
+  pgLangkah(0);
   try {
     const j = await api('imporAwal', { lengkapi: !!ada });
+    pgHasil(0, { ok: true, rincian: [], durasi: 0 }); PG.d.list[0].ket = j.ringkasan || '';
+    PG.d.est = 3000; pgLangkah(1);
     await muat(true);
-    loading(false);
+    pgHasil(1, { ok: true, rincian: [] }); PG.d.list[1].ket = S.siswa.length + ' siswa · ' + S.guru.length + ' guru';
+    pgSelesai('Impor selesai');
     modal('<div class="mh"><h3>Impor selesai</h3><button class="btn sm ghost right" data-tutup>' + ic('x') + '</button></div><div class="mb"><div class="alert ok" style="margin-top:0">' + esc(j.ringkasan) + '</div>' +
       '<ul class="small">' + j.catatan.map(c => '<li>' + esc(c) + '</li>').join('') + '</ul>' +
       (j.tidakCocok.length ? '<details><summary class="small" style="cursor:pointer">' + j.tidakCocok.length + ' nama di aplikasi lain tidak ditemukan di data dasar (tidak diimpor)</summary><ul class="small">' + j.tidakCocok.map(c => '<li>' + esc(c) + '</li>').join('') + '</ul></details>' : '') +
       '<p class="small">Langkah berikutnya: periksa data di menu Siswa &amp; Guru, lalu buka <b>Sinkronisasi → Pratinjau semua</b>.</p></div><div class="mf"><button class="btn pri" data-tutup>OK</button></div>');
-  } catch (x) { loading(false); toast(x.message, 'bad', 6000); }
+  } catch (x) { const i = PG.d ? Math.max(0, PG.d.i) : 0; pgHasil(i, { ok: false, pesan: x.message }); pgSelesai('Impor gagal'); toast(x.message, 'bad', 6000); }
 }
 
 /* ================================================================ PENGATURAN */
@@ -1127,6 +1283,477 @@ async function lihatLog() {
     modal('<div class="mh"><h3>Log aktivitas</h3><button class="btn sm ghost right" data-tutup>' + ic('x') + '</button></div><div class="tbl-wrap" style="max-height:65vh"><table class="tbl"><thead><tr><th>Waktu</th><th>Aksi</th><th>Detail</th></tr></thead><tbody>' +
       j.log.map(l => '<tr><td class="small" style="white-space:nowrap">' + esc(l.waktu) + '</td><td><b>' + esc(l.aksi) + '</b></td><td class="small">' + esc(l.detail) + '</td></tr>').join('') + '</tbody></table></div>', 'lg');
   } catch (x) { loading(false); toast(x.message, 'bad'); }
+}
+
+/* ================================================================ LAPORAN & CETAK
+   Jenis: daftar siswa · rekap jumlah · biodata massal · data belum lengkap.
+   Laporan disusun sebagai dokumen HTML tersendiri (kop, tabel, tanda tangan,
+   ukuran kertas) → ditampilkan di pratinjau, dicetak/PDF, atau diunduh Excel. */
+const KOL_LAP = [
+  ['noAbsen', 'No. Absen'], ['nis', 'NIS'], ['nisn', 'NISN'], ['nama', 'Nama Peserta Didik'], ['jk', 'L/P'],
+  ['tempatLahir', 'Tempat Lahir'], ['tanggalLahir', 'Tanggal Lahir'], ['ttl', 'Tempat, Tgl. Lahir'], ['umur', 'Umur'],
+  ['agama', 'Agama'], ['kelas', 'Kelas'], ['nik', 'NIK'], ['tahunMasuk', 'Thn. Masuk'], ['alamat', 'Alamat'],
+  ['namaAyah', 'Nama Ayah'], ['namaIbu', 'Nama Ibu'], ['namaWali', 'Nama Wali'], ['hpOrtu', 'No. HP Ortu'], ['status', 'Status'], ['foto', 'Foto']
+];
+const KOL_TENGAH = ['noAbsen', 'jk', 'tahunMasuk', 'kelas', 'umur', 'status'];
+const KOL_UTUH = ['nis', 'nisn', 'nik', 'jk', 'hpOrtu'];   // angka panjang: tidak dipecah ke baris baru
+const DIM = { kelas: 'Kelas', agama: 'Agama', jk: 'Jenis Kelamin', umur: 'Umur', tahunMasuk: 'Tahun Masuk', status: 'Status', tempatLahir: 'Tempat Lahir' };
+const SEMUA_REKAP = [['kelas', 'jk'], ['agama', 'jk'], ['umur', 'jk'], ['kelas', 'agama'], ['tahunMasuk', 'jk'], ['status', 'jk']];
+const CEK_LENGKAP = [['nis', 'NIS'], ['nisn', 'NISN'], ['nik', 'NIK'], ['tempatLahir', 'Tmp. Lahir'], ['tanggalLahir', 'Tgl. Lahir'], ['agama', 'Agama'],
+  ['namaAyah', 'Ayah'], ['namaIbu', 'Ibu'], ['hpOrtu', 'HP Ortu'], ['alamat', 'Alamat'], ['foto', 'Foto']];
+const KERTAS = { A4: [210, 297], F4: [215, 330], Letter: [216, 279], Legal: [216, 356] };
+const lapAwal = () => ({
+  jenis: 'daftar',
+  f: { kelas: [], status: 'Aktif', jk: '', agama: '', umurMin: '', umurMax: '', tahunMasuk: '' },
+  grup: 'kelas', urut: 'absen', halBaru: true, kol: ['nis', 'nisn', 'nama', 'jk', 'ttl', 'agama'], kosong: '0', kosongJudul: '',
+  rekBaris: 'semua', rekKolom: 'jk', persen: true, cek: CEK_LENGKAP.map(c => c[0]),
+  judul: '', kertas: 'A4', orient: 'portrait', huruf: 'normal', ttd: 'kepsek', tempat: '', tanggal: '', tglUmur: '', kop: 'YAYASAN DS. A. Z. WENAS'
+});
+let LAP = (() => {
+  const a = lapAwal();
+  try { const s = JSON.parse(ls.get('di_lap', '{}')) || {}; const o = Object.assign(a, s); o.f = Object.assign(lapAwal().f, s.f || {}); return o; } catch (e) { return a; }
+})();
+const simpanLap = () => ls.set('di_lap', JSON.stringify(LAP));
+const hariIni = () => new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+const tempatAwal = () => String(S.pengaturan.ALAMAT_SEKOLAH || '').split(',')[0].replace(/^(desa|kelurahan|kel\.|jl\.?|jalan)\s+/i, '').trim();
+
+function hitungUmur(tgl, ref) {
+  const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(tgl || ''); if (!m) return null;
+  const r = ref ? new Date(ref + 'T00:00:00') : new Date();
+  let th = r.getFullYear() - +m[1], bl = r.getMonth() + 1 - +m[2];
+  if (r.getDate() < +m[3]) bl--;
+  if (bl < 0) { th--; bl += 12; }
+  return th < 0 || th > 120 ? null : { th: th, bl: bl };
+}
+function dimVal(s, d) {
+  if (d === 'jk') return s.jk === 'L' ? 'Laki-laki' : s.jk === 'P' ? 'Perempuan' : '(belum diisi)';
+  if (d === 'umur') { const u = hitungUmur(s.tanggalLahir, LAP.tglUmur); return u ? u.th + ' tahun' : '(tgl. lahir kosong)'; }
+  if (d === 'kelas') return s.kelas || '(tanpa kelas)';
+  return String(s[d] == null ? '' : s[d]).trim() || '(belum diisi)';
+}
+function urutDim(d) {
+  return (a, b) => {
+    const kos = x => /^\(/.test(x);
+    if (kos(a) !== kos(b)) return kos(a) ? 1 : -1;
+    if (d === 'kelas') return urutKelas(a, b);
+    if (d === 'umur') return parseInt(a, 10) - parseInt(b, 10);
+    if (d === 'agama') { const i = x => { const k = AGAMA.indexOf(x); return k < 0 ? 99 : k; }; return i(a) - i(b) || a.localeCompare(b); }
+    if (d === 'status') return STATUS_S.indexOf(a) - STATUS_S.indexOf(b);
+    return String(a).localeCompare(String(b), 'id', { numeric: true });
+  };
+}
+function filterLap() {
+  const f = LAP.f;
+  return S.siswa.filter(s => {
+    if (f.kelas.length && f.kelas.indexOf(s.kelas) < 0) return false;
+    if (f.status && s.status !== f.status) return false;
+    if (f.jk && s.jk !== f.jk) return false;
+    if (f.agama && (s.agama || '') !== (f.agama === '(belum diisi)' ? '' : f.agama)) return false;
+    if (f.tahunMasuk && String(s.tahunMasuk || '') !== f.tahunMasuk) return false;
+    if (f.umurMin !== '' || f.umurMax !== '') {
+      const u = hitungUmur(s.tanggalLahir, LAP.tglUmur); if (!u) return false;
+      if (f.umurMin !== '' && u.th < +f.umurMin) return false;
+      if (f.umurMax !== '' && u.th > +f.umurMax) return false;
+    }
+    return true;
+  });
+}
+function urutkanLap(list) {
+  const absen = (a, b) => urutKelas(a.kelas, b.kelas) || (Number(a.noAbsen) || 999) - (Number(b.noAbsen) || 999) || a.nama.localeCompare(b.nama, 'id');
+  const by = {
+    absen: absen,
+    nama: (a, b) => a.nama.localeCompare(b.nama, 'id'),
+    kelasNama: (a, b) => urutKelas(a.kelas, b.kelas) || a.nama.localeCompare(b.nama, 'id'),
+    nis: (a, b) => String(a.nis || '~').localeCompare(String(b.nis || '~'), 'id', { numeric: true }),
+    lahir: (a, b) => String(a.tanggalLahir || '9999').localeCompare(String(b.tanggalLahir || '9999')) || a.nama.localeCompare(b.nama, 'id')
+  }[LAP.urut] || absen;
+  return list.slice().sort(by);
+}
+function kelompokkan(list, d) {
+  if (!d) return [{ kunci: '', isi: list }];
+  const m = {};
+  list.forEach(s => { const k = dimVal(s, d); (m[k] = m[k] || []).push(s); });
+  return Object.keys(m).sort(urutDim(d)).map(k => ({ kunci: k, isi: m[k] }));
+}
+function waliInfo(kelas) {
+  const k = kelas && S.kelas.find(x => x.kelas === kelas);
+  const g = k && k.waliId && S.guru.find(x => x.id === k.waliId);
+  return g ? { nama: namaBergelar(g), nip: g.nip || '' } : {};
+}
+function labelGrup(g) {
+  if (!LAP.grup) return '';
+  if (LAP.grup === 'kelas') { const w = waliInfo(g.kunci); return 'Kelas ' + g.kunci + (w.nama ? ' — Wali Kelas: ' + w.nama : ''); }
+  return DIM[LAP.grup] + ': ' + g.kunci;
+}
+function judulLap() {
+  if (String(LAP.judul || '').trim()) return LAP.judul.trim();
+  if (LAP.jenis === 'rekap') {
+    if (LAP.rekBaris === 'semua') return 'REKAPITULASI DATA PESERTA DIDIK';
+    const kb = LAP.rekKolom && LAP.rekKolom !== LAP.rekBaris ? LAP.rekKolom : '';
+    return ('Rekapitulasi jumlah peserta didik menurut ' + DIM[LAP.rekBaris] + (kb ? ' dan ' + DIM[kb] : '')).toUpperCase();
+  }
+  if (LAP.jenis === 'biodata') return 'BIODATA PESERTA DIDIK';
+  if (LAP.jenis === 'lengkap') return 'DAFTAR KELENGKAPAN DATA PESERTA DIDIK';
+  return 'DAFTAR PESERTA DIDIK' + (LAP.grup && LAP.grup !== 'kelas' ? ' MENURUT ' + DIM[LAP.grup].toUpperCase() : '');
+}
+function filterTeks() {
+  const f = LAP.f, a = [];
+  if (f.kelas.length) a.push('Kelas ' + f.kelas.slice().sort(urutKelas).join(', '));
+  if (f.jk) a.push(f.jk === 'L' ? 'Laki-laki' : 'Perempuan');
+  if (f.agama) a.push('Agama ' + f.agama);
+  if (f.umurMin !== '' || f.umurMax !== '') a.push('Umur ' + (f.umurMin !== '' && f.umurMax !== '' ? f.umurMin + '–' + f.umurMax : f.umurMin !== '' ? '≥ ' + f.umurMin : '≤ ' + f.umurMax) + ' tahun');
+  if (f.tahunMasuk) a.push('Tahun masuk ' + f.tahunMasuk);
+  a.push(f.status ? 'Status ' + f.status : 'Semua status');
+  if (f.umurMin !== '' || f.umurMax !== '' || LAP.kol.indexOf('umur') >= 0 || LAP.grup === 'umur' || LAP.rekBaris === 'umur' || LAP.rekBaris === 'semua') a.push('Umur per ' + tglIndo(LAP.tglUmur || hariIni()));
+  return a.join(' · ');
+}
+// tanggal ringkas untuk tabel (dd-mm-yyyy) agar baris tidak terpecah; biodata tetap memakai nama bulan
+const tglPendek = s => { const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(s || ''); return m ? m[3] + '-' + m[2] + '-' + m[1] : (s || ''); };
+function selNilai(s, k) {
+  if (k === 'tanggalLahir') return tglPendek(s.tanggalLahir);
+  if (k === 'ttl') return [s.tempatLahir, tglPendek(s.tanggalLahir)].filter(Boolean).join(', ');
+  if (k === 'umur') { const u = hitungUmur(s.tanggalLahir, LAP.tglUmur); return u ? u.th + ' th ' + u.bl + ' bl' : ''; }
+  return s[k] == null ? '' : String(s[k]);
+}
+const fotoSrc = s => S.fotoCache[s.fotoId] || s.fotoUrl || '';
+
+/* ---------- potongan dokumen ---------- */
+function lembar(isi) {
+  const p = S.pengaturan;
+  const logo = n => '<img src="' + esc(new URL('../assets-landing/' + n, location.href).href) + '" alt="" onerror="this.style.visibility=\'hidden\'">';
+  return '<section class="lembar"><div class="kop">' + logo('logo-yayasan.png') + '<div class="tx">' +
+    (LAP.kop ? '<div class="k1">' + esc(LAP.kop) + '</div>' : '') + '<div class="k2">' + esc(p.NAMA_SEKOLAH || 'Sekolah') + '</div><div class="k3">' + esc(p.ALAMAT_SEKOLAH || '') + '</div></div>' +
+    logo('logo-tutwuri.png') + '</div>' + isi + '</section>';
+}
+function kepala(tambahan, tanpaFilter) {
+  const p = S.pengaturan;
+  const fil = [tambahan, tanpaFilter ? '' : filterTeks()].filter(Boolean).join(' · ');
+  return '<h1 class="jd">' + esc(judulLap()) + '</h1><div class="sub">Tahun Pelajaran ' + esc(p.TAHUN_PELAJARAN || '') + (p.SEMESTER ? ' · Semester ' + esc(p.SEMESTER) : '') + '</div>' +
+    (fil ? '<div class="fil">' + esc(fil) + '</div>' : '');
+}
+function ttdHtml(kelas) {
+  if (LAP.ttd === 'tidak') return '';
+  const p = S.pengaturan;
+  const tgl = esc((String(LAP.tempat || '').trim() || tempatAwal() || '……………') + ', ' + tglIndo(LAP.tanggal || hariIni()));
+  const blok = (atas, jabatan, nama, nip) => '<div>' + atas + jabatan + ',<div class="sp"></div><b><u>' + esc(nama || '……………………………………') + '</u></b><br>' + (nip ? 'NIP. ' + esc(nip) : '&nbsp;') + '</div>';
+  const w = waliInfo(kelas);
+  const kepsek = atas => blok(atas, 'Kepala Sekolah', p.KEPALA_SEKOLAH, p.NIP_KEPALA);
+  const wali = atas => blok(atas, 'Wali Kelas' + (kelas ? ' ' + esc(kelas) : ''), w.nama, w.nip);
+  if (LAP.ttd === 'wali') return '<div class="ttd"><div></div>' + wali(tgl + '<br>') + '</div>';
+  if (LAP.ttd === 'keduanya') return '<div class="ttd">' + kepsek('Mengetahui,<br>') + wali(tgl + '<br>') + '</div>';
+  return '<div class="ttd"><div></div>' + kepsek(tgl + '<br>') + '</div>';
+}
+function jumlahLP(isi, label) {
+  const l = isi.filter(s => s.jk === 'L').length, p = isi.filter(s => s.jk === 'P').length, x = isi.length - l - p;
+  return '<p class="jml">' + (label || 'Jumlah') + ': Laki-laki <b>' + l + '</b> · Perempuan <b>' + p + '</b>' + (x ? ' · Belum diisi <b>' + x + '</b>' : '') + ' · Total <b>' + isi.length + '</b></p>';
+}
+
+/* ---------- 1. daftar siswa ---------- */
+function kolDaftar() { return KOL_LAP.filter(k => LAP.kol.indexOf(k[0]) >= 0); }
+function tabelDaftar(isi) {
+  const kol = kolDaftar();
+  const n = Math.max(0, Math.min(40, parseInt(LAP.kosong, 10) || 0));
+  const dua = n > 1, rs = dua ? ' rowspan="2"' : '';
+  // lebar kolom teks panjang (persen dari lebar tabel); kolom angka mengikuti isinya
+  const lebar = n >= 6 ? { nama: 20, ttl: 14, alamat: 14 } : { nama: 34, ttl: 28, agama: 9, alamat: 22, tempatLahir: 13, tanggalLahir: 11, namaAyah: 16, namaIbu: 16, namaWali: 16 };
+  let h = '<table class="t' + (n >= 6 ? ' padat' : '') + '"><thead><tr><th' + rs + ' style="width:7mm">No</th>' + kol.map(k => '<th' + rs + (lebar[k[0]] ? ' style="width:' + lebar[k[0]] + '%"' : '') + '>' + esc(k[1]) + '</th>').join('');
+  if (n === 1) h += '<th class="ks1">' + esc(LAP.kosongJudul || 'Keterangan') + '</th>';
+  if (dua) h += '<th colspan="' + n + '">' + esc(LAP.kosongJudul || 'Isian') + '</th></tr><tr>' + Array.from({ length: n }, (_, i) => '<th class="ks">' + (i + 1) + '</th>').join('');
+  h += '</tr></thead><tbody>' + isi.map((s, i) => '<tr><td class="c">' + (i + 1) + '</td>' +
+    kol.map(k => k[0] === 'foto' ? '<td class="ft">' + (fotoSrc(s) ? '<img src="' + esc(fotoSrc(s)) + '" alt="">' : '') + '</td>'
+      : '<td class="' + (KOL_TENGAH.indexOf(k[0]) >= 0 ? 'c ' : '') + (KOL_UTUH.indexOf(k[0]) >= 0 || k[0] === 'tanggalLahir' ? 'nw' : '') + '">' +
+        (k[0] === 'ttl' && s.tanggalLahir ? (s.tempatLahir ? esc(s.tempatLahir) + ', ' : '') + '<span class="nw">' + esc(tglPendek(s.tanggalLahir)) + '</span>' : esc(selNilai(s, k[0]))) + '</td>').join('') +
+    '<td></td>'.repeat(n) + '</tr>').join('') + '</tbody></table>';
+  return h;
+}
+function htmlDaftar(list) {
+  const grup = kelompokkan(urutkanLap(list), LAP.grup);
+  const kelasSatu = LAP.f.kelas.length === 1 ? LAP.f.kelas[0] : '';
+  const kelasDari = g => LAP.grup === 'kelas' ? (/^\(/.test(g.kunci) ? '' : g.kunci) : kelasSatu;
+  if (LAP.grup && LAP.halBaru) return grup.map(g => lembar(kepala(labelGrup(g)) + tabelDaftar(g.isi) + '<div class="akhir">' + jumlahLP(g.isi) + ttdHtml(kelasDari(g)) + '</div>')).join('');
+  return lembar(kepala(kelasSatu && !LAP.grup ? labelGrup({ kunci: kelasSatu }).replace(/^Kelas \S+ — /, '') : '') +
+    grup.map(g => (LAP.grup ? '<h3 class="gj">' + esc(labelGrup(g)) + '</h3>' : '') + tabelDaftar(g.isi) + (LAP.grup ? jumlahLP(g.isi) : '')).join('') +
+    '<div class="akhir">' + jumlahLP(list, LAP.grup ? 'Total seluruhnya' : 'Jumlah') + ttdHtml(kelasSatu) + '</div>');
+}
+
+/* ---------- 2. rekap jumlah ---------- */
+function daftarRekap() {
+  if (LAP.rekBaris === 'semua') return SEMUA_REKAP;
+  return [[LAP.rekBaris, LAP.rekKolom && LAP.rekKolom !== LAP.rekBaris ? LAP.rekKolom : '']];
+}
+function dataRekap(list, rb, kb) {
+  const rows = {}, cols = [];
+  const cv = s => kb === 'jk' ? (s.jk === 'L' ? 'L' : s.jk === 'P' ? 'P' : '–') : dimVal(s, kb);
+  list.forEach(s => {
+    const r = dimVal(s, rb), o = rows[r] = rows[r] || { _t: 0 };
+    o._t++;
+    if (kb) { const c = cv(s); o[c] = (o[c] || 0) + 1; if (cols.indexOf(c) < 0) cols.push(c); }
+  });
+  const rk = Object.keys(rows).sort(urutDim(rb));
+  if (kb === 'jk') { cols.length = 0; cols.push('L', 'P'); if (list.some(s => s.jk !== 'L' && s.jk !== 'P')) cols.push('–'); }
+  else if (kb) cols.sort(urutDim(kb));
+  const lab = c => kb === 'jk' ? { L: 'L', P: 'P', '–': 'Belum diisi' }[c] : c;
+  const pct = n => list.length ? Math.round(n / list.length * 1000) / 10 : 0;
+  return {
+    judul: 'Menurut ' + DIM[rb] + (kb ? ' dan ' + DIM[kb] : ''),
+    head: [DIM[rb]].concat(cols.map(lab), ['Jumlah'], LAP.persen ? ['%'] : []),
+    body: rk.map(r => [r].concat(cols.map(c => rows[r][c] || 0), [rows[r]._t], LAP.persen ? [pct(rows[r]._t)] : [])),
+    tot: ['JUMLAH'].concat(cols.map(c => rk.reduce((a, r) => a + (rows[r][c] || 0), 0)), [list.length], LAP.persen ? [list.length ? 100 : 0] : []),
+    iJml: cols.length + 1, maks: Math.max(1, ...rk.map(r => rows[r]._t))
+  };
+}
+function tabelRekap(d) {
+  const sel = (v, i, tebal) => '<td' + (i ? ' class="c"' : '') + '>' + (tebal ? '<b>' : '') + esc(i && LAP.persen && i === d.head.length - 1 ? String(v).replace('.', ',') + '%' : v) + (tebal ? '</b>' : '') + '</td>';
+  return '<table class="t"><thead><tr>' + d.head.map((h, i) => '<th' + (i ? '' : ' style="text-align:left"') + '>' + esc(h) + '</th>').join('') + '<th style="width:28%">Grafik</th></tr></thead><tbody>' +
+    d.body.map(r => '<tr>' + r.map((v, i) => sel(v, i, i === d.iJml)).join('') + '<td><div class="bar" style="width:' + (r[d.iJml] / d.maks * 100).toFixed(1) + '%"></div></td></tr>').join('') +
+    '<tr class="tot">' + d.tot.map((v, i) => sel(v, i, true)).join('') + '<td></td></tr></tbody></table>';
+}
+function htmlRekap(list) {
+  const l = list.filter(s => s.jk === 'L').length, p = list.filter(s => s.jk === 'P').length;
+  const ring = '<div class="ringkas"><div><b>' + list.length + '</b>Jumlah siswa</div><div><b>' + l + '</b>Laki-laki</div><div><b>' + p + '</b>Perempuan</div><div><b>' +
+    new Set(list.map(s => s.kelas).filter(Boolean)).size + '</b>Rombel</div></div>';
+  const daftar = daftarRekap();
+  const isi = daftar.map((x, i) => { const d = dataRekap(list, x[0], x[1]); return (daftar.length > 1 ? '<h3 class="gj">' + 'ABCDEFGH'[i] + '. ' + esc(d.judul) + '</h3>' : '') + tabelRekap(d); }).join('');
+  return lembar(kepala() + ring + isi + ttdHtml(LAP.f.kelas.length === 1 ? LAP.f.kelas[0] : ''));
+}
+
+/* ---------- 3. biodata massal ---------- */
+function barisBiodata(s) {
+  const out = [];
+  F_SISWA.filter(f => f[0] !== 'catatan').forEach(f => {
+    out.push([f[1], f[0] === 'tanggalLahir' ? tglIndo(s.tanggalLahir) : f[0] === 'jk' ? (s.jk === 'L' ? 'Laki-laki' : s.jk === 'P' ? 'Perempuan' : '') : s[f[0]]]);
+    if (f[0] === 'tanggalLahir') { const u = hitungUmur(s.tanggalLahir, LAP.tglUmur); out.push(['Umur', u ? u.th + ' tahun ' + u.bl + ' bulan' : '']); }
+  });
+  return out;
+}
+function htmlBiodata(list) {
+  return urutkanLap(list).map(s => lembar(kepala('', true) +
+    '<table class="bio"><tr><td style="width:36mm">' + (fotoSrc(s) ? '<img class="fto" src="' + esc(fotoSrc(s)) + '" alt="">' : '<div class="fto kosong">Pas foto<br>3 × 4</div>') + '</td><td><table class="bio2">' +
+    barisBiodata(s).map((b, i) => '<tr><td style="width:7mm">' + (i + 1) + '.</td><td style="width:46mm">' + esc(b[0]) + '</td><td>: ' + esc(b[1] || '-') + '</td></tr>').join('') +
+    '</table></td></tr></table>' + ttdHtml(s.kelas))).join('');
+}
+
+/* ---------- 4. data belum lengkap ---------- */
+const kurangData = (s, k) => k === 'foto' ? !s.fotoId : !String(s[k] == null ? '' : s[k]).trim();
+function dataLengkap(list) {
+  const cek = CEK_LENGKAP.filter(c => LAP.cek.indexOf(c[0]) >= 0);
+  const rows = urutkanLap(list).map(s => ({ s: s, m: cek.filter(c => kurangData(s, c[0])).length })).filter(r => r.m);
+  return { cek: cek, rows: rows };
+}
+function htmlLengkap(list) {
+  const d = dataLengkap(list), cek = d.cek;
+  const ring = '<table class="t" style="margin-bottom:4mm"><thead><tr><th style="text-align:left">Data</th>' + cek.map(c => '<th>' + esc(c[1]) + '</th>').join('') + '</tr></thead><tbody>' +
+    '<tr><td>Belum diisi (siswa)</td>' + cek.map(c => '<td class="c"><b>' + list.filter(s => kurangData(s, c[0])).length + '</b></td>').join('') + '</tr>' +
+    '<tr><td>Sudah lengkap</td>' + cek.map(c => '<td class="c">' + (list.length ? Math.round((1 - list.filter(s => kurangData(s, c[0])).length / list.length) * 100) : 0) + '%</td>').join('') + '</tr></tbody></table>';
+  const tabel = d.rows.length
+    ? '<table class="t"><thead><tr><th style="width:8mm">No</th><th class="nm">Nama Peserta Didik</th><th>Kelas</th><th>NIS</th>' + cek.map(c => '<th>' + esc(c[1]) + '</th>').join('') + '<th>Kurang</th></tr></thead><tbody>' +
+      d.rows.map((r, i) => '<tr><td class="c">' + (i + 1) + '</td><td>' + esc(r.s.nama) + '</td><td class="c">' + esc(r.s.kelas || '') + '</td><td class="c">' + esc(r.s.nis || '') + '</td>' +
+        cek.map(c => kurangData(r.s, c[0]) ? '<td class="c x">✗</td>' : '<td class="c">✓</td>').join('') + '<td class="c"><b>' + r.m + '</b></td></tr>').join('') + '</tbody></table>' +
+      '<p class="jml">Keterangan: ✓ sudah diisi · ✗ belum diisi</p>'
+    : '<p style="text-align:center;margin:12mm 0"><b>Semua data siswa yang dipilih sudah lengkap.</b></p>';
+  return lembar(kepala(d.rows.length + ' dari ' + list.length + ' siswa datanya belum lengkap') + ring + tabel + ttdHtml(LAP.f.kelas.length === 1 ? LAP.f.kelas[0] : ''));
+}
+
+/* ---------- dokumen lengkap ---------- */
+function docLaporan(list) {
+  const k = KERTAS[LAP.kertas] || KERTAS.A4;
+  const pw = LAP.orient === 'landscape' ? k[1] : k[0], ph = LAP.orient === 'landscape' ? k[0] : k[1];
+  const fs = { kecil: 8, normal: 9.5, besar: 11 }[LAP.huruf] || 9.5;
+  let isi;
+  if (!list.length) isi = lembar(kepala() + '<p style="text-align:center;margin-top:20mm">Tidak ada siswa yang cocok dengan saringan.</p>');
+  else {
+    try { isi = { daftar: htmlDaftar, rekap: htmlRekap, biodata: htmlBiodata, lengkap: htmlLengkap }[LAP.jenis](list); }
+    catch (e) { isi = lembar('<p>Laporan gagal disusun: ' + esc(e.message) + '</p>'); }
+  }
+  const css =
+    '@page{size:' + pw + 'mm ' + ph + 'mm;margin:12mm 12mm 14mm 14mm;@bottom-right{content:"Halaman " counter(page) " dari " counter(pages);font:7.5pt Arial;color:#555}}' +
+    '*{box-sizing:border-box}html{-webkit-print-color-adjust:exact;print-color-adjust:exact}' +
+    'body{margin:0;font-family:Arial,Helvetica,sans-serif;font-size:' + fs + 'pt;line-height:1.22;color:#000}' +
+    '.lembar{break-after:page}.lembar:last-of-type{break-after:auto}' +
+    '.kop{display:flex;align-items:center;gap:4mm;border-bottom:3px double #000;padding-bottom:2.5mm;margin-bottom:4mm}' +
+    '.kop img{width:17mm;height:17mm;object-fit:contain;flex:none}.kop .tx{flex:1;text-align:center}' +
+    '.k1{font-size:10.5pt;font-weight:bold;letter-spacing:.4px}.k2{font-size:16pt;font-weight:bold;margin:.5mm 0}.k3{font-size:9pt}' +
+    'h1.jd{font-size:12.5pt;text-align:center;margin:0 0 1mm;text-decoration:underline}.sub{text-align:center;font-size:9.5pt}' +
+    '.fil{text-align:center;font-size:8.5pt;color:#222;margin-top:1mm}.kop+h1,.fil+*,.sub+*{margin-top:3.5mm}' +
+    'table.t{width:100%;border-collapse:collapse}.t th,.t td{border:1px solid #000;padding:.8mm 1.3mm;vertical-align:top}.nw{white-space:nowrap}' +
+    '.t th{background:#e6e6e6;font-weight:bold;text-align:center;vertical-align:middle}.t thead{display:table-header-group}.t tr{break-inside:avoid}' +
+    '.t .tot td{background:#f0f0f0}.c{text-align:center}.ks{width:5mm;padding-left:0!important;padding-right:0!important;font-size:7.5pt}.ks1{min-width:28mm}' +
+    '.padat th,.padat td{padding:.7mm .9mm}' +
+    '.ft{width:17mm;padding:.8mm!important}.ft img{width:15mm;height:20mm;object-fit:cover;display:block;margin:auto}' +
+    '.akhir{break-inside:avoid;break-before:avoid}.akhir .ttd{break-before:auto}' +
+    '.x{font-weight:bold}.gj{font-size:10.5pt;margin:4.5mm 0 1.5mm;break-after:avoid}.jml{font-size:9pt;margin:1.5mm 0 0}' +
+    '.bar{height:3.4mm;background:#8a8a8a;min-width:.6mm}' +
+    '.ringkas{display:flex;gap:3mm;margin:0 0 4mm}.ringkas div{flex:1;border:1px solid #000;padding:2mm;text-align:center;font-size:9pt}.ringkas b{display:block;font-size:15pt}' +
+    '.ttd{display:flex;justify-content:space-between;margin-top:6mm;break-inside:avoid;font-size:10pt}.ttd>div{width:64mm;text-align:center}.ttd .sp{height:16mm}' +
+    'table.bio{width:100%;border-collapse:collapse;margin-top:3mm}table.bio td{vertical-align:top}.bio2{width:100%;border-collapse:collapse}.bio2 td{padding:1.1mm 1mm;vertical-align:top}' +
+    '.fto{width:30mm;height:40mm;object-fit:cover;border:1px solid #000;display:block}.fto.kosong{display:flex;align-items:center;justify-content:center;text-align:center;font-size:8.5pt;color:#555;border-style:dashed}' +
+    '.alat{display:none}' +
+    '@media screen{html{background:#d9dde3}body{padding:12px 0;zoom:var(--z,1)}.lembar{background:#fff;width:' + pw + 'mm;min-height:' + ph + 'mm;margin:0 auto 14px;padding:12mm 12mm 14mm 14mm;box-shadow:0 2px 12px rgba(0,0,0,.22)}' +
+    '.alat{position:sticky;top:0;z-index:2;gap:10px;align-items:center;justify-content:center;background:#0b2a4a;color:#fff;padding:10px;margin:-12px 0 12px;font:14px Arial}.alat button{font:bold 14px Arial;padding:8px 16px;border:0;border-radius:8px;background:#c9970f;color:#1b1404;cursor:pointer}}' +
+    '@media print{.alat{display:none!important}}';
+  const js = '(function(){var pw=' + pw + '*3.7795+8;function f(){var w=document.documentElement.clientWidth-12;document.documentElement.style.setProperty("--z",Math.min(1,w/pw).toFixed(3));}f();addEventListener("resize",f);' +
+    'if(window.top===window){document.querySelector(".alat").style.display="flex";addEventListener("load",function(){setTimeout(function(){window.print();},600);});}})();';
+  return '<!DOCTYPE html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>' + esc(judulLap()) + '</title><style>' + css + '</style></head><body>' +
+    '<div class="alat"><span>' + esc(judulLap()) + '</span><button onclick="window.print()">Cetak / Simpan PDF</button></div>' + isi + '<script>' + js + '<\/script></body></html>';
+}
+
+/* ---------- halaman ---------- */
+function pLaporan() {
+  if (S.lapPreset) { LAP.f = Object.assign(lapAwal().f, S.lapPreset); S.lapPreset = null; simpanLap(); }
+  const kelasOpt = Array.from(new Set(S.siswa.map(s => s.kelas).filter(Boolean).concat(S.kelas.map(k => k.kelas)))).sort(urutKelas);
+  const agamaOpt = Array.from(new Set(AGAMA.concat(S.siswa.map(s => s.agama).filter(Boolean)))).concat(['(belum diisi)']);
+  const tahunOpt = Array.from(new Set(S.siswa.map(s => String(s.tahunMasuk || '')).filter(Boolean))).sort().reverse();
+  const opsi = (nilai, daftar) => daftar.map(x => { const v = Array.isArray(x) ? x[0] : x, l = Array.isArray(x) ? x[1] : x; return '<option value="' + esc(v) + '"' + (String(nilai) === String(v) ? ' selected' : '') + '>' + esc(l) + '</option>'; }).join('');
+  const sel = (path, nilai, daftar) => '<select class="inp" data-l="' + path + '">' + opsi(nilai, daftar) + '</select>';
+  const fld = (lab, isi) => '<div><label class="f">' + lab + '</label>' + isi + '</div>';
+  const JENIS = [['daftar', 'Daftar siswa', 'Nama + kolom pilihan, per kelas, agama, umur, JK', 'siswa'], ['rekap', 'Rekap jumlah', 'Jumlah siswa per kelas, agama, umur, JK…', 'lp'],
+    ['biodata', 'Biodata siswa', '1 halaman per siswa, dengan foto', 'mata'], ['lengkap', 'Data belum lengkap', 'Siswa yang datanya masih kosong', 'cek']];
+  const DIM_OPS = [['kelas', 'Kelas'], ['agama', 'Agama'], ['jk', 'Jenis kelamin'], ['umur', 'Umur'], ['tahunMasuk', 'Tahun masuk'], ['status', 'Status'], ['tempatLahir', 'Tempat lahir']];
+  const aksiBtn = '<button class="btn" data-x="excel">' + ic('unduh') + 'Excel</button><button class="btn pri" data-x="cetak">' + ic('cetak') + 'Cetak / PDF</button>';
+  $('#page').innerHTML = '<div class="lap"><div class="lap-opsi">' +
+    '<div class="card"><div class="card-h"><h3>1. Jenis laporan</h3></div><div class="card-b"><div class="jenis">' +
+      JENIS.map(j => '<label class="' + (LAP.jenis === j[0] ? 'on' : '') + '"><input type="radio" name="lapJenis" value="' + j[0] + '" data-l="jenis"' + (LAP.jenis === j[0] ? ' checked' : '') + '><b>' + ic(j[3]) + j[1] + '</b>' + j[2] + '</label>').join('') +
+    '</div></div></div>' +
+    '<div class="card"><div class="card-h"><h3>2. Siswa yang dicetak</h3><span class="chip pri right" id="lapJml"></span></div><div class="card-b">' +
+      '<div><label class="f">Kelas <span class="tiny muted">(tidak dipilih = semua kelas)</span></label><div class="pilih" id="lapKelas">' +
+        kelasOpt.map(k => '<label class="' + (LAP.f.kelas.indexOf(k) >= 0 ? 'on' : '') + '"><input type="checkbox" value="' + esc(k) + '" data-l="f.kelas" data-multi="1"' + (LAP.f.kelas.indexOf(k) >= 0 ? ' checked' : '') + '>' + esc(k) + '</label>').join('') +
+        '<button class="btn sm ghost" type="button" id="lapSemuaKelas">Semua</button></div></div>' +
+      '<div class="grid g2">' + fld('Status', sel('f.status', LAP.f.status, [['', 'Semua status']].concat(STATUS_S))) + fld('Jenis kelamin', sel('f.jk', LAP.f.jk, [['', 'Semua'], ['L', 'Laki-laki'], ['P', 'Perempuan']])) + '</div>' +
+      '<div class="grid g2">' + fld('Agama', sel('f.agama', LAP.f.agama, [['', 'Semua agama']].concat(agamaOpt))) + fld('Tahun masuk', sel('f.tahunMasuk', LAP.f.tahunMasuk, [['', 'Semua']].concat(tahunOpt))) + '</div>' +
+      '<div class="grid g2">' + fld('Umur dari (tahun)', '<input class="inp" type="number" min="0" max="30" data-l="f.umurMin" value="' + esc(LAP.f.umurMin) + '" placeholder="—">') +
+        fld('sampai (tahun)', '<input class="inp" type="number" min="0" max="30" data-l="f.umurMax" value="' + esc(LAP.f.umurMax) + '" placeholder="—">') + '</div>' +
+      fld('Umur dihitung per tanggal', '<input class="inp" type="date" data-l="tglUmur" value="' + esc(LAP.tglUmur) + '"><span class="tiny muted">Kosong = hari ini</span>') +
+    '</div></div>' +
+    '<div class="card"><div class="card-h"><h3>3. Isi laporan</h3></div><div class="card-b" id="lapKhusus"></div></div>' +
+    '<div class="card"><div class="card-h"><h3>4. Tampilan &amp; tanda tangan</h3></div><div class="card-b">' +
+      fld('Judul laporan', '<input class="inp" data-l="judul" value="' + esc(LAP.judul) + '" id="lapJudul">') +
+      '<div class="grid g3">' + fld('Kertas', sel('kertas', LAP.kertas, [['A4', 'A4'], ['F4', 'F4 / Folio'], ['Letter', 'Letter'], ['Legal', 'Legal']])) +
+        fld('Arah', sel('orient', LAP.orient, [['portrait', 'Tegak'], ['landscape', 'Mendatar']])) + fld('Huruf', sel('huruf', LAP.huruf, [['kecil', 'Kecil'], ['normal', 'Normal'], ['besar', 'Besar']])) + '</div>' +
+      fld('Penanda tangan', sel('ttd', LAP.ttd, [['kepsek', 'Kepala Sekolah'], ['wali', 'Wali Kelas'], ['keduanya', 'Kepala Sekolah & Wali Kelas'], ['tidak', 'Tanpa tanda tangan']])) +
+      '<div class="grid g2">' + fld('Tempat', '<input class="inp" data-l="tempat" value="' + esc(LAP.tempat) + '" placeholder="' + esc(tempatAwal() || 'Tempat') + '">') +
+        fld('Tanggal', '<input class="inp" type="date" data-l="tanggal" value="' + esc(LAP.tanggal) + '">') + '</div>' +
+      fld('Baris atas kop', '<input class="inp" data-l="kop" value="' + esc(LAP.kop) + '" placeholder="mis. nama yayasan (boleh kosong)">') +
+      '<span class="tiny muted">Nama sekolah, alamat, kepala sekolah &amp; NIP diambil dari menu Pengaturan; wali kelas dari menu Kelas.</span>' +
+      '<div class="row only-sm">' + aksiBtn + '</div>' +
+      '<button class="btn sm ghost" type="button" id="lapReset" style="align-self:flex-start">Kembalikan pengaturan awal</button>' +
+    '</div></div>' +
+    '</div>' +
+    '<div class="card lap-hasil"><div class="card-h"><h3>Pratinjau</h3><span class="small muted" id="lapInfo"></span><div class="row right">' + aksiBtn + '</div></div><iframe id="lapFrame" title="Pratinjau laporan"></iframe></div>' +
+  '</div>';
+
+  const khusus = () => {
+    let h = '';
+    if (LAP.jenis === 'daftar') {
+      h = '<div class="grid g2">' + fld('Kelompokkan per', sel('grup', LAP.grup, [['', 'Tidak dikelompokkan']].concat(DIM_OPS))) +
+          fld('Urutkan', sel('urut', LAP.urut, [['absen', 'Kelas & no. absen'], ['kelasNama', 'Kelas & nama'], ['nama', 'Nama (A–Z)'], ['nis', 'NIS'], ['lahir', 'Tanggal lahir (tertua)']])) + '</div>' +
+        '<label class="row small" style="gap:8px"><input type="checkbox" data-l="halBaru"' + (LAP.halBaru ? ' checked' : '') + '> Setiap kelompok di halaman baru (dengan tanda tangan sendiri)</label>' +
+        '<div><label class="f">Kolom yang dicetak</label><div class="cekgrid">' + KOL_LAP.map(k => '<label><input type="checkbox" value="' + k[0] + '" data-l="kol" data-multi="1"' + (LAP.kol.indexOf(k[0]) >= 0 ? ' checked' : '') + '>' + esc(k[1]) + '</label>').join('') + '</div></div>' +
+        '<div class="grid g2">' + fld('Kolom kosong tambahan', '<input class="inp" type="number" min="0" max="40" data-l="kosong" value="' + esc(LAP.kosong) + '">') +
+          fld('Judul kolom kosong', '<input class="inp" data-l="kosongJudul" value="' + esc(LAP.kosongJudul) + '" placeholder="mis. Tanda Tangan / Tanggal">') + '</div>' +
+        '<span class="tiny muted">Kolom kosong berguna untuk daftar hadir, daftar tanda tangan, atau blanko nilai (mis. 1 kolom "Tanda Tangan", atau 16 kolom "Pertemuan ke-").</span>';
+    } else if (LAP.jenis === 'rekap') {
+      h = '<div class="grid g2">' + fld('Rekap menurut', sel('rekBaris', LAP.rekBaris, [['semua', 'Semua rekap (lengkap)']].concat(DIM_OPS))) +
+          fld('Dirinci per', sel('rekKolom', LAP.rekKolom, [['', 'Tidak dirinci'], ['jk', 'Jenis kelamin (L/P)'], ['agama', 'Agama'], ['kelas', 'Kelas'], ['umur', 'Umur'], ['status', 'Status']])) + '</div>' +
+        '<label class="row small" style="gap:8px"><input type="checkbox" data-l="persen"' + (LAP.persen ? ' checked' : '') + '> Tampilkan persentase</label>' +
+        '<span class="tiny muted">"Semua rekap" mencetak sekaligus: per kelas, agama, umur, kelas × agama, tahun masuk, dan status — masing-masing dirinci L/P. Untuk rekap status, pilih Status "Semua status" di bagian 2.</span>';
+    } else if (LAP.jenis === 'biodata') {
+      h = fld('Urutkan', sel('urut', LAP.urut, [['absen', 'Kelas & no. absen'], ['kelasNama', 'Kelas & nama'], ['nama', 'Nama (A–Z)'], ['nis', 'NIS']])) +
+        '<span class="tiny muted">Satu halaman per siswa: pas foto, seluruh isian data induk, dan tanda tangan. Pilih kelas di bagian 2 agar tidak terlalu banyak halaman.</span>';
+    } else {
+      h = '<div><label class="f">Data yang diperiksa</label><div class="cekgrid">' + CEK_LENGKAP.map(c => '<label><input type="checkbox" value="' + c[0] + '" data-l="cek" data-multi="1"' + (LAP.cek.indexOf(c[0]) >= 0 ? ' checked' : '') + '>' + esc(c[1]) + '</label>').join('') + '</div></div>' +
+        fld('Urutkan', sel('urut', LAP.urut, [['absen', 'Kelas & no. absen'], ['kelasNama', 'Kelas & nama'], ['nama', 'Nama (A–Z)']])) +
+        '<span class="tiny muted">Hanya siswa yang masih ada data kosong yang dicetak — cocok dibagikan ke wali kelas untuk dilengkapi.</span>';
+    }
+    $('#lapKhusus').innerHTML = h;
+  };
+
+  let t = null;
+  const segarkan = () => {
+    clearTimeout(t);
+    t = setTimeout(() => {
+      const list = filterLap();
+      $('#lapJml').textContent = list.length + ' siswa';
+      const judulSendiri = LAP.judul; LAP.judul = ''; $('#lapJudul').placeholder = judulLap() + ' (otomatis)'; LAP.judul = judulSendiri;
+      const html = docLaporan(list);
+      $('#lapInfo').textContent = list.length + ' siswa' + (LAP.jenis === 'biodata' ? ' · ' + list.length + ' halaman' : '');
+      $('#lapFrame').srcdoc = html;
+    }, 250);
+  };
+  const baca = el => {
+    const p = el.dataset.l, i = p.indexOf('.');
+    const obj = i > 0 ? LAP[p.slice(0, i)] : LAP, key = i > 0 ? p.slice(i + 1) : p;
+    if (el.dataset.multi) {
+      const arr = obj[key], j = arr.indexOf(el.value);
+      if (el.checked && j < 0) arr.push(el.value);
+      if (!el.checked && j >= 0) arr.splice(j, 1);
+      const lb = el.closest('.pilih label'); if (lb) lb.classList.toggle('on', el.checked);
+    } else if (el.type === 'checkbox') obj[key] = el.checked;
+    else obj[key] = el.value;
+    if (key === 'jenis') { $$('.jenis label').forEach(l => l.classList.toggle('on', $('input', l).checked)); if (LAP.jenis === 'biodata' && ['nis', 'absen', 'kelasNama', 'nama'].indexOf(LAP.urut) < 0) LAP.urut = 'absen'; khusus(); }
+    simpanLap(); segarkan();
+  };
+  const opsiEl = $('.lap-opsi');
+  opsiEl.addEventListener('change', e => { if (e.target.dataset && e.target.dataset.l) baca(e.target); });
+  opsiEl.addEventListener('input', e => { const el = e.target; if (el.dataset && el.dataset.l && (el.type === 'text' || el.type === 'number')) baca(el); });
+  $('#lapSemuaKelas').onclick = () => { LAP.f.kelas = []; $$('#lapKelas label').forEach(l => { l.classList.remove('on'); $('input', l).checked = false; }); simpanLap(); segarkan(); };
+  $('#lapReset').onclick = () => { LAP = lapAwal(); simpanLap(); pLaporan(); };
+  $$('[data-x]').forEach(b => b.onclick = () => b.dataset.x === 'cetak' ? cetakLaporan() : eksporLaporan());
+  khusus();
+  segarkan();
+}
+
+function cetakLaporan() {
+  const list = filterLap();
+  if (!list.length) { toast('Tidak ada siswa yang cocok dengan saringan.', 'bad'); return; }
+  const html = docLaporan(list);
+  const hp = (window.matchMedia && matchMedia('(pointer: coarse)').matches) || window.innerWidth < 860;
+  if (hp) {
+    // di HP: buka di tab baru (dialog cetak muncul otomatis; pilih "Simpan sebagai PDF" atau printer)
+    const u = URL.createObjectURL(new Blob([html], { type: 'text/html' }));
+    const w = window.open(u, '_blank');
+    if (!w) toast('Izinkan pop-up untuk mencetak.', 'bad', 5000);
+    setTimeout(() => URL.revokeObjectURL(u), 120000);
+    return;
+  }
+  const fr = $('#lapFrame');
+  const cetak = () => { try { fr.contentWindow.focus(); fr.contentWindow.print(); } catch (e) { toast('Gagal membuka dialog cetak: ' + e.message, 'bad'); } };
+  if (fr.srcdoc !== html) { fr.onload = () => { fr.onload = null; setTimeout(cetak, 300); }; fr.srcdoc = html; } else cetak();
+}
+
+async function eksporLaporan() {
+  const list = filterLap();
+  if (!list.length) { toast('Tidak ada siswa yang cocok dengan saringan.', 'bad'); return; }
+  try { await muatXlsx(); } catch (x) { toast(x.message, 'bad'); return; }
+  const wb = XLSX.utils.book_new(), pakai = new Set(), p = S.pengaturan;
+  const atas = [[judulLap()], [(p.NAMA_SEKOLAH || '') + ' · Tahun Pelajaran ' + (p.TAHUN_PELAJARAN || '') + (p.SEMESTER ? ' · Semester ' + p.SEMESTER : '')], [filterTeks()], []];
+  const tambah = (nama, aoa, lebar) => {
+    let n = String(nama || 'Data').replace(/[\\\/?*\[\]:]/g, ' ').trim().slice(0, 28) || 'Data', k = n, i = 2;
+    while (pakai.has(k)) k = n.slice(0, 25) + ' ' + i++;
+    pakai.add(k);
+    const ws = XLSX.utils.aoa_to_sheet(aoa);
+    if (lebar) ws['!cols'] = lebar.map(w => ({ wch: w }));
+    XLSX.utils.book_append_sheet(wb, ws, k);
+  };
+  if (LAP.jenis === 'daftar') {
+    const kol = kolDaftar().filter(k => k[0] !== 'foto');
+    const n = Math.max(0, Math.min(40, parseInt(LAP.kosong, 10) || 0));
+    const head = ['No'].concat(kol.map(k => k[1]), Array.from({ length: n }, (_, i) => n === 1 ? (LAP.kosongJudul || 'Keterangan') : (LAP.kosongJudul || 'Isian') + ' ' + (i + 1)));
+    const lebar = [5].concat(kol.map(k => k[0] === 'nama' || k[0] === 'alamat' ? 32 : k[0] === 'ttl' ? 28 : 13), Array(n).fill(8));
+    const baris = isi => isi.map((s, i) => [i + 1].concat(kol.map(k => selNilai(s, k[0])), Array(n).fill('')));
+    const grup = kelompokkan(urutkanLap(list), LAP.grup);
+    if (LAP.grup) grup.forEach(g => tambah(g.kunci, atas.concat([[labelGrup(g)], head], baris(g.isi)), lebar));
+    else tambah('Daftar Siswa', atas.concat([head], baris(grup[0].isi)), lebar);
+  } else if (LAP.jenis === 'rekap') {
+    daftarRekap().forEach(x => { const d = dataRekap(list, x[0], x[1]); tambah(d.judul.replace('Menurut ', ''), atas.concat([[d.judul], d.head], d.body, [d.tot]), [24].concat(Array(d.head.length - 1).fill(11))); });
+  } else if (LAP.jenis === 'lengkap') {
+    const d = dataLengkap(list);
+    tambah('Belum Lengkap', atas.concat([['No', 'Nama', 'Kelas', 'NIS'].concat(d.cek.map(c => c[1]), ['Kurang'])],
+      d.rows.map((r, i) => [i + 1, r.s.nama, r.s.kelas || '', r.s.nis || ''].concat(d.cek.map(c => kurangData(r.s, c[0]) ? 'BELUM' : 'ada'), [r.m]))), [5, 32, 8, 12].concat(Array(d.cek.length).fill(10), [8]));
+  } else {
+    const urut = urutkanLap(list), judul = barisBiodata(urut[0]).map(b => b[0]);
+    tambah('Biodata', atas.concat([judul], urut.map(s => barisBiodata(s).map(b => b[1] == null ? '' : String(b[1])))), judul.map(j => /nama|alamat/i.test(j) ? 28 : 14));
+  }
+  XLSX.writeFile(wb, 'Laporan_' + { daftar: 'Daftar_Siswa', rekap: 'Rekap_Siswa', biodata: 'Biodata_Siswa', lengkap: 'Data_Belum_Lengkap' }[LAP.jenis] + '_' + hariIni() + '.xlsx');
 }
 
 /* ================================================================ EXCEL */
