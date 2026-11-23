@@ -1,0 +1,18 @@
+{
+  "id": "./index.html",
+  "name": "Portal SMP Kristen Basaan",
+  "short_name": "Krisba",
+  "description": "Portal aplikasi sekolah SMP Kristen Basaan",
+  "lang": "id",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "icons": [
+    { "src": "assets-landing/ikon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "assets-landing/ikon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "assets-landing/ikon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
