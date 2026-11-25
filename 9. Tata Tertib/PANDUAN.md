@@ -127,6 +127,26 @@ Pengaturan (Kelola → Pengaturan → *Halaman Siswa & Orang Tua*):
 
 > Catatan privasi: mode *Dengan NIS* mencegah orang melihat-lihat data anak lain, tetapi selama **Akses dasbor = Publik**, data siswa tetap diunduh ke HP pengunjung (agar halaman berjalan offline). Untuk perlindungan penuh, atur **Akses dasbor = Login**.
 
+## 6b. Surat Panggilan Orang Tua (manual)
+
+Menu **Surat Panggilan** (Admin, Kepala Sekolah, Guru BK; Wali Kelas untuk kelasnya sendiri). Formatnya mengikuti file Excel *Surat Panggilan Sederhana V3* (sheet CETAK).
+
+**Satu siswa**
+1. **Siswa** — cari nama/NIS atau pilih kelas.
+2. **Pelanggaran & kronologi** — catatan pelanggaran siswa tampil otomatis; centang yang dimasukkan ke surat (yang belum pernah disurati langsung tercentang). Kronologi diambil dari catatan dan bisa diubah, dikosongkan, atau diambil dari catatan lain. **Tambah pelanggaran manual** (atau *Dari daftar tata tertib*) hanya masuk ke surat — **tidak** disimpan ke database pelanggaran.
+3. **Teks surat** — kronologi umum, teks tambahan (ada tombol kalimat cepat), nomor/lampiran/perihal, dan semua kalimat surat bisa diubah. Penanda `{nama}`, `{kelas}`, `{ortu}`, `{tempat}`, `{tanggal}`, `{waktu}`, `{sekolah}` terisi otomatis.
+4. **Tanggal, waktu & tempat** — tanggal surat, tanggal orang tua datang (otomatis +2 hari, Minggu digeser ke Senin, seperti Excel), waktu, tempat, menemui, keperluan.
+5. **Yang bertanda tangan** — Wali Kelas (nama otomatis dari pengguna Wali Kelas), Guru BK, Kepala Sekolah (Mengetahui), saya sendiri, Orang Tua/Wali, atau penanda tangan lain.
+6. **Templat & tampilan** — 6 templat dengan pratinjau kecil: *Utama (format sekolah)*, *Resmi Bernomor*, *Modern Berwarna*, *Elegan Berbingkai*, *Ringkas Hemat Kertas*, *Undangan Bersahabat*; pilihan warna, kolom kronologi/poin, baris akumulasi & tahap sanksi, baris kosong (seperti Excel), dan **potongan tanda terima** untuk orang tua.
+
+Tekan **Pratinjau & Cetak** → unduh PDF/PNG/Word, kirim WhatsApp, atau cetak (kertas bawaan F4/Folio seperti Excel; bisa diganti). Tombol **WA ortu** mengirim pemberitahuan teks jadwal pertemuan.
+
+**Banyak siswa** — satu kesalahan & tanggal kesalahan yang sama untuk banyak siswa: pilih siswa (atau *Ambil dari catatan pelanggaran* pada tanggal tertentu, bisa per jenis), isi pelanggaran yang sama, lalu cetak semua surat sekaligus (satu surat per halaman). Tambahan: nomor surat berurutan, waktu bergiliran per siswa (mis. tiap 15 menit), daftar hadir orang tua, dan WA massal.
+
+**Riwayat** — setiap surat yang dibuat tersimpan di perangkat ini: buka & ubah, duplikat, cetak ulang, catat **kehadiran orang tua** (Hadir/Tidak hadir/Dijadwalkan ulang) beserta catatan hasil pertemuan, dan unduh CSV. Riwayat tidak dikirim ke server dan tidak mengubah data pelanggaran.
+
+**Pengaturan surat** (Admin) — kop 4 baris + alamat, logo kiri/kanan (bawaan dari Excel, unggah, atau tanpa logo), kota, tempat & waktu bawaan, jarak hari, format nomor (`{no}/SPO/SMPK-B/{bln}/{thn}`), templat, warna, ukuran kertas, dan kalimat surat bawaan. Disimpan ke sheet "Pengaturan" (kunci berawalan `sp`).
+
 ## 7. Spreadsheet
 
 | Sheet | Isi | Boleh diedit langsung? |

@@ -150,11 +150,18 @@ function kop(el, ctx) {
   if (yys) lines.push(para(run(plain(yys).toUpperCase(), { b: true, sz: 24 }), { align: 'center', after: 0 }));
   if (nama) lines.push(para(run(plain(nama).toUpperCase(), { b: true, sz: 36 }), { align: 'center', after: 0, line: 240 }));
   if (info) lines.push(para(run(plain(info), { i: true, sz: 19 }), { align: 'center', after: 40 }));
+  // Kop berbaris bebas (mis. Surat Panggilan): .kop-line dengan data-sz (setengah poin), data-b, data-i.
+  for (const ln of el.querySelectorAll('.kop-line')) {
+    lines.push(para(run(plain(ln), { b: ln.dataset.b === '1', i: ln.dataset.i === '1', sz: Number(ln.dataset.sz) || 24 }), { align: 'center', after: 0, line: 240 }));
+  }
   const logo = ctx.logo;
-  if (!logo) return lines.join('');
+  const logo2 = el.querySelector('.kop-logo-r') ? ctx.logo2 : null; // logo kanan hanya untuk kop yang memilikinya
+  if (!logo && !logo2) return lines.join('');
   const L = 1500;
-  const img = `<w:p><w:pPr><w:spacing w:before="0" w:after="0"/><w:jc w:val="center"/></w:pPr><w:r><w:drawing><wp:inline distT="0" distB="0" distL="0" distR="0"><wp:extent cx="${logo.cx}" cy="${logo.cy}"/><wp:docPr id="1" name="Logo"/><a:graphic xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"><a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/picture"><pic:pic xmlns:pic="http://schemas.openxmlformats.org/drawingml/2006/picture"><pic:nvPicPr><pic:cNvPr id="1" name="logo"/><pic:cNvPicPr/></pic:nvPicPr><pic:blipFill><a:blip r:embed="rIdLogo"/><a:stretch><a:fillRect/></a:stretch></pic:blipFill><pic:spPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="${logo.cx}" cy="${logo.cy}"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom></pic:spPr></pic:pic></a:graphicData></a:graphic></wp:inline></w:drawing></w:r></w:p>`;
-  return table([[{ xml: img, vAlign: 'center' }, { xml: lines.join(''), vAlign: 'center' }, { xml: para('', { after: 0 }) }]], [L, ctx.cw - 2 * L, L], { cellMar: [0, 40] });
+  const pic = (lg, rid, id, nm) => `<w:p><w:pPr><w:spacing w:before="0" w:after="0"/><w:jc w:val="center"/></w:pPr><w:r><w:drawing><wp:inline distT="0" distB="0" distL="0" distR="0"><wp:extent cx="${lg.cx}" cy="${lg.cy}"/><wp:docPr id="${id}" name="${nm}"/><a:graphic xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"><a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/picture"><pic:pic xmlns:pic="http://schemas.openxmlformats.org/drawingml/2006/picture"><pic:nvPicPr><pic:cNvPr id="${id}" name="${nm.toLowerCase()}"/><pic:cNvPicPr/></pic:nvPicPr><pic:blipFill><a:blip r:embed="${rid}"/><a:stretch><a:fillRect/></a:stretch></pic:blipFill><pic:spPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="${lg.cx}" cy="${lg.cy}"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom></pic:spPr></pic:pic></a:graphicData></a:graphic></wp:inline></w:drawing></w:r></w:p>`;
+  const img = logo ? pic(logo, 'rIdLogo', 1, 'Logo') : para('', { after: 0 });
+  const right = logo2 ? { xml: pic(logo2, 'rIdLogo2', 2, 'Logo2'), vAlign: 'center' } : { xml: para('', { after: 0 }) };
+  return table([[{ xml: img, vAlign: 'center' }, { xml: lines.join(''), vAlign: 'center' }, right]], [L, ctx.cw - 2 * L, L], { cellMar: [0, 40] });
 }
 
 function ident(el, W) {
@@ -270,7 +277,7 @@ export async function makeDocx(title, html, { landscape = false, paper } = {}) {
   src.innerHTML = String(html).replace(/<style[\s\S]*?<\/style>/gi, '');
   const { mm: [pw, ph] } = paperSize(paper, landscape);
   const mx = TW(18), my = TW(15);
-  const ctx = { cw: TW(pw) - 2 * mx, logo: await logoOf(src.querySelector('.kop-logo:not(.kop-pad)')?.getAttribute('src')) };
+  const ctx = { cw: TW(pw) - 2 * mx, logo: await logoOf(src.querySelector('.kop-logo:not(.kop-pad):not(.kop-logo-r)')?.getAttribute('src')), logo2: await logoOf(src.querySelector('.kop-logo-r')?.getAttribute('src')) };
   const docs = [...src.querySelectorAll(':scope > .doc')];
   const bodyXml = docs.map((d, i) => {
     const xml = convert(d, ctx);
@@ -282,15 +289,17 @@ export async function makeDocx(title, html, { landscape = false, paper } = {}) {
   const styles = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:styles xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:docDefaults><w:rPrDefault><w:rPr><w:rFonts w:ascii="${FONT}" w:hAnsi="${FONT}" w:eastAsia="${FONT}" w:cs="${FONT}"/><w:sz w:val="24"/><w:szCs w:val="24"/><w:lang w:val="id-ID"/></w:rPr></w:rPrDefault><w:pPrDefault><w:pPr><w:spacing w:after="0" w:line="240" w:lineRule="auto"/></w:pPr></w:pPrDefault></w:docDefaults><w:style w:type="paragraph" w:default="1" w:styleId="Normal"><w:name w:val="Normal"/><w:qFormat/></w:style><w:style w:type="table" w:default="1" w:styleId="TableNormal"><w:name w:val="Normal Table"/><w:tblPr><w:tblInd w:w="0" w:type="dxa"/><w:tblCellMar><w:top w:w="0" w:type="dxa"/><w:left w:w="108" w:type="dxa"/><w:bottom w:w="0" w:type="dxa"/><w:right w:w="108" w:type="dxa"/></w:tblCellMar></w:tblPr></w:style></w:styles>`;
   const settings = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:settings xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:defaultTabStop w:val="400"/><w:compat><w:compatSetting w:name="compatibilityMode" w:uri="http://schemas.microsoft.com/office/word" w:val="15"/></w:compat></w:settings>`;
   const logoRel = ctx.logo ? `<Relationship Id="rIdLogo" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="media/logo.${ctx.logo.ext === 'png' ? 'png' : 'jpeg'}"/>` : '';
+  const logoRel2 = ctx.logo2 ? `<Relationship Id="rIdLogo2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="media/logo2.${ctx.logo2.ext === 'png' ? 'png' : 'jpeg'}"/>` : '';
   const files = [
     ['[Content_Types].xml', `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Default Extension="png" ContentType="image/png"/><Default Extension="jpeg" ContentType="image/jpeg"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/><Override PartName="/word/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"/><Override PartName="/word/settings.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.settings+xml"/><Override PartName="/docProps/core.xml" ContentType="application/vnd.openxmlformats-package.core-properties+xml"/></Types>`],
     ['_rels/.rels', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties" Target="docProps/core.xml"/></Relationships>'],
     ['docProps/core.xml', `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><dc:title>${x(title)}</dc:title><dc:creator>Aplikasi Tata Tertib</dc:creator><dcterms:created xsi:type="dcterms:W3CDTF">${new Date().toISOString().replace(/\.\d+Z$/, 'Z')}</dcterms:created></cp:coreProperties>`],
-    ['word/_rels/document.xml.rels', `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rIdStyles" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/><Relationship Id="rIdSettings" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/settings" Target="settings.xml"/>${logoRel}</Relationships>`],
+    ['word/_rels/document.xml.rels', `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rIdStyles" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/><Relationship Id="rIdSettings" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/settings" Target="settings.xml"/>${logoRel}${logoRel2}</Relationships>`],
     ['word/document.xml', document_],
     ['word/styles.xml', styles],
     ['word/settings.xml', settings],
   ];
   if (ctx.logo) files.push([`word/media/logo.${ctx.logo.ext === 'png' ? 'png' : 'jpeg'}`, ctx.logo.data]);
+  if (ctx.logo2) files.push([`word/media/logo2.${ctx.logo2.ext === 'png' ? 'png' : 'jpeg'}`, ctx.logo2.data]);
   return { blob: zip(files), pages: docs.length };
 }

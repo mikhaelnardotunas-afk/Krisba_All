@@ -1,9 +1,9 @@
 {
-  "version": "1.6.0",
-  "date": "2026-11-16",
+  "version": "1.7.0",
+  "date": "2026-11-25",
   "notes": [
-    "Dokumen bisa diunduh sebagai Word (.docx) yang dapat diedit: tombol Unduh Word di lembar pratinjau dan tombol Word di halaman Laporan.",
-    "Lama skorsing SP 3 bisa diubah (mis. 5 hari); tanggal selesai dan teks surat menyesuaikan otomatis.",
-    "Pengaturan ukuran kertas: A4, F4/Folio, Letter, atau Legal. Bawaan sekolah diatur di Kelola → Pengaturan → Dokumen & cetak; bisa diganti per dokumen di lembar pratinjau, lengkap dengan perkiraan jumlah halaman."
+    "Fitur baru: Surat Panggilan Orang Tua (manual) — menu Surat Panggilan. Pilih siswa, pelanggaran dari catatan atau tambah manual (tidak masuk database), kronologi dari catatan atau tulis sendiri, teks tambahan, tanggal surat, tanggal/waktu/tempat kedatangan, dan penanda tangan.",
+    "Surat untuk banyak siswa sekaligus dengan kesalahan & tanggal kesalahan yang sama (bisa diambil otomatis dari catatan per tanggal), nomor berurutan, waktu bergiliran, daftar hadir orang tua, dan WA massal.",
+    "6 templat: Utama (format Excel sekolah), Resmi Bernomor, Modern Berwarna, Elegan Berbingkai, Ringkas Hemat Kertas, Undangan Bersahabat — dengan pratinjau langsung, pilihan warna, tanda terima, riwayat surat & kehadiran orang tua."
   ]
 }

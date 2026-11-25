@@ -18,11 +18,12 @@ import * as laporan from './pages/laporan.js';
 import * as aturan from './pages/aturan.js';
 import * as catat from './pages/catat.js';
 import * as tindak from './pages/tindak.js';
+import * as panggilan from './pages/panggilan.js';
 import * as kelola from './pages/kelola.js';
 import * as akun from './pages/akun.js';
 import * as login from './pages/login.js';
 
-const ROUTES = { '': dashboard, beranda: dashboard, siswa, kelas, riwayat, laporan, aturan, catat, tindak, kelola, akun, login };
+const ROUTES = { '': dashboard, beranda: dashboard, siswa, kelas, riwayat, laporan, aturan, catat, tindak, panggilan, kelola, akun, login };
 
 const NAV = [
   { page: '', label: 'Beranda', ic: 'home' },
@@ -32,6 +33,7 @@ const NAV = [
   { page: 'laporan', label: 'Laporan', ic: 'report' },
   { page: 'aturan', label: 'Tata Tertib', ic: 'book' },
   { page: 'tindak', label: 'Tindak Lanjut', ic: 'checklist', show: (u) => !!u },
+  { page: 'panggilan', label: 'Surat Panggilan', ic: 'bell', show: (u) => panggilan.canPanggil(u) },
   { page: 'kelola', label: 'Kelola', ic: 'settings', show: (u) => canRules(u) || canSiswa(u) || canAdmin(u) },
   { page: 'akun', label: 'Akun & Aplikasi', ic: 'user' },
 ];
@@ -76,7 +78,7 @@ function drawChrome() {
     bn('', 'Beranda', 'home'), bn('siswa', 'Siswa', 'users'),
     u ? h('a', { href: '#/catat', class: 'bn cta ' + active('catat'), 'aria-label': 'Catat pelanggaran' }, h('span', { class: 'cta-ring' }, icon('plus')), h('span', { text: 'Catat' })) : bn('kelas', 'Kelas', 'school'),
     bn('riwayat', 'Riwayat', 'calendar'),
-    h('button', { class: 'bn ' + (['laporan', 'aturan', 'tindak', 'kelola', 'akun', 'kelas', 'login'].includes(page) && !(page === 'kelas' && !u) ? 'on' : ''), type: 'button', onclick: moreMenu }, icon('menu'), h('span', { text: 'Lainnya' })));
+    h('button', { class: 'bn ' + (['laporan', 'aturan', 'tindak', 'panggilan', 'kelola', 'akun', 'kelas', 'login'].includes(page) && !(page === 'kelas' && !u) ? 'on' : ''), type: 'button', onclick: moreMenu }, icon('menu'), h('span', { text: 'Lainnya' })));
   userBtn.replaceChildren(...(u ? [avatar(u.nama, 'sm'), h('span', { class: 'user-name', text: u.nama.split(' ')[0] })] : [icon('login'), h('span', { class: 'user-name', text: 'Masuk' })]));
   userBtn.onclick = () => go(u ? 'akun' : 'login');
   userBtn.setAttribute('aria-label', u ? `Akun ${u.nama}` : 'Masuk');
@@ -95,6 +97,7 @@ function moreMenu() {
       item('laporan', 'Laporan', 'report', 'Laporan harian & rekap siap cetak'),
       item('aturan', 'Tata Tertib', 'book', 'Bentuk pelanggaran & poin'),
       u ? item('tindak', 'Tindak Lanjut', 'checklist', `${D().tindak.filter((t) => t.berlaku && t.status === 'Belum').length} belum dilaksanakan`) : null,
+      panggilan.canPanggil(u) ? item('panggilan', 'Surat Panggilan', 'bell', 'Panggil orang tua — satu atau banyak siswa') : null,
       canRules(u) || canSiswa(u) || canAdmin(u) ? item('kelola', 'Kelola Data', 'settings', 'Aturan, siswa, pengguna, pengaturan') : null,
       item('akun', 'Akun & Aplikasi', 'user', 'Sinkron, pembaruan, tema'),
       h('a', { class: 'menu-item', href: 'DashboardSiswa.html' }, icon('users'), h('span', { class: 'grow' }, h('span', { class: 'block', text: 'Halaman Siswa & Orang Tua' }), h('span', { class: 'muted small', text: 'Tanpa login — bagikan ke orang tua' })), icon('right')),

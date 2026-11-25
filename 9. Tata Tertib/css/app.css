@@ -945,3 +945,194 @@ button.barrow { cursor: pointer; }
 .btn.word:hover { background: #224680; }
 .export-bar { grid-template-columns: repeat(4, minmax(0, 1fr)); max-width: 700px; }
 @media (max-width: 520px) { .export-bar { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+/* ---------------------------------------------------------------- Surat Panggilan Orang Tua (manual)
+   Semua aturan di bawah memakai awalan sp- sehingga tidak mengubah tampilan halaman & dokumen lain. */
+.sp-tabs { margin-bottom: 14px; }
+.sp-tabs .seg { flex-wrap: wrap; }
+.sp-count { min-width: 20px; height: 20px; padding: 0 6px; border-radius: 999px; background: var(--surface-3); color: var(--text-2); font-size: 11.5px; display: inline-grid; place-items: center; }
+.sp-tabs .seg button.on .sp-count { background: var(--primary-soft); color: var(--primary-soft-ink); }
+.sp-layout { display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; align-items: start; }
+.sp-form { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; min-width: 0; }
+.sp-side { display: none; min-width: 0; }
+@media (min-width: 1180px) {
+  .sp-layout { grid-template-columns: minmax(0, 1fr) 400px; }
+  .sp-side { display: block; position: sticky; top: calc(var(--top-h) + 12px); }
+}
+body[data-page="panggilan"] .view { padding-bottom: calc(var(--bn-h) + var(--safe-b) + 100px); }
+@media (min-width: 1024px) { body[data-page="panggilan"] .view { padding-bottom: 100px; } }
+.sp-sec-h { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 12px; }
+.sp-sec-h h3 { font-size: 16px; }
+.sp-sec-h p { margin-top: 2px; }
+.sp-n { width: 28px; height: 28px; border-radius: 50%; background: var(--primary); color: var(--primary-ink); display: grid; place-items: center; font-weight: 800; font-size: 14px; flex: none; }
+.sp-sec > * + * { margin-top: 10px; }
+.sp-sec > .sp-sec-h + * { margin-top: 0; }
+.sp-chosen { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 14px; background: var(--primary-soft); border: 1px solid var(--primary); flex-wrap: wrap; }
+.sp-chosen .muted { color: var(--primary-soft-ink); opacity: .85; }
+.sp-pick { max-height: 420px; overflow: auto; }
+.sp-bulk-actions { margin-bottom: 6px; }
+.sp-details { border: 1px solid var(--border); border-radius: 12px; background: var(--surface-2); }
+.sp-details > summary { display: flex; align-items: center; gap: 10px; padding: 10px 12px; cursor: pointer; font-weight: 650; font-size: 14px; list-style: none; }
+.sp-details > summary::-webkit-details-marker { display: none; }
+.sp-details[open] > summary > svg.ic:last-child { transform: rotate(180deg); }
+.sp-details-body { padding: 4px 12px 12px; }
+.sp-recs { display: grid; border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
+.sp-rec { border-bottom: 1px solid var(--border); background: var(--surface); }
+.sp-rec:last-child { border-bottom: 0; }
+.sp-rec.on { background: var(--primary-soft); }
+.sp-rec-h { display: flex; gap: 12px; align-items: flex-start; padding: 10px 12px; cursor: pointer; }
+.sp-rec-h input[type="checkbox"], .sp-ttd-opt input[type="checkbox"] { width: 20px; height: 20px; min-height: 0; margin-top: 2px; flex: none; accent-color: var(--primary); }
+.sp-rec-t { font-weight: 650; font-size: 14px; line-height: 1.35; }
+.sp-sent { margin-left: 6px; vertical-align: middle; }
+.sp-kron { display: grid; gap: 6px; padding: 0 12px 12px 44px; }
+.sp-kron-h .btn { min-height: 28px; }
+.sp-reuse { width: auto; max-width: 220px; min-height: 32px; padding: 4px 8px; font-size: 13px; }
+.sp-man { display: grid; gap: 10px; padding: 12px; border-radius: 14px; border: 1px dashed var(--border-strong); background: var(--surface-2); }
+.sp-man-row { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); }
+.sp-end { justify-content: flex-end; }
+.sp-ttd-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 8px; }
+.sp-ttd-opt { display: flex; gap: 10px; align-items: flex-start; padding: 10px 12px; border: 1px solid var(--border); border-radius: 12px; cursor: pointer; background: var(--surface); }
+.sp-ttd-opt.on { border-color: var(--primary); background: var(--primary-soft); }
+.sp-tpls { display: grid; grid-template-columns: repeat(auto-fill, minmax(172px, 1fr)); gap: 10px; }
+.sp-tpl { display: grid; gap: 8px; padding: 8px; border-radius: 14px; border: 1px solid var(--border); background: var(--surface-2); cursor: pointer; text-align: left; color: inherit; font: inherit; }
+.sp-tpl:hover { border-color: var(--border-strong); }
+.sp-tpl.on { border-color: var(--primary); box-shadow: 0 0 0 2px var(--primary-soft); background: var(--primary-soft); }
+.sp-thumb { width: 159px; height: 205px; margin: 0 auto; overflow: hidden; border-radius: 6px; background: #fff; box-shadow: 0 1px 4px rgba(15, 27, 45, .18); pointer-events: none; }
+.sp-thumb-doc { width: 794px; padding: 45px 57px; background: #fff; transform: scale(.2); transform-origin: 0 0; }
+.sp-tpl-l { display: flex; align-items: center; gap: 6px; font-weight: 650; font-size: 13px; line-height: 1.25; }
+.sp-tpl-l svg.ic { width: 16px; height: 16px; color: var(--primary); flex: none; }
+.sp-swatches { display: flex; flex-wrap: wrap; gap: 8px; }
+.sp-swatch { width: 34px; height: 34px; border-radius: 50%; border: 3px solid var(--surface); box-shadow: 0 0 0 1px var(--border-strong); cursor: pointer; display: grid; place-items: center; color: #fff; }
+.sp-swatch.on { box-shadow: 0 0 0 2px var(--primary); }
+.sp-swatch svg.ic { width: 16px; height: 16px; stroke-width: 3; }
+.sp-opts { display: grid; gap: 10px; }
+.sp-sw { align-items: flex-start; }
+.sp-sw input { margin-top: 1px; }
+.sp-prev-card { padding: 12px; display: grid; gap: 10px; }
+.sp-prev-head svg.ic { color: var(--muted); }
+.sp-prev-nav { display: flex; align-items: center; gap: 2px; }
+.sp-prev-nav .icon-btn { width: 32px; height: 32px; }
+.sp-prev-wrap { max-height: calc(100vh - var(--top-h) - 150px); overflow: auto; border-radius: 8px; background: var(--surface-3); padding: 0; }
+.sp-prev-scale { overflow: hidden; }
+.sp-prev-paper { width: 794px; padding: 45px 57px; background: #fff; transform-origin: 0 0; }
+.sp-footer .btn.primary { min-width: 150px; }
+.sp-foot-info { text-align: left; line-height: 1.3; }
+@media (max-width: 520px) { .sp-hide-sm { display: none; } .sp-wa { padding: 0 12px; } }
+@media (max-width: 420px) { .sp-hide-xs { display: none; } .sp-footer .btn.primary { min-width: 0; } }
+.sp-hist { display: grid; gap: 10px; }
+.sp-hist-ic { width: 40px; height: 40px; border-radius: 12px; background: var(--primary-soft); color: var(--primary-soft-ink); display: grid; place-items: center; flex: none; align-self: flex-start; }
+.sp-hist-st { align-self: flex-start; }
+.sp-hist-note { padding: 8px 10px; border-radius: 10px; background: var(--surface-2); white-space: pre-line; }
+.sp-hist-actions { border-top: 1px solid var(--border); padding-top: 8px; }
+.sp-hadir-sel select { min-width: 150px; }
+
+/* ---- dokumen surat panggilan (pratinjau, PDF, PNG, cetak) */
+.docs .sp-c-navy { --sp-acc: #0b3a6e; --sp-soft: #e8eef7; }
+.docs .sp-c-hijau { --sp-acc: #047857; --sp-soft: #e3f4ec; }
+.docs .sp-c-merah { --sp-acc: #9f1d2b; --sp-soft: #f8e7e9; }
+.docs .sp-c-ungu { --sp-acc: #5b21b6; --sp-soft: #efe8fb; }
+.docs .sp-c-coklat { --sp-acc: #7c4a1e; --sp-soft: #f5ece2; }
+.docs .sp-c-hitam { --sp-acc: #1f2937; --sp-soft: #eef0f3; }
+.docs .sp-kop { gap: 10px; padding-bottom: 4px; }
+.docs .sp-kop .kop-logo { width: 76px; height: 76px; flex-basis: 76px; }
+.docs .sp-kop .kop-text { line-height: 1.22; }
+.docs .sp-kop .kop-line { font-weight: bold; font-size: 12pt; }
+.docs .sp-kop .kop-line.k1 { font-size: 13pt; }
+.docs .sp-kop .kop-line.ka { font-size: 10pt; font-weight: normal; font-style: italic; }
+.docs .sp p { margin: 5px 0; }
+.docs .sp p.sp-tgl { margin: 10px 0 8px; }
+.docs .sp .sp-kepada { text-align: left; }
+.docs .sp .sp-ind { display: inline-block; padding-left: 22px; }
+.docs .sp .sp-ident-to { margin: 0 0 8px 22px; }
+.docs .sp .sp-ident-to td:first-child, .docs .sp .sp-ident td:first-child, .docs .sp .sp-jadwal td:first-child { width: 140px; }
+.docs .sp .sp-nomor { margin: 0 0 8px; }
+.docs .sp .sp-nomor td:first-child { width: 80px; }
+.docs .sp .sp-nomor-line { text-align: left; }
+.docs .sp .sp-tbl { font-size: 11pt; }
+.docs .sp .sp-tbl th.sp-c-tgl, .docs .sp .sp-tbl td.sp-c-tgl { width: 21%; text-align: center; }
+.docs .sp .sp-tbl .sp-c-poin { width: 8%; text-align: center; }
+.docs .sp .sp-tbl td.sp-c-tahap { width: auto; white-space: nowrap; }
+.docs .sp .sp-tbl tr.sp-sum td { text-align: right; }
+.docs .sp .sp-tbl tr.sp-sum td.sp-c-poin { text-align: center; }
+.docs .sp .sp-tbl tr.sp-blank td { height: 24px; }
+.docs .sp .sp-kron-umum { text-align: justify; }
+.docs .sp .sp-tembusan { margin-top: 12px; text-align: left; }
+.docs .sp .sign-block { margin-top: 6px; }
+.docs .sp-slip { margin-top: 16px; font-size: 11pt; }
+.docs .sp-cut { text-align: center; font-size: 8pt; color: #666; letter-spacing: 1px; margin-bottom: 6px; white-space: nowrap; overflow: hidden; }
+.docs .sp-slip-h { text-align: center; font-weight: bold; letter-spacing: .5px; margin-bottom: 4px; }
+.docs .sp-slip .ident { margin-left: 0; }
+.docs .sp-slip p.right { margin-top: 4px; text-align: right; }
+/* Utama: sama dengan sheet CETAK (tanpa garis kop, kepala tabel putih). */
+.docs .sp-utama .tbl-print th { background: #fff; }
+/* Resmi bernomor */
+.docs .sp-resmi .tbl-print th { background: #e6e6e6; }
+/* Modern berwarna */
+.docs .sp-modern, .docs .sp-undangan { font-family: "Segoe UI", Arial, Helvetica, sans-serif; font-size: 11pt; line-height: 1.45; }
+.docs .sp-modern .kop-text, .docs .sp-undangan .kop-text { font-family: "Times New Roman", Times, serif; }
+.docs .sp .sp-rule { height: 5px; background: var(--sp-acc); border-radius: 3px; margin: 2px 0 12px; }
+.docs .sp-modern .sp-title { display: block; background: var(--sp-acc); color: #fff; text-decoration: none; padding: 6px 12px; border-radius: 6px; font-size: 13pt; letter-spacing: 1px; margin: 0 0 6px; }
+.docs .sp .sp-meta { display: flex; justify-content: space-between; gap: 12px; font-size: 10.5pt; margin: 0 0 8px; }
+.docs .sp .sp-cards { display: flex; gap: 10px; margin: 6px 0 8px; }
+.docs .sp .sp-card { flex: 1 1 0; min-width: 0; border: 1px solid #c9d1dc; border-radius: 8px; padding: 6px 10px; }
+.docs .sp .sp-card-acc { background: var(--sp-soft); border-color: var(--sp-acc); }
+.docs .sp .sp-card-h { font-size: 9pt; font-weight: bold; letter-spacing: .8px; text-transform: uppercase; color: var(--sp-acc, #000); margin-bottom: 2px; }
+.docs .sp .sp-card .ident { margin: 0; }
+.docs .sp .sp-card .ident td:first-child { width: 108px; }
+.docs .sp-modern .tbl-print th { background: var(--sp-acc); color: #fff; border-color: var(--sp-acc); }
+.docs .sp-modern .tbl-print td { border-color: #9aa6b6; }
+.docs .sp-modern .tbl-print tr.sp-sum td { background: var(--sp-soft); }
+/* Elegan berbingkai */
+.docs .sp-bingkai { border: 4px double var(--sp-acc); padding: 16px 22px; box-sizing: border-box; }
+.paper .sp-bingkai { min-height: 100%; }
+.docs .sp-bingkai .kop-rule { border-color: var(--sp-acc); }
+.docs .sp-bingkai .sp-title { text-decoration: none; color: var(--sp-acc); letter-spacing: 2px; font-size: 14pt; margin-top: 4px; }
+.docs .sp-bingkai .sp-orn { text-align: center; color: var(--sp-acc); font-size: 8pt; letter-spacing: 6px; margin: 0 0 8px; }
+.docs .sp .sp-box { border: 1.5px solid var(--sp-acc, #000); background: var(--sp-soft, #fff); padding: 6px 14px; margin: 6px auto 8px; width: 82%; }
+.docs .sp .sp-box .ident { margin: 0; }
+.docs .sp-bingkai .tbl-print th { background: var(--sp-soft); color: var(--sp-acc); }
+/* Ringkas hemat kertas */
+.docs .sp-ringkas { font-size: 11pt; line-height: 1.3; }
+.docs .sp-ringkas p { margin: 3px 0; }
+.docs .sp-ringkas .kop-rule { margin-bottom: 8px; }
+.docs .sp .sp-2col { display: flex; gap: 16px; margin: 4px 0 6px; }
+.docs .sp .sp-2col > div { flex: 1 1 0; min-width: 0; }
+.docs .sp .sp-2col .ident { margin: 0; }
+.docs .sp-ringkas .sp-ident td:first-child, .docs .sp-ringkas .sp-jadwal td:first-child { width: 104px; }
+.docs .sp-ringkas .sp-tbl { font-size: 10pt; }
+.docs .sp-ringkas .sign-space { height: 46px; }
+/* Undangan bersahabat */
+.docs .sp-undangan .sp-title { text-decoration: none; color: var(--sp-acc); font-size: 14pt; letter-spacing: .5px; }
+.docs .sp-undangan .sp-box-round { border-radius: 14px; border-width: 1px; text-align: left; }
+.docs .sp-undangan .tbl-print th { background: var(--sp-soft); color: var(--sp-acc); }
+.docs .sp-undangan .tbl-print th, .docs .sp-undangan .tbl-print td { border-color: #b8c1cd; }
+/* Daftar hadir (surat massal) */
+.docs .sp-hadir .tbl-print td { height: 30px; vertical-align: middle; }
+.docs .sp-hadir .sp-ttd-r { padding-left: 40%; }
+/* Surat panggilan: jarak lebih rapat agar surat umum (±6 pelanggaran) muat satu halaman. */
+.docs .sp { line-height: 1.3; }
+.docs .sp p { margin: 3px 0; }
+.docs .sp .ident { margin-top: 2px; margin-bottom: 4px; }
+.docs .sp .ident td { padding: 0 4px; }
+.docs .sp .sp-tbl { font-size: 10.5pt; line-height: 1.25; margin: 4px 0 6px; }
+.docs .sp .sp-tbl th, .docs .sp .sp-tbl td { padding: 2px 5px; }
+.docs .sp .sign-space { height: 50px; }
+.docs .sp .sign-row { margin-top: 4px; }
+.docs .sp .sp-tbl td.sp-c-tgl { white-space: nowrap; }
+.docs .sp-modern .sp-tbl, .docs .sp-undangan .sp-tbl { font-size: 9.5pt; }
+.docs .sp .sp-card .ident td:first-child { width: auto; white-space: nowrap; }
+.docs .sp-modern .sp-jadwal td:last-child { white-space: nowrap; }
+.sp-hist-top { display: flex; gap: 10px; align-items: flex-start; min-width: 0; }
+.sp-hist-top > .grow { min-width: 0; }
+.sp-hist-top .ellipsis { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sp-hist-st { flex-direction: column; align-items: flex-end; }
+.sp-form, .sp-sec { min-width: 0; max-width: 100%; }
+@media (max-width: 560px) {
+  .sp-tpls { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  .sp-thumb { width: 127px; height: 164px; }
+  .sp-thumb-doc { transform: scale(.16); }
+  .sp-footer { gap: 6px; padding-left: 12px; padding-right: 12px; }
+  .sp-footer .btn.primary { min-width: 0; padding: 0 14px; }
+  .sp-footer .icon-btn { width: 36px; }
+  .sp-chosen { gap: 8px 10px; }
+}
